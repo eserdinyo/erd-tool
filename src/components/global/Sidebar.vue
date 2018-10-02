@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { EventBus } from "../main";
+import { EventBus } from "@/main";
 
 export default {
   data() {
@@ -44,6 +44,7 @@ export default {
 .sidebar {
   background-color: #f2f2f2;
   padding: 30px 10px;
+  width: 300px;
   border-right: 1px solid rgba(0, 0, 0, 0.3);
   border-top: 1px solid rgba(0, 0, 0, 0.3);
   height: 100vh;

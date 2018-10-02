@@ -1,57 +1,118 @@
 <template lang="pug">
-  vue-draggable-resizable(:grid="[10,10]",   :w='100', :h='100', :resizable='false')
-    #entity.tablo.entity
-      table
+  .tablo
+    table#myTable
         thead
           th(colspan='4')
-            input(type='text',id ="entityName", placeholder='Varlık İsmi')
+              p#tableName {{makeUpper(table.entityName)}}
         tbody
-          tr.row(v-for='n in 2', :key='n.id')
-            td
-              .field
-                input(type='text',  placeholder='Anahtar(#,o,*)')
-            td
-              .field
-                input(type='text', placeholder='İsmi')
-      button.addBtn  + 
-      button.subBtn  -
-      button.delBtn  x
+          tr.tablo__header
+            td Anahtar Tipi
+            td Veri Tipi
+            td Sütun İsmi
+          template(v-for="(item,key,index) in table.entityItems")
+            tr(v-if="key == 0")
+              td.field
+                  p PK
+              td.field
+                p INT
+              td.field
+                p {{deleteSpace(item.itemName)}}
+            tr(v-else)
+              td.field
+                select#element()
+                  option(value='', selected) None
+                  option(title="Unique", value='unique') UK
+              td.field
+                select#element(v-model="item.dataType",
+                              @change="changeDataType(key,table,$event.target.value)")
+                  option(disabled, value='') Veri Tipi
+                  option(title="INT", value='int') INT
+                  option(title="VARCHAR", value='varchar(255)') VARCHAR
+                  option(title="TEXT", value='TEXT') TEXT
+                  option(title="DATE", value='DATETIME') DATE
+              td.field
+                p {{deleteSpace(item.itemName)}}
+            tr(v-if="index == objSize(table.entityItems) && table.multi")
+              td.field
+                p FK
+              td.field
+                p INT
+              td.field
+                p {{foreignKey(table.fk)}}
 </template>
 
 <script>
-
 export default {
-  data() {
-    return {
-      entityKey: "",
-      selected: "",
-      entityName: "",
-      data: {
-        itemKey: "",
-        itemName: ""
-      }
-    };
-  },
+  props: ["table"],
   methods: {
-    
-  },
-  components: {
-  },
-  mounted() {
-    
+    foreignKey(str) {
+      if (str)
+        return (
+          str
+            .trim()
+            .toLowerCase()
+            .replace(" ", "_") + "_id"
+        );
+    },
+    forTable(str) {
+      if (str) return str.trim().toLowerCase() + "s";
+    },
+    findObjectSize(obj) {
+      let size = 0;
+      for (let i in obj) {
+        size++;
+      }
+      return size;
+    },
+    objSize(obj) {
+      let size = 0;
+      for (let i in obj) {
+        size++;
+      }
+      return size - 1;
+    },
+    changeDataType(key, table, value) {
+      ref
+        .child(table.id)
+        .child("entityItems")
+        .child(key)
+        .update({ dataType: value });
+    },
+    makeUpper(str) {
+      if (str) return str.toUpperCase() + "S";
+    },
+    deleteSpace(str) {
+      if (str)
+        return str
+          .trim()
+          .toLowerCase()
+          .replace(" ", "_");
+    }
   }
 };
 </script>
 
-
 <style lang="scss" scoped>
+// Tablo
 .tablo {
+  width: 400px;
+  margin-top: 30px;
   select {
     background: transparent;
     padding: 3px 10px;
     border: 1px solid (#191919, 0.3);
     color: #191919;
   }
+
+  &__header {
+    font-size: 13px;
+    background-color: #f2f2f2;
+  }
+}
+#tableName {
+  font-weight: 700;
+  padding-top: 3px;
+  padding-bottom: 3px;
 }
 table {
   width: 100%;
@@ -61,30 +122,6 @@ table {
   border-radius: 3px;
   background-color: rgba(#fff, 1);
   z-index: 99;
-  cursor: pointer;
-  /*
-  &::after {
-    content: "";
-    height: 20px;
-    width: 20px;
-    background: url(../assets/img/rightArrow.png);
-    background-size: cover;
-    position: absolute;
-    top: 0%;
-    left: 99%;
-    margin-top: 40px;
-  }
-  &::before {
-    content: "";
-    height: 20px;
-    width: 20px;
-    background: url(../assets/img/leftArrow.png);
-    background-size: cover;
-    position: absolute;
-    top: 0%;
-    left: -7%;
-    margin-top: 40px;
-  } */
 }
 th {
   border-bottom: 1px solid rgba(#191919, 0.5);
@@ -112,73 +149,6 @@ input[type="text"] {
 .field input {
   margin: 0;
 }
-.addBtn {
-  font-weight: bold;
-  position: absolute;
-  left: 40%;
-  font-weight: 900;
-  background-color: #1abc9c;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-  padding: 0 8px;
-  transition: all 0.2s;
-  &:active {
-    background-color: #0fa083;
-  }
-}
-.subBtn {
-  font-weight: bold;
-  position: absolute;
-  left: 40%;
-  font-weight: 900;
-  background-color: #1abc9c;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-  padding: 0 10px;
-  transition: all 0.2s;
-  margin-left: 30px;
-  &:active {
-    background-color: #0fa083;
-  }
-  &:disabled {
-    cursor: not-allowed;
-  }
-}
-.delBtn {
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin-left: -2px;
-  margin-top: -7px;
-  background: transparent;
-  padding: 0;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s;
-  backface-visibility: hidden;
-  &:hover {
-    transform: scale(1.5);
-  }
-}
-.entity {
-  width: 250px;
-  position: absolute;
-}
-.cover {
-  position: relative;
-  background-image: url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
-  background-repeat: repeat;
-  flex-grow: 15;
-}
 </style>
+
 

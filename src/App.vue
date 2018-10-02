@@ -1,17 +1,15 @@
-<template>
-  <div id="app">
-
-    <Header/>
-    <router-view/>
-  </div>
+<template lang="pug">
+  #app
+    app-header
+    router-view
 </template>
 
 <script>
-import Header from "./components/Header";
+import AppHeader from "@/components/global/Header";
 export default {
   name: "App",
   components: {
-    Header
+    AppHeader,
   }
 };
 </script>
@@ -29,7 +27,5 @@ body {
 
 #app {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
 }
 </style>

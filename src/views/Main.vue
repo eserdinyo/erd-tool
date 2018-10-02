@@ -1,41 +1,25 @@
 <template lang="pug">
-    .cover()
-      #main.main()
-        template(v-for='entity in entities')
-            .tablo.entity(:id="entity.ID")
-              table(@mousedown="activeEntity(entity.id)" , :class="{ activeEntity : active_el == entity.id}",)
-                thead
-                  th(colspan='4')
-                    input#entityName(type='text', placeholder='Varlık İsmi', :value='entity.entityName',@keyup="sendEntityName(entity,$event.target.value)")
-                tbody
-                  tr.row(v-for='(item,key) in entity.entityItems', :key='item.id')
-                    td
-                      .field
-                        select#element(v-model="item.itemKey", @change="changeItem(key,entity,$event.target.value)")
-                          option(disabled, value='') ID
-                          option(title="Unique", value='unique') #
-                          option(title="Mandatory", value='mandatory') *
-                          option(title="Optional", value='optional') o
-                    td
-                      .field
-                        input(type='text',:value="item.itemName", placeholder='İsmi', @keyup="sendItemName(key,entity, $event.target.value)")
-              .ep
-      sidebar
-        
+    .cover
+      #main.main
+        app-entity(v-for='entity in entities', 
+          :key="entity.id"
+          :entity="entity")
+      app-sidebar
 </template>
 
 
 <script>
 import $ from "jquery";
+
 import { jsPlumb } from "jsplumb";
-import { ref, refConn } from "../firebase/";
-import { EventBus } from "../main";
-import Sidebar from "./Siderbar";
+import { EventBus } from "@/main";
+
+import AppSidebar from "@/components/global/Sidebar";
+import AppEntity from "@/components/Entity";
 
 export default {
   data() {
     return {
-      active_el: 0,
       entities: [],
       conns: [],
       dash: "2 1",
@@ -468,9 +452,6 @@ export default {
     };
   },
   methods: {
-    activeEntity(el) {
-      this.active_el = el;
-    },
     // JSPLUMB //
     getflow() {
       var instance = jsPlumb.getInstance({
@@ -692,9 +673,6 @@ export default {
       }
       EventBus.$emit("emitKey", key);
     },
-    delEntity(id) {
-      ref.child(id).remove();
-    },
     sendEntityName(entity, value) {
       ref.child(entity.id).update({ entityName: value });
     },
@@ -800,23 +778,10 @@ export default {
     EventBus.$on("emitSub", key => {
       this.subItem(this.active_el);
     });
-
-    document.onkeydown = evt => {
-      evt = evt || window.event;
-      if (evt.keyCode == 46) {
-        if (this.active_el != 0) {
-          this.delEntity(this.active_el);
-        }
-      } else if (evt.keyCode == 27) {
-        console.log("esc");
-
-        this.active_el = 0;
-        console.log(this.active_el);
-      }
-    };
   },
   components: {
-    Sidebar
+    AppEntity,
+    AppSidebar
   },
   updated() {
     this.makeDraggable();
@@ -839,157 +804,8 @@ export default {
   background-repeat: repeat;
   border: 1px solid rgba(#000, 0.2);
   text-align: center;
-  flex-grow: 15;
+  width: 100%;
   height: 100vh;
-}
-
-.activeEntity {
-  border: 2px solid rgba(#e74c3c, 0.9);
-}
-
-.ep {
-  position: absolute;
-  right: 61%;
-  top: 62px;
-  width: 15px;
-  height: 15px;
-  border-radius: 50%;
-  background-color: rgba(204, 204, 204, 0.486);
-  border: 1px solid rgba(170, 170, 170, 0.459);
-  cursor: pointer;
-}
-//*************//
-// Tablo
-.tablo {
-  select {
-    background: transparent;
-    padding: 3px 10px;
-    border: 1px solid (#191919, 0.3);
-    color: #191919;
-  }
-}
-
-table {
-  width: 100%;
-  margin-bottom: 3px;
-  padding-bottom: 3px;
-  border: 2px solid rgba(#191919, 0.7);
-  border-radius: 3px;
-  background-color: rgba(#fff, 1);
-  z-index: 99;
-  cursor: move;
-  /*
-  &::after {
-    content: "";
-    height: 20px;
-    width: 20px;
-    background: url(../assets/img/rightArrow.png);
-    background-size: cover;
-    position: absolute;
-    top: 0%;
-    left: 99%;
-    margin-top: 40px;
-  }
-  &::before {
-    content: "";
-    height: 20px;
-    width: 20px;
-    background: url(../assets/img/leftArrow.png);
-    background-size: cover;
-    position: absolute;
-    top: 0%;
-    left: -7%;
-    margin-top: 40px;
-  } */
-}
-th {
-  border-bottom: 1px solid rgba(#191919, 0.5);
-  padding: 0;
-}
-td {
-  padding: 5px 10px;
-  text-align: center;
-}
-input[type="text"] {
-  width: 100%;
-  padding: 5px 5px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  background: transparent;
-  color: #000;
-  border-radius: 4px;
-  box-sizing: border-box;
-  text-align: center;
-  &::-webkit-input-placeholder {
-    color: rgb(121, 121, 121);
-  }
-}
-.field input {
-  margin: 0;
-}
-.addBtn {
-  font-weight: bold;
-  position: absolute;
-  left: 40%;
-  font-weight: 900;
-  background-color: #1abc9c;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-  padding: 0 8px;
-  transition: all 0.2s;
-  &:active {
-    background-color: #0fa083;
-  }
-}
-.subBtn {
-  font-weight: bold;
-  position: absolute;
-  left: 40%;
-  font-weight: 900;
-  background-color: #1abc9c;
-  color: #fff;
-  border: none;
-  border-radius: 3px;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-  padding: 0 10px;
-  transition: all 0.2s;
-  margin-left: 30px;
-  &:active {
-    background-color: #0fa083;
-  }
-  &:disabled {
-    cursor: not-allowed;
-  }
-}
-.delBtn {
-  position: absolute;
-  top: 0;
-  left: 0;
-  margin-left: -2px;
-  margin-top: -7px;
-  background: transparent;
-  padding: 0;
-  border: none;
-  font-weight: bold;
-  cursor: pointer;
-  outline: none;
-  transition: all 0.3s;
-  backface-visibility: hidden;
-  user-select: none;
-  &:hover {
-    transform: scale(1.5);
-  }
-}
-.entity {
-  width: 250px;
-  position: absolute;
 }
 </style>
 

@@ -3,7 +3,6 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router';
-require("../node_modules/bootstrap-grid-only/bootstrap.css");
 Vue.config.productionTip = false
 
 export const EventBus = new Vue();

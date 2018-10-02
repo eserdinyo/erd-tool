@@ -3,9 +3,10 @@ import Router from 'vue-router'
 
 Vue.use(Router)
 
-import Main from '../components/Main'
-import Tables from '../components/Tables'
+import Main from '../views/Main'
+import Tables from '../views/Tables'
 export default new Router({
+    mode: 'history',
     routes: [
         {
             path: '/',
@@ -17,8 +18,7 @@ export default new Router({
             name: 'tables',
             component: Tables,
         }
-    ],
-    mode: 'history',
+    ]
 })
 
 
