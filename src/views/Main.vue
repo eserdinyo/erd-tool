@@ -13,6 +13,8 @@ import $ from "jquery";
 
 import { jsPlumb } from "jsplumb";
 import { EventBus } from "@/main";
+import { ref, refConn } from "@/firebase/";
+import { mapGetters } from "vuex";
 
 import AppSidebar from "@/components/global/Sidebar";
 import AppEntity from "@/components/Entity";
@@ -20,17 +22,10 @@ import AppEntity from "@/components/Entity";
 export default {
   data() {
     return {
-      entities: [],
-      conns: [],
       dash: "2 1",
       con: "",
       leftEndpoint: 1,
       rightEndpoint: 1,
-      item: {
-        itemKey: "",
-        itemName: "",
-        dataType: "int"
-      },
       con0: [
         [
           // Line
@@ -451,6 +446,9 @@ export default {
       ]
     };
   },
+  computed: {
+    ...mapGetters(["entities", "connections", "activeEntity"])
+  },
   methods: {
     // JSPLUMB //
     getflow() {
@@ -460,7 +458,7 @@ export default {
           straightdashstyle: "200 10 5",
           stroke: "#445566"
         },*/
-        Connector: ["Bezier", { curviness: 50 }],
+        Connector: ["Flowchart", { curviness: 50 }],
         Endpoint: ["Dot", { radius: 1 }],
         EndpointStyle: { fill: "#191919" },
         HoverPaintStyle: { stroke: "#c0392b", lineWidth: 4 },
@@ -489,7 +487,7 @@ export default {
         let s = c.endpoints[0].elementId;
         let t = c.endpoints[1].elementId;
 
-        this.conns.forEach(conn => {
+        this.connections.forEach(conn => {
           if (conn.sourceId == s && conn.targetId == t) {
             refConn.child(conn.id).remove();
           }
@@ -535,12 +533,11 @@ export default {
         // MAKE DRAGGABLE
         instance.draggable(this.entities[i].ID, {
           grid: [10, 10],
-          containment: "#main",
+          containment: "main",
 
           stop: e => {
-            //console.log(e.el.id);
-            ref.child(this.active_el).update({ entityX: e.pos[0] });
-            ref.child(this.active_el).update({ entityY: e.pos[1] });
+            ref.child(this.activeEntity).update({ entityX: e.pos[0] });
+            ref.child(this.activeEntity).update({ entityY: e.pos[1] });
           }
         });
 
@@ -573,11 +570,11 @@ export default {
       }
 
       // SET CONNECTIONS
-      for (let i in this.conns) {
+      for (let i in this.connections) {
         instance.connect({
-          source: this.conns[i].sourceId,
-          target: this.conns[i].targetId,
-          overlays: this.conns[i].overlay,
+          source: this.connections[i].sourceId,
+          target: this.connections[i].targetId,
+          overlays: this.connections[i].overlay,
           paintStyle: { stroke: "#191919", strokeWidth: 3, dashstyle: "0" }
         });
       }
@@ -589,12 +586,12 @@ export default {
       for (let i in this.entities) {
         ins.draggable(this.entities[i].ID, {
           grid: [10, 10],
-          containment: "#main",
+          containment: "main",
 
           stop: e => {
-            //console.log(e.el.id);
-            ref.child(this.active_el).update({ entityX: e.pos[0] });
-            ref.child(this.active_el).update({ entityY: e.pos[1] });
+            console.log(e.el.id);
+            ref.child(this.activeEntity).update({ entityX: e.pos[0] });
+            ref.child(this.activeEntity).update({ entityY: e.pos[1] });
           }
         });
       }
@@ -617,78 +614,6 @@ export default {
         outlineWidth: 4,
         dashstyle: this.dash
       };
-    },
-    getEntites() {
-      ref.on("value", snap => {
-        const data = snap.val();
-
-        const entites = [];
-        for (let key in data) {
-          const entity = data[key];
-          entity.id = key;
-          entites.push(entity);
-        }
-
-        this.entities = entites;
-      });
-    },
-    getConnections() {
-      refConn.on("value", snap => {
-        const data = snap.val();
-
-        const connections = [];
-        for (let key in data) {
-          const conn = data[key];
-          conn.id = key;
-          connections.push(conn);
-        }
-
-        this.conns = connections;
-      });
-    },
-    addItem(id) {
-      ref
-        .child(id)
-        .child("entityItems")
-        .push(this.item);
-    },
-    subItem(id) {
-      let key = "";
-      ref
-        .child(id)
-        .child("entityItems")
-        .limitToLast(1)
-        .on("child_added", snap => {
-          key = snap.key;
-        });
-
-      if (key != 0) {
-        ref
-          .child(id)
-          .child("entityItems")
-          .child(key)
-          .remove();
-
-        let length = ref.child(id).child("entityItems");
-      }
-      EventBus.$emit("emitKey", key);
-    },
-    sendEntityName(entity, value) {
-      ref.child(entity.id).update({ entityName: value });
-    },
-    changeItem(key, entity, value) {
-      ref
-        .child(entity.id)
-        .child("entityItems")
-        .child(key)
-        .update({ itemKey: value });
-    },
-    sendItemName(key, entity, value) {
-      ref
-        .child(entity.id)
-        .child("entityItems")
-        .child(key)
-        .update({ itemName: value });
     },
     setConnections(key) {
       if (key < 5) {
@@ -741,27 +666,11 @@ export default {
     }
   },
   created() {
-    this.con = this.con0;
-    EventBus.$on("emitEntity", entity => {
-      ref.push({
-        ID: jsPlumbUtil.uuid(),
-        entityName: "",
-        multi: false,
-        fk: "",
-        entityX: 20,
-        entityY: 80,
-        entityItems: [
-          {
-            itemKey: "",
-            itemName: "",
-            dataType: "int"
-          }
-        ]
-      });
-    });
+    this.$store.dispatch("initEntities");
+    this.$store.dispatch("initConnections");
 
-    this.getEntites();
-    this.getConnections();
+    this.con = this.con0;
+
     EventBus.$on("emitLeftEndpoint", leftKey => {
       this.setConnections(leftKey);
     });
@@ -770,13 +679,6 @@ export default {
     });
     EventBus.$on("emitDashStyle", type => {
       this.changeDashStyle(type);
-    });
-
-    EventBus.$on("emitAdd", key => {
-      this.addItem(this.active_el);
-    });
-    EventBus.$on("emitSub", key => {
-      this.subItem(this.active_el);
     });
   },
   components: {

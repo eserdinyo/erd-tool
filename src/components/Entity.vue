@@ -1,7 +1,7 @@
 <template lang="pug">
  .tablo.entity(:id="entity.ID")
-    table(@mousedown="activeEntity(entity.id)" , 
-          :class="{ activeEntity : active_el == entity.id}")
+    table(@mousedown="setActiveEntity(entity.id)" , 
+          :class="{ activeEntity : activeEntity == entity.id}")
       thead
         th(colspan='4')
           input#entityName(type='text', 
@@ -28,34 +28,51 @@
 </template>
 
 <script>
-import { ref, refConn } from "@/firebase/"
+import { ref } from "@/firebase/";
 
 export default {
   props: ["entity"],
   data() {
-    return {
-      active_el: 0
-    };
+    return {};
+  },
+  computed: {
+    activeEntity() {
+      return this.$store.getters.activeEntity;
+    }
   },
   methods: {
-    activeEntity(el) {
-      this.active_el = el;
+    sendItemName(key, entity, value) {
+      ref
+        .child(entity.id)
+        .child("entityItems")
+        .child(key)
+        .update({ itemName: value });
     },
-    delEntity(id) {
-      ref.child(id).remove();
+    changeItem(key, entity, value) {
+      ref
+        .child(entity.id)
+        .child("entityItems")
+        .child(key)
+        .update({ itemKey: value });
+    },
+    sendEntityName(entity, value) {
+      ref.child(entity.id).update({ entityName: value });
+    },
+    setActiveEntity(entity) {
+      this.$store.commit("updateActive", entity);
+    },
+    delEntity() {
+      this.$store.dispatch("delEntity");
     },
     initForDelete() {
       document.onkeydown = evt => {
         evt = evt || window.event;
         if (evt.keyCode == 46) {
-          if (this.active_el != 0) {
-            this.delEntity(this.active_el);
+          if (this.activeEntity != 0) {
+            this.delEntity();
           }
         } else if (evt.keyCode == 27) {
-          console.log("esc");
-
-          this.active_el = 0;
-          console.log(this.active_el);
+          this.$store.commit("updateActive", 0);
         }
       };
     }
@@ -126,13 +143,13 @@ input[type="text"] {
 
 .ep {
   position: absolute;
-  right: 61%;
+  right: 64%;
   top: 62px;
   width: 15px;
   height: 15px;
   border-radius: 50%;
-  background-color: rgba(204, 204, 204, 0.486);
-  border: 1px solid rgba(170, 170, 170, 0.459);
+  background-color: rgba(204, 204, 204, 0.2);
+  border: 1px solid rgba(170, 170, 170, 0.2);
   cursor: pointer;
 }
 </style>

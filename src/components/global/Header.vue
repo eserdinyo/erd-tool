@@ -61,7 +61,7 @@
       
         .buttons
           button.addBtn(@click='addItem') +
-          button.subBtn(:disabled='key == 1', @click='subItem') -
+          button.subBtn(:disabled='firstItemKey == 0', @click='subItem') -
 
       
 </template>
@@ -74,16 +74,15 @@ export default {
   data() {
     return {
       isActive: true,
-      activeProfil: false,
-      key: ""
+      activeProfil: false
     };
   },
   methods: {
     addItem() {
-      EventBus.$emit("emitAdd", 1);
+      this.$store.dispatch("addItem");
     },
     subItem() {
-      EventBus.$emit("emitSub", 1);
+      this.$store.dispatch("subItem");
     },
     makeSelect() {
       $(".sekiller").on("click", function() {
@@ -139,10 +138,10 @@ export default {
       EventBus.$emit("emitDashStyle", type);
     }
   },
-  created() {
-    EventBus.$on("emitKey", key => {
-      this.key = key;
-    });
+  computed: {
+    firstItemKey() {
+      return this.$store.getters.itemKey;
+    }
   },
   mounted() {
     this.makeSelect();

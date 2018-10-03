@@ -1,7 +1,7 @@
 <template lang="pug">
   .sidebar
     h4 Entity Relationship
-    button.varlikBtn(@click='sendEntity', v-if="show") Varlık Ekle
+    button.varlikBtn(@click='addEntity', v-if="show") Varlık Ekle
     button.aktarBtn(@click="createTable",v-if="!show") Veri Tabanına Aktar
     br
     hr(v-if="show")
@@ -21,8 +21,8 @@ export default {
     changeSide() {
       this.show = !this.show;
     },
-    sendEntity() {
-      EventBus.$emit("emitEntity", 1);
+    addEntity() {
+      this.$store.dispatch("addEntity");
     },
     sendTables() {
       EventBus.$emit("emitTables", 1);
