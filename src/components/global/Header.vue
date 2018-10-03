@@ -38,25 +38,25 @@
           .dropdownbox.dropdownbox__2.sekiller
             img.dropdownSelected(src='../../assets/img/line.png', alt='icon')
           ul#Sekiller.menu
-              li#1(@click="leftEndpoint(1)")
+              li#1(@click="setLeftEndpoint(1)")
                 img(src='../../assets/img/line.png', alt='icon')
-              li#2(@click="leftEndpoint(2)")
+              li#2(@click="setLeftEndpoint(2)")
                 img(src='../../assets/img/line_left.png', alt='icon')
-              li#3(@click="leftEndpoint(3)")
+              li#3(@click="setLeftEndpoint(3)")
                 img(src='../../assets/img/arrow_left.png', alt='icon')
-              li#4(@click="leftEndpoint(4)")
+              li#4(@click="setLeftEndpoint(4)")
                 img(src='../../assets/img/arrow_break_left.png', alt='icon')
         .bottom__selects--3
           .dropdownbox.dropdownbox__3.sekiller
             img.dropdownSelected(src='../../assets/img/line.png', alt='icon')
           ul#Sekiller.menu
-              li#1(@click="rightEndpoint(5)")
+              li#1(@click="setRightEndpoint(1)")
                 img(src='../../assets/img/line.png', alt='icon')
-              li#2(@click="rightEndpoint(6)")
+              li#2(@click="setRightEndpoint(2)")
                 img(src='../../assets/img/line_right.png', alt='icon')
-              li#3(@click="rightEndpoint(7)")
+              li#3(@click="setRightEndpoint(3)")
                 img(src='../../assets/img/arrow_right.png', alt='icon')
-              li#4(@click="rightEndpoint(8)")
+              li#4(@click="setRightEndpoint(4)")
                 img(src='../../assets/img/arrow_break_right.png', alt='icon')
       
         .buttons
@@ -76,6 +76,11 @@ export default {
       isActive: true,
       activeProfil: false
     };
+  },
+  computed: {
+    firstItemKey() {
+      return this.$store.getters.itemKey;
+    }
   },
   methods: {
     addItem() {
@@ -128,19 +133,14 @@ export default {
         });
       });
     },
-    leftEndpoint(key) {
-      EventBus.$emit("emitLeftEndpoint", key);
+    setLeftEndpoint(key) {
+      this.$store.commit("setLeftEndpoint", key);
     },
-    rightEndpoint(key) {
-      EventBus.$emit("emitRightEndpoint", key);
+    setRightEndpoint(key) {
+      this.$store.commit("setRightEndpoint", key);
     },
     dashStyle(type) {
       EventBus.$emit("emitDashStyle", type);
-    }
-  },
-  computed: {
-    firstItemKey() {
-      return this.$store.getters.itemKey;
     }
   },
   mounted() {
