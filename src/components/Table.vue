@@ -42,6 +42,8 @@
 </template>
 
 <script>
+import { ref } from "@/firebase/";
+
 export default {
   props: ["table"],
   methods: {
@@ -113,8 +115,11 @@ export default {
   font-weight: 700;
   padding-top: 3px;
   padding-bottom: 3px;
+  background: #1abc9c;
+  color: #fff;
 }
 table {
+  border-collapse: collapse;
   width: 100%;
   margin-bottom: 3px;
   padding-bottom: 3px;
@@ -123,13 +128,25 @@ table {
   background-color: rgba(#fff, 1);
   z-index: 99;
 }
+
+table,
+th,
+td {
+  border: 2px solid #191919;
+}
+
+tr:nth-child(even) {
+  background: #e9e9e9;
+}
+
 th {
-  border-bottom: 1px solid rgba(#191919, 0.5);
+  border-bottom: 2px solid rgba(#191919, 0.5);
   padding: 0;
 }
 td {
   padding: 5px 10px;
   text-align: center;
+  border-radius: 3px;
 }
 input[type="text"] {
   width: 100%;

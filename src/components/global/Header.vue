@@ -135,9 +135,11 @@ export default {
     },
     setLeftEndpoint(key) {
       this.$store.commit("setLeftEndpoint", key);
+      this.$store.commit("setConnectionType");
     },
     setRightEndpoint(key) {
       this.$store.commit("setRightEndpoint", key);
+      this.$store.commit("setConnectionType");
     },
     dashStyle(type) {
       EventBus.$emit("emitDashStyle", type);

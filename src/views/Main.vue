@@ -19,12 +19,17 @@ import { mapGetters } from "vuex";
 import AppSidebar from "@/components/global/Sidebar";
 import AppEntity from "@/components/Entity";
 
+var instance;
 export default {
   data() {
     return {
       dash: "2 1",
-      con: ""
+      stop: false
     };
+  },
+  components: {
+    AppEntity,
+    AppSidebar
   },
   computed: {
     ...mapGetters([
@@ -33,12 +38,13 @@ export default {
       "activeEntity",
       "leftEndpoint",
       "rightEndpoint",
-      "connTypes"
+      "connTypes",
+      "connType"
     ])
   },
   methods: {
     // JSPLUMB //
-    getflow() {
+    getflow(stop = false) {
       var instance = jsPlumb.getInstance({
         /*paintStyle: {
           strokeWidth: 2,
@@ -51,11 +57,10 @@ export default {
         HoverPaintStyle: { stroke: "#c0392b", lineWidth: 4 },
         EndpointHoverStyle: { fill: "#c0392b", stroke: "#c0392b" },
         Anchor: ["Left", "Right", "TopCenter", "BottomCenter"],
-        ConnectionOverlays: this.con,
+        ConnectionOverlays: this.connType,
         Container: "main"
       });
-      window.ins = instance;
-
+      if (stop) return;
       // Set position of Entities
       for (let i in this.entities) {
         $(`#${this.entities[i].ID}`).css({
@@ -63,12 +68,6 @@ export default {
           top: this.entities[i].entityY
         });
       }
-
-      // GET CONNECTION INFO
-      instance.bind("click", c => {
-        let s = c.endpoints[0].elementId;
-        let t = c.endpoints[1].elementId;
-      });
 
       instance.bind("dblclick", c => {
         let s = c.endpoints[0].elementId;
@@ -111,13 +110,13 @@ export default {
           refConn.push({
             sourceId: s,
             targetId: t,
-            overlay: this.con
+            overlay: this.connType
           });
         }
       });
 
+      // MAKE DRAGGABLE
       for (let i in this.entities) {
-        // MAKE DRAGGABLE
         instance.draggable(this.entities[i].ID, {
           grid: [10, 10],
           containment: "main",
@@ -171,22 +170,16 @@ export default {
     makeDraggable() {
       // Make Draggable
       for (let i in this.entities) {
-        ins.draggable(this.entities[i].ID, {
+        instance.draggable(this.entities[i].ID, {
           grid: [10, 10],
           containment: "main",
 
           stop: e => {
-            console.log(e.el.id);
             ref.child(this.activeEntity).update({ entityX: e.pos[0] });
             ref.child(this.activeEntity).update({ entityY: e.pos[1] });
           }
         });
       }
-    },
-    changeOverlay() {
-      instance = jsPlumb.getInstance({
-        ConnectionOverlays: this.con
-      });
     },
     changeDashStyle(type) {
       let color = "red";
@@ -201,75 +194,26 @@ export default {
         outlineWidth: 4,
         dashstyle: this.dash
       };
-    },
-    setConnections(key) {
-      if (key < 5) {
-        this.leftEndpoint = key;
-      } else {
-        if (key == 5) this.rightEndpoint = 1;
-        if (key == 6) this.rightEndpoint = 2;
-        if (key == 7) this.rightEndpoint = 3;
-        if (key == 8) this.rightEndpoint = 4;
-      }
-      
-      /* HERE */ 
-
-      let l = this.leftEndpoint;
-      let r = this.rightEndpoint;
-
-       if (l == 1 && r == 1) {
-        this.con = this.con0;
-      } else if (l == 1 && r == 2) {
-        this.con = this.con1;
-      } else if (l == 1 && r == 3) {
-        this.con = this.con2;
-      } else if (l == 1 && r == 4) {
-        this.con = this.con3;
-      } else if (l == 2 && r == 1) {
-        this.con == this.con4;
-      } else if (l == 2 && r == 2) {
-        this.con = this.con5;
-      } else if (l == 2 && r == 3) {
-        this.con = this.con6;
-      } else if (l == 2 && r == 4) {
-        this.con = this.con7;
-      } else if (l == 3 && r == 1) {
-        this.con = this.con8;
-      } else if (l == 3 && r == 2) {
-        this.con = this.con9;
-      } else if (l == 3 && r == 3) {
-        this.con = this.con10;
-      } else if (l == 3 && r == 4) {
-        this.con = this.con11;
-      } else if (l == 4 && r == 1) {
-        this.con = this.con12;
-      } else if (l == 4 && r == 2) {
-        this.con = this.con13;
-      } else if (l == 4 && r == 3) {
-        this.con = this.con14;
-      } else if (l == 4 && r == 4) {
-        this.con = this.con15;
-      }
-
-      this.changeOverlay();
     }
   },
+  watch: {
+    connType() {
+      this.getflow(true);
+    }
+  },
+
   created() {
-    this.$store.commit("initConnections");
+    this.$store.commit("initConnectionTypes");
+    this.$store.commit("setConnectionType");
     this.$store.dispatch("initEntities");
     this.$store.dispatch("initConnections");
 
-    //this.con = this.con0;
     EventBus.$on("emitDashStyle", type => {
       this.changeDashStyle(type);
     });
   },
-  components: {
-    AppEntity,
-    AppSidebar
-  },
   updated() {
-    this.makeDraggable();
+    // this.makeDraggable();
   },
   mounted() {
     setTimeout(() => {

@@ -24,11 +24,8 @@ export default {
     addEntity() {
       this.$store.dispatch("addEntity");
     },
-    sendTables() {
-      EventBus.$emit("emitTables", 1);
-    },
     createTable() {
-      EventBus.$emit("emitTable", 1);
+      this.$store.dispatch("sendTables");
     }
   },
   created() {

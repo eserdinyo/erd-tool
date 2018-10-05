@@ -118,10 +118,6 @@ export default {
   },
   created() {
     this.getTables();
-
-    EventBus.$on("emitTable", table => {
-      this.createTable();
-    });
   },
   mounted() {
     EventBus.$emit("hideBtn", 1);
