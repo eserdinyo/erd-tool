@@ -1,4 +1,6 @@
-import httpTable from '../../utils/axios-config'
+import $ from "jquery";
+
+let data = "CREATE TABLE MyFriends ( id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,firstname VARCHAR(30) NOT NULL)"
 
 const state = {
 
@@ -13,14 +15,15 @@ const mutations = {
 }
 
 const actions = {
-  async sendTables() {
-    try {
-      let res = httpTable.post('/tables', "fuck me")
-      console.log(res);
 
-    } catch (e) {
-      console.log(e.response) // undefined
-    }
+  sendTables() {
+    $.post(
+      "http://localhost/main.php",
+      {
+        data: data
+      },
+      function (result) { }
+    );
   }
 }
 

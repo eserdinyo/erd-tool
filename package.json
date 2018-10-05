@@ -12,15 +12,9 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.18.0",
-    "body-parser": "^1.18.3",
-    "express": "^4.16.3",
     "firebase": "^5.0.3",
     "jquery": "^3.3.1",
     "jsplumb": "^2.6.9",
-    "lodash": "^4.17.11",
-    "mysql2": "^1.6.1",
-    "sequelize": "^4.39.0",
     "vue": "^2.5.2",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1"
