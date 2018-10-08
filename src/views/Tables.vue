@@ -14,36 +14,47 @@ import AppTable from "@/components/Table";
 
 import { EventBus } from "@/main";
 import { ref, refConn } from "@/firebase/";
+import { mapGetters } from "vuex";
 
-import axios from "axios";
 import $ from "jquery";
 
 export default {
   data() {
     return {
-      tables: [],
       show: true
     };
   },
   methods: {
-    getTables() {
-      ref.on("value", snap => {
-        const data = snap.val();
-
-        const tables = [];
-        for (let key in data) {
-          const table = data[key];
-          table.id = key;
-          tables.push(table);
-        }
-
-        this.tables = tables;
-      });
+    foreignKey(str) {
+      if (str)
+        return (
+          str
+            .trim()
+            .toLowerCase()
+            .replace(" ", "_") + "_id"
+        );
+    },
+    deleteSpace(str) {
+      if (str)
+        return str
+          .trim()
+          .toLowerCase()
+          .replace(" ", "_");
+    },
+    forTable(str) {
+      if (str) return str.trim().toLowerCase() + "s";
+    },
+    findObjectSize(obj) {
+      let size = 0;
+      for (let i in obj) {
+        size++;
+      }
+      return size;
     },
     createTable() {
-      this.tables.sort((a, b) => {
+      /* this.tables.sort((a, b) => {
         return a.multi - b.multi;
-      });
+      }); */
 
       for (let i in this.tables) {
         if (this.tables[i].multi == true) {
@@ -66,7 +77,6 @@ export default {
 
             if (this.tables[i].entityItems[j].itemKey == "mandatory") {
               isNull = "NOT NULL";
-              console.log(isNull);
             } else {
               isNull = "";
             }
@@ -107,17 +117,21 @@ export default {
           function(result) {}
         );
       }
-
-      alert("Veri tabanına aktarıldı");
+      alert("DB is ready!!!");
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters(["tables"])
+  },
   components: {
     AppSidebar,
     AppTable
   },
   created() {
-    this.getTables();
+    this.$store.dispatch("getTables");
+    EventBus.$on("createTable", id => {
+      this.createTable();
+    });
   },
   mounted() {
     EventBus.$emit("hideBtn", 1);

@@ -7,8 +7,6 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "server-start": "node server/server.js",
-    "server": "nodemon --exec \"npm run server-start\"",
     "build": "node build/build.js"
   },
   "dependencies": {

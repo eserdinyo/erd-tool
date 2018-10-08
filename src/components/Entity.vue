@@ -85,7 +85,6 @@ export default {
 
 
 <style lang="scss" scoped>
-// Tablo
 .tablo {
   select {
     background: transparent;

@@ -1,5 +1,6 @@
 <template lang="pug">
     .cover
+      app-toolbar
       #main.main
         app-entity(v-for='entity in entities', 
           :key="entity.id"
@@ -18,18 +19,18 @@ import { mapGetters } from "vuex";
 
 import AppSidebar from "@/components/global/Sidebar";
 import AppEntity from "@/components/Entity";
+import AppToolbar from "@/components/global/Toolbar";
 
-var instance;
 export default {
   data() {
     return {
-      dash: "2 1",
-      stop: false
+      dash: "2 1"
     };
   },
   components: {
     AppEntity,
-    AppSidebar
+    AppSidebar,
+    AppToolbar
   },
   computed: {
     ...mapGetters([
@@ -44,7 +45,7 @@ export default {
   },
   methods: {
     // JSPLUMB //
-    getflow(stop = false) {
+    getflow() {
       var instance = jsPlumb.getInstance({
         /*paintStyle: {
           strokeWidth: 2,
@@ -60,7 +61,7 @@ export default {
         ConnectionOverlays: this.connType,
         Container: "main"
       });
-      if (stop) return;
+
       // Set position of Entities
       for (let i in this.entities) {
         $(`#${this.entities[i].ID}`).css({
@@ -197,9 +198,7 @@ export default {
     }
   },
   watch: {
-    connType() {
-      this.getflow(true);
-    }
+    connType() {}
   },
 
   created() {
@@ -211,15 +210,15 @@ export default {
     EventBus.$on("emitDashStyle", type => {
       this.changeDashStyle(type);
     });
+
+    setTimeout(() => {
+      this.getflow();
+    }, 2000);
   },
   updated() {
     // this.makeDraggable();
   },
-  mounted() {
-    setTimeout(() => {
-      this.getflow();
-    }, 2000);
-  }
+  mounted() {}
 };
 </script>
 

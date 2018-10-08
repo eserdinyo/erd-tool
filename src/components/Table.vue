@@ -3,7 +3,7 @@
     table#myTable
         thead
           th(colspan='4')
-              p#tableName {{makeUpper(table.entityName)}}
+              p#tableName {{table.entityName.toUpperCase() + 'S'}}
         tbody
           tr.tablo__header
             td Anahtar Tipi
@@ -46,6 +46,12 @@ import { ref } from "@/firebase/";
 
 export default {
   props: ["table"],
+  computed: {
+    makeUpper(str) {
+      if (str) return str.toUpperCase() + "S";
+    }
+  },
+
   methods: {
     foreignKey(str) {
       if (str)
@@ -55,16 +61,6 @@ export default {
             .toLowerCase()
             .replace(" ", "_") + "_id"
         );
-    },
-    forTable(str) {
-      if (str) return str.trim().toLowerCase() + "s";
-    },
-    findObjectSize(obj) {
-      let size = 0;
-      for (let i in obj) {
-        size++;
-      }
-      return size;
     },
     objSize(obj) {
       let size = 0;
@@ -79,9 +75,6 @@ export default {
         .child("entityItems")
         .child(key)
         .update({ dataType: value });
-    },
-    makeUpper(str) {
-      if (str) return str.toUpperCase() + "S";
     },
     deleteSpace(str) {
       if (str)

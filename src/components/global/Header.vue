@@ -1,7 +1,7 @@
 <template lang="pug">
   .header   
     .top
-        a.logo(href="#") Database ER Diagram
+        router-link.logo(to="/") Database ER Diagram
         a(href="#", @click="activeProfil = !activeProfil") Muhammet ESER
         .profil(:class="{activeProfil : activeProfil}", )
           a(href="#") Setting
@@ -22,42 +22,7 @@
         li Help
 
       .bottom__selects
-        .bottom__selects--1
-          .dropdownbox.dropdownbox__1.sekiller
-            img.dropdownSelected(src='../../assets/img/line_long.png', alt='icon')
-          ul#Sekiller.menu.menu__1
-              li#1(@click="dashStyle(1)")
-                img(src='../../assets/img/line_long.png', alt='icon')
-              li#2(@click="dashStyle(2)")
-                img(src='../../assets/img/dashed.png', alt='icon')
-              li#3(@click="dashStyle(3)")
-                img(src='../../assets/img/left_dashed.png', alt='icon')
-              li#4(@click="dashStyle(4)")
-                img(src='../../assets/img/right_dashed.png', alt='icon')
-        .bottom__selects--2
-          .dropdownbox.dropdownbox__2.sekiller
-            img.dropdownSelected(src='../../assets/img/line.png', alt='icon')
-          ul#Sekiller.menu
-              li#1(@click="setLeftEndpoint(1)")
-                img(src='../../assets/img/line.png', alt='icon')
-              li#2(@click="setLeftEndpoint(2)")
-                img(src='../../assets/img/line_left.png', alt='icon')
-              li#3(@click="setLeftEndpoint(3)")
-                img(src='../../assets/img/arrow_left.png', alt='icon')
-              li#4(@click="setLeftEndpoint(4)")
-                img(src='../../assets/img/arrow_break_left.png', alt='icon')
-        .bottom__selects--3
-          .dropdownbox.dropdownbox__3.sekiller
-            img.dropdownSelected(src='../../assets/img/line.png', alt='icon')
-          ul#Sekiller.menu
-              li#1(@click="setRightEndpoint(1)")
-                img(src='../../assets/img/line.png', alt='icon')
-              li#2(@click="setRightEndpoint(2)")
-                img(src='../../assets/img/line_right.png', alt='icon')
-              li#3(@click="setRightEndpoint(3)")
-                img(src='../../assets/img/arrow_right.png', alt='icon')
-              li#4(@click="setRightEndpoint(4)")
-                img(src='../../assets/img/arrow_break_right.png', alt='icon')
+      
       
         .buttons
           button.addBtn(@click='addItem') +
@@ -67,7 +32,6 @@
 </template>
 
 <script>
-import { EventBus } from "@/main";
 import $ from "jquery";
 
 export default {
@@ -88,66 +52,9 @@ export default {
     },
     subItem() {
       this.$store.dispatch("subItem");
-    },
-    makeSelect() {
-      $(".sekiller").on("click", function() {
-        $(this)
-          .next(".menu")
-          .toggleClass("showMenu");
-        $(".menu > li").click(function() {
-          var imgSource = $(this)
-            .children("img")
-            .attr("src");
-          var id = $(this)
-            .children("img")
-            .attr("id");
-
-          if (imgSource.length > 0) {
-            $(this)
-              .parent("ul")
-              .prev(".dropdownbox")
-              .children("img")
-              .attr("src", imgSource);
-            $(this)
-              .parent("ul")
-              .prev(".dropdownbox")
-              .children("img")
-              .attr("data-id", id);
-            $(this)
-              .parent("ul")
-              .prev(".dropdownbox")
-              .children("img")
-              .css("display", "block");
-            $(this)
-              .parent("ul")
-              .removeClass("showMenu");
-            $(".dropdownText").hide();
-          } else {
-            $(".dropdownText").show();
-            $(this)
-              .parent("ul")
-              .prev(".dropdownbox")
-              .children("img")
-              .css("display", "none");
-          }
-        });
-      });
-    },
-    setLeftEndpoint(key) {
-      this.$store.commit("setLeftEndpoint", key);
-      this.$store.commit("setConnectionType");
-    },
-    setRightEndpoint(key) {
-      this.$store.commit("setRightEndpoint", key);
-      this.$store.commit("setConnectionType");
-    },
-    dashStyle(type) {
-      EventBus.$emit("emitDashStyle", type);
     }
   },
-  mounted() {
-    this.makeSelect();
-  }
+  mounted() {}
 };
 </script>
 

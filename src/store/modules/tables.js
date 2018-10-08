@@ -1,13 +1,11 @@
-import $ from "jquery";
-
-let data = "CREATE TABLE MyFriends ( id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY,firstname VARCHAR(30) NOT NULL)"
+import { ref } from "@/firebase/";
 
 const state = {
-
+  tables: [],
 }
 
 const getters = {
-
+  tables: state => state.tables,
 }
 
 const mutations = {
@@ -16,14 +14,19 @@ const mutations = {
 
 const actions = {
 
-  sendTables() {
-    $.post(
-      "http://localhost/main.php",
-      {
-        data: data
-      },
-      function (result) { }
-    );
+  getTables({ state }) {
+    ref.on("value", snap => {
+      const data = snap.val();
+
+      const tables = [];
+      for (let key in data) {
+        const table = data[key];
+        table.id = key;
+        tables.push(table);
+      }
+
+      state.tables = tables;
+    });
   }
 }
 
