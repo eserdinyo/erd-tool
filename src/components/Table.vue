@@ -38,7 +38,7 @@
               td.field
                 p INT
               td.field
-                p {{foreignKey(table.fk)}}
+                p {{table.fk}}
 </template>
 
 <script>
@@ -53,15 +53,6 @@ export default {
   },
 
   methods: {
-    foreignKey(str) {
-      if (str)
-        return (
-          str
-            .trim()
-            .toLowerCase()
-            .replace(" ", "_") + "_id"
-        );
-    },
     objSize(obj) {
       let size = 0;
       for (let i in obj) {

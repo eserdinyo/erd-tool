@@ -19,14 +19,17 @@
 
 <script>
 import { EventBus } from "@/main";
+import { refConnType } from "@/firebase";
 
 export default {
   data() {
     return {};
   },
   methods: {
-    sendConnType(type) {
-      this.$store.commit("setConnectionType", type);
+    async sendConnType(type) {
+      await refConnType.update({ connType: type });
+      await this.$store.commit("setConnectionType");
+      await location.reload();
     },
     addEntity() {
       this.$store.dispatch("addEntity");

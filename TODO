@@ -1,0 +1,13 @@
+entities:
+    ❍ İki Tarafta zorunlu ilişkiler  
+     ❍ 1:1 ilişkiyi ekle
+     ❍ 1:M ilişkiyi ekle
+     ❍ M:M ilişki ekle
+    ❍ İki taraf seçimli ilişkiler
+     ❍ 1:1 ilişkiyi ekle
+     ❍ 1:M ilişkiyi ekle
+     ❍ M:M ilişki ekle
+    ❍ Bir taraf seçimli bir taraf zorunlu ilişkiler
+     ❍ 1:1 ilişkiyi ekle
+     ❍ 1:M ilişkiyi ekle
+     ❍ M:M ilişki ekle

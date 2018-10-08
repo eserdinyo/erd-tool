@@ -1,4 +1,4 @@
-import { refConn } from "@/firebase";
+import { refConn, refConnType } from "@/firebase";
 import connectionTypes from '../data/connectionTypes';
 
 const state = {
@@ -17,9 +17,8 @@ const mutations = {
     initConnectionTypes(state) {
         state.connTypes = Object.values(connectionTypes);
     },
-    setConnectionType(state, payload) {
-
-        switch (payload) {
+    setConnectionType(state, paylaod) {
+        switch (paylaod) {
             case 1:
                 state.connType = state.connTypes[0];
                 break;
@@ -54,6 +53,14 @@ const actions = {
             }
             state.connections = connections;
         });
+    },
+
+    async getConnType({ state, commit }) {
+        await refConnType.on('value', snap => {
+            const data = snap.val();
+            commit('setConnectionType', data.connType)
+        });
+
     }
 }
 

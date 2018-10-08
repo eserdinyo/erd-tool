@@ -37,8 +37,6 @@ export default {
       "entities",
       "connections",
       "activeEntity",
-      "leftEndpoint",
-      "rightEndpoint",
       "connTypes",
       "connType"
     ])
@@ -90,19 +88,19 @@ export default {
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
 
-        if (conID == 8 || conID == 0) {
-          var key = "";
+        if (conID == 2) {
+          let key = "";
 
           this.entities.forEach(entity => {
-            if (entity.ID == s) {
+            if (entity.ID == t) {
               key = entity.id;
               ref.child(key).update({ multi: true });
             }
           });
 
           this.entities.forEach(entity => {
-            if (entity.ID == t) {
-              ref.child(key).update({ fk: entity.entityName });
+            if (entity.ID == s) {
+              ref.child(key).update({ fk: `${entity.entityName}_id` });
             }
           });
         }
@@ -198,18 +196,14 @@ export default {
     }
   },
   watch: {
-    connType() {
-      console.log('watch');
-      
-      this.getflow();
-    }
+    connType() {}
   },
 
   created() {
     this.$store.commit("initConnectionTypes");
-    this.$store.commit("setConnectionType");
     this.$store.dispatch("initEntities");
     this.$store.dispatch("initConnections");
+    this.$store.dispatch("getConnType");
 
     EventBus.$on("emitDashStyle", type => {
       this.changeDashStyle(type);
