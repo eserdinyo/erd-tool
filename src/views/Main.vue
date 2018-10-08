@@ -198,7 +198,11 @@ export default {
     }
   },
   watch: {
-    connType() {}
+    connType() {
+      console.log('watch');
+      
+      this.getflow();
+    }
   },
 
   created() {
