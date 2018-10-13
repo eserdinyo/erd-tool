@@ -1,4 +1,5 @@
-import { ref } from "@/firebase/";
+import { ref } from "@/firebase/"
+import httpTables from '../../utils/http-tables'
 
 const state = {
   tables: [],
@@ -27,6 +28,12 @@ const actions = {
 
       state.tables = tables;
     });
+  },
+  sendDatabase({ state }) {
+    httpTables.post('/tables', state.tables)
+      .catch(err => {
+        console.log(err);
+      })
   }
 }
 

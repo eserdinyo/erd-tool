@@ -29,11 +29,11 @@ export default {
     async sendConnType(type) {
       await refConnType.update({ connType: type });
       await this.$store.commit("setConnectionType");
-      await location.reload();
+      location.reload();
     },
     addEntity() {
       this.$store.dispatch("addEntity");
-      this.activeBtn = true;
+      location.reload();
     }
   },
   created() {}

@@ -13,7 +13,6 @@ import AppSidebar from "@/components/global/Sidebar";
 import AppTable from "@/components/Table";
 
 import { EventBus } from "@/main";
-import { ref, refConn } from "@/firebase/";
 import { mapGetters } from "vuex";
 
 import $ from "jquery";
@@ -25,24 +24,11 @@ export default {
     };
   },
   methods: {
-    foreignKey(str) {
-      if (str)
-        return (
-          str
-            .trim()
-            .toLowerCase()
-            .replace(" ", "_") + "_id"
-        );
-    },
-    deleteSpace(str) {
-      if (str)
-        return str
-          .trim()
-          .toLowerCase()
-          .replace(" ", "_");
-    },
     forTable(str) {
-      if (str) return str.trim().toLowerCase() + "s";
+      return str.trim().toLowerCase() + "s";
+    },
+    forRefrence(str) {
+      return str.substr(0, str.length - 3).toLowerCase() + "s";
     },
     findObjectSize(obj) {
       let size = 0;
@@ -50,21 +36,19 @@ export default {
         size++;
       }
       return size;
-    },
-    createTable() {
-      /* this.tables.sort((a, b) => {
+    }
+    /* createTable() {
+      // multi= there is fk on it
+      // if there is 'multi' create first
+      this.tables.sort((a, b) => {
         return a.multi - b.multi;
-      }); */
+      });
 
       for (let i in this.tables) {
         if (this.tables[i].multi == true) {
-          var data2 = `, ${this.foreignKey(
+          var data2 = `,${this.tables[i].fk} int, FOREIGN KEY (${
             this.tables[i].fk
-          )} int, FOREIGN KEY (${this.foreignKey(
-            this.tables[i].fk
-          )}) REFERENCES ${this.forTable(this.tables[i].fk)} (${this.foreignKey(
-            this.tables[i].fk
-          )})`;
+          }) REFERENCES ${this.forRefrence(this.tables[i].fk)}(id)`;
         } else {
           data2 = "";
         }
@@ -80,17 +64,17 @@ export default {
             } else {
               isNull = "";
             }
-            data += `${this.deleteSpace(
-              this.tables[i].entityItems[j].itemName
-            )} ${this.tables[i].entityItems[j].dataType} ${isNull} ${data2}) `;
+            data += `${this.tables[i].entityItems[j].itemName} ${
+              this.tables[i].entityItems[j].dataType
+            } ${isNull} ${data2}) `;
             data2 = "";
           } else {
             if (j == 0) {
-              data += `${this.deleteSpace(
+              data += `${
                 this.tables[i].entityItems[j].itemName
-              )} int , PRIMARY KEY (${this.deleteSpace(
+              } int , PRIMARY KEY (${
                 this.tables[i].entityItems[j].itemName
-              )}), `;
+              }), `;
             } else {
               let isNull = "";
 
@@ -101,9 +85,9 @@ export default {
                 isNull = "";
               }
 
-              data += `${this.deleteSpace(
-                this.tables[i].entityItems[j].itemName
-              )} ${this.tables[i].entityItems[j].dataType} ${isNull},`;
+              data += `${this.tables[i].entityItems[j].itemName} ${
+                this.tables[i].entityItems[j].dataType
+              } ${isNull},`;
             }
           }
           counter++;
@@ -118,7 +102,7 @@ export default {
         );
       }
       alert("DB is ready!!!");
-    }
+    } */
   },
   computed: {
     ...mapGetters(["tables"])
@@ -129,8 +113,9 @@ export default {
   },
   created() {
     this.$store.dispatch("getTables");
+
     EventBus.$on("createTable", id => {
-      this.createTable();
+      this.$store.dispatch("sendDatabase");
     });
   },
   mounted() {

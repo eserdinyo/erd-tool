@@ -1,5 +1,4 @@
 import { ref } from "@/firebase";
-
 /* STATE */
 const state = {
   entities: [],

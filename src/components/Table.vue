@@ -16,7 +16,7 @@
               td.field
                 p INT
               td.field
-                p {{deleteSpace(item.itemName)}}
+                p {{item.itemName}}
             tr(v-else)
               td.field
                 select#element()
@@ -26,19 +26,12 @@
                 select#element(v-model="item.dataType",
                               @change="changeDataType(key,table,$event.target.value)")
                   option(disabled, value='') Veri Tipi
-                  option(title="INT", value='int') INT
-                  option(title="VARCHAR", value='varchar(255)') VARCHAR
+                  option(title="INT", value='INTEGER') INT
+                  option(title="CHAR", value='CHAR') VARCHAR
                   option(title="TEXT", value='TEXT') TEXT
                   option(title="DATE", value='DATETIME') DATE
               td.field
-                p {{deleteSpace(item.itemName)}}
-            tr(v-if="index == objSize(table.entityItems) && table.multi")
-              td.field
-                p FK
-              td.field
-                p INT
-              td.field
-                p {{table.fk}}
+                p {{item.itemName}}
 </template>
 
 <script>
@@ -46,33 +39,13 @@ import { ref } from "@/firebase/";
 
 export default {
   props: ["table"],
-  computed: {
-    makeUpper(str) {
-      if (str) return str.toUpperCase() + "S";
-    }
-  },
-
   methods: {
-    objSize(obj) {
-      let size = 0;
-      for (let i in obj) {
-        size++;
-      }
-      return size - 1;
-    },
     changeDataType(key, table, value) {
       ref
         .child(table.id)
         .child("entityItems")
         .child(key)
-        .update({ dataType: value });
-    },
-    deleteSpace(str) {
-      if (str)
-        return str
-          .trim()
-          .toLowerCase()
-          .replace(" ", "_");
+        .update({ dataType: value.toUpperCase() });
     }
   }
 };
