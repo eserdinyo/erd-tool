@@ -59,14 +59,25 @@ const actions = {
   delEntity({ state }) {
     ref.child(state.activeEntity).remove();
   },
-  addEntity() {
+  addEntity({ commit, state }, pos) {
+    let posX, posY, multi;
+    if (pos) {
+      posX = pos.posX;
+      posY = pos.posY;
+      multi = 1;
+
+    } else {
+      posX = 20;
+      posY = 80;
+      multi = 0;
+    }
     ref.push({
       ID: jsPlumbUtil.uuid(),
       entityName: "",
-      multi: false,
-      fk: "",
-      entityX: 20,
-      entityY: 80,
+      multi: multi,
+      entityX: posX,
+      entityY: posY,
+
       entityItems: [
         {
           itemKey: "",
@@ -77,18 +88,21 @@ const actions = {
     });
   },
   initEntities({ state }) {
-    ref.on("value", snap => {
-      const data = snap.val();
 
-      const entities = [];
-      for (let key in data) {
-        const entity = data[key];
-        entity.id = key;
-        entities.push(entity);
-      }
+    return new Promise((resolve, reject) => {
+      ref.on("value", snap => {
+        const data = snap.val();
+        const entities = [];
 
-      state.entities = entities;
-    });
+        for (let key in data) {
+          const entity = data[key];
+          entity.id = key;
+          entities.push(entity);
+        }
+        state.entities = entities;
+        resolve('OK')
+      });
+    })
   }
 }
 

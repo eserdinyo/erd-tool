@@ -24,7 +24,7 @@
       .bottom__selects
       
       
-        .buttons
+        .buttons(v-if="show")
           button.addBtn(@click='addItem') +
           button.subBtn(:disabled='firstItemKey == 0', @click='subItem') -
 
@@ -35,10 +35,12 @@
 import $ from "jquery";
 
 export default {
+  name: "Header",
   data() {
     return {
       isActive: true,
-      activeProfil: false
+      activeProfil: false,
+      show: true
     };
   },
   computed: {
@@ -54,7 +56,15 @@ export default {
       this.$store.dispatch("subItem");
     }
   },
-  mounted() {}
+  watch: {
+    $route() {
+      if (this.$route.name == "tables") {
+        this.show = false;
+      } else {
+        this.show = true;
+      }
+    }
+  }
 };
 </script>
 

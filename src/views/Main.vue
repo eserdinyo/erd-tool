@@ -14,7 +14,7 @@ import $ from "jquery";
 
 import { jsPlumb } from "jsplumb";
 import { EventBus } from "@/main";
-import { ref, refConn } from "@/firebase/";
+import { ref, refConn, refConnType } from "@/firebase/";
 import { mapGetters } from "vuex";
 
 import AppSidebar from "@/components/global/Sidebar";
@@ -60,7 +60,9 @@ export default {
         Container: "main"
       });
 
-      // Set position of Entities
+      // ********************* //
+      //   SET ENTITY POSITION  //
+      // ********************* //
       for (let i in this.entities) {
         $(`#${this.entities[i].ID}`).css({
           left: this.entities[i].entityX,
@@ -68,6 +70,9 @@ export default {
         });
       }
 
+      // ********************* //
+      //   REMOVE CONNECTION  //
+      // ********************* //
       instance.bind("dblclick", c => {
         let s = c.endpoints[0].elementId;
         let t = c.endpoints[1].elementId;
@@ -81,6 +86,9 @@ export default {
         instance.deleteConnection(c);
       });
 
+      // ********************* //
+      // CONNECTION DRAG STOP  //
+      // ********************* //
       instance.bind("connectionDragStop", ci => {
         let s = ci.sourceId,
           t = ci.targetId;
@@ -88,33 +96,75 @@ export default {
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
 
-        if (conID == 2) {
+        // ************** //
+        //     1:M       //
+        // ************** //
+        if (conID == 4) {
           let key = "";
 
           this.entities.forEach(entity => {
             if (entity.ID == t) {
               key = entity.id;
-              ref.child(key).update({ multi: true });
+              ref.child(key).update({ multi: 1 });
             }
+          });
+
+          if (!(t.length < 20)) {
+            refConn.push({
+              sourceId: s,
+              targetId: t,
+              overlay: this.connType
+            });
+          }
+        }
+
+        // ************** //
+        //     M:M       //
+        // ************** //
+        if (conID == 5) {
+          let sourceX, targetX, sourceY, posX, posY, newEntityTarget;
+          this.entities.forEach(entity => {
+            if (entity.ID == s) {
+              sourceX = entity.entityX;
+              sourceY = entity.entityY;
+            }
+            if (entity.ID == t) targetX = entity.entityX;
+
+            if (entity.multi == 1) {
+              newEntityTarget = entity.ID;
+            }
+          });
+
+          posX = (targetX - sourceX) / 2 + sourceX - 10;
+          posY = sourceY + 210;
+
+          this.$store.dispatch("addEntity", {
+            posX,
+            posY
           });
 
           this.entities.forEach(entity => {
-            if (entity.ID == s) {
-              ref.child(key).update({ fk: `${entity.entityName}_id` });
-            }
+            if (entity.multi == 1) newEntityTarget = entity.ID;
           });
-        }
-
-        if (!(t.length < 20)) {
+          refConnType.update({ connType: 4 });
+          this.$store.commit("setConnectionType");
           refConn.push({
             sourceId: s,
-            targetId: t,
+            targetId: newEntityTarget,
             overlay: this.connType
           });
+          refConn.push({
+            sourceId: t,
+            targetId: newEntityTarget,
+            overlay: this.connType
+          });
+          location.reload();
         }
       });
 
-      // MAKE DRAGGABLE
+      // ****************************  //
+      //    UPDATE ENTITY POSITION    //
+      // *************************** //
       for (let i in this.entities) {
         instance.draggable(this.entities[i].ID, {
           grid: [10, 10],
@@ -126,7 +176,9 @@ export default {
           }
         });
 
-        // MAKE SOURCE
+        // *********************   //
+        //    MAKE SOURCE         //
+        // ********************* //
         instance.makeSource(this.entities[i].ID, {
           filter: ".ep",
           anchor: "Continuous",
@@ -147,14 +199,18 @@ export default {
           maxConnections: 2
         });
 
-        // MAKE TARGET
+        // *********************   //
+        //       MAKE TARGET      //
+        // ********************* //
         instance.makeTarget(this.entities[i].ID, {
           dropOptions: { hoverClass: "dragHover" },
           anchor: "Continuous"
         });
       }
 
-      // SET CONNECTIONS
+      // *********************   //
+      // SET INIT CONNECTION    //
+      // ********************* //
       for (let i in this.connections) {
         instance.connect({
           source: this.connections[i].sourceId,
@@ -193,30 +249,26 @@ export default {
         outlineWidth: 4,
         dashstyle: this.dash
       };
+    },
+    init() {
+      this.$store.commit("initConnectionTypes");
+      this.$store.dispatch("initEntities").then(() => {
+        this.$store.dispatch("initConnections").then(() => {
+          this.getflow();
+        });
+      });
+      this.$store.dispatch("getConnType");
     }
   },
-  watch: {
-    connType() {}
-  },
+  watch: {},
 
   created() {
-    this.$store.commit("initConnectionTypes");
-    this.$store.dispatch("initEntities");
-    this.$store.dispatch("initConnections");
-    this.$store.dispatch("getConnType");
+    this.init();
 
-    EventBus.$on("emitDashStyle", type => {
+    /* EventBus.$on("emitDashStyle", type => {
       this.changeDashStyle(type);
-    });
-
-    setTimeout(() => {
-      this.getflow();
-    }, 2000);
-  },
-  updated() {
-    // this.makeDraggable();
-  },
-  mounted() {}
+    }); */
+  }
 };
 </script>
 

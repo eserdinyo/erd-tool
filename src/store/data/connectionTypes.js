@@ -31,7 +31,7 @@ export default {
       "Arrow",
       {
         location: 1,
-        id: "2",
+        id: "4",
         length: 10,
         foldback: 0.3,
         direction: -1
@@ -220,7 +220,7 @@ export default {
       "Arrow",
       {
         location: 0,
-        id: "10",
+        id: "5",
         length: 10,
         foldback: 0.3,
         direction: 1

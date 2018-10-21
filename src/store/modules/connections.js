@@ -5,6 +5,7 @@ const state = {
     connType: "",
     connections: [],
     connTypes: [],
+    globalConnType: "",
 }
 
 const getters = {
@@ -18,6 +19,8 @@ const mutations = {
         state.connTypes = Object.values(connectionTypes);
     },
     setConnectionType(state, paylaod) {
+
+        state.globalConnType = paylaod;
         switch (paylaod) {
             case 1:
                 state.connType = state.connTypes[0];
@@ -42,17 +45,20 @@ const mutations = {
 }
 const actions = {
     initConnections({ state }) {
-        refConn.on("value", snap => {
-            const data = snap.val();
+        return new Promise((resolve, reject) => {
+            refConn.on("value", snap => {
+                const data = snap.val();
 
-            const connections = [];
-            for (let key in data) {
-                const conn = data[key];
-                conn.id = key;
-                connections.push(conn);
-            }
-            state.connections = connections;
-        });
+                const connections = [];
+                for (let key in data) {
+                    const conn = data[key];
+                    conn.id = key;
+                    connections.push(conn);
+                }
+                state.connections = connections;
+                resolve('OK')
+            });
+        })
     },
 
     async getConnType({ state, commit }) {
@@ -60,7 +66,6 @@ const actions = {
             const data = snap.val();
             commit('setConnectionType', data.connType)
         });
-
     }
 }
 

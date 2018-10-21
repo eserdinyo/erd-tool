@@ -10,14 +10,7 @@
             td Veri Tipi
             td Sütun İsmi
           template(v-for="(item,key,index) in table.entityItems")
-            tr(v-if="key == 0")
-              td.field
-                  p PK
-              td.field
-                p INT
-              td.field
-                p {{item.itemName}}
-            tr(v-else)
+            tr()
               td.field
                 select#element()
                   option(value='', selected) None
@@ -38,6 +31,7 @@
 import { ref } from "@/firebase/";
 
 export default {
+  name: "Table",
   props: ["table"],
   methods: {
     changeDataType(key, table, value) {

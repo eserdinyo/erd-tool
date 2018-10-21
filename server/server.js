@@ -2,11 +2,10 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const cors = require('cors')
 
+const { getEntityDataType } = require('./utils/');
+
 const { sequelize } = require('./config/sequelize')
-const Sequelize = require('sequelize')
 
-
-const { Product } = require('./models/product');
 
 const app = express();
 app.use(cors())
@@ -15,18 +14,11 @@ app.use(bodyParser.json());
 app.post('/tables', (req, res) => {
   const tables = req.body;
 
-  function getEntityDataType(type) {
-    if (type == 'CHAR')
-      return Sequelize.CHAR
-    else if (type == 'INTEGER')
-      return Sequelize.INTEGER
-    else if (type == 'TEXT')
-      return Sequelize.TEXT
-  }
+  tables.sort((a, b) => a.multi - b.multi);
 
+  console.log(JSON.stringify(tables, undefined, 2));
 
   tables.forEach(table => {
-
 
     const columns = {}
 
@@ -38,8 +30,6 @@ app.post('/tables', (req, res) => {
 
   });
 
-
-
   tables[1].entityName.belongsTo(tables[0].entityName);
 
 
@@ -47,20 +37,8 @@ app.post('/tables', (req, res) => {
     table.entityName.sync({ force: true })
   })
 
-  /* const Player = sequelize.define('player', { name: Sequelize.STRING }, { timestamps: false });
-  const Team = sequelize.define('team', { name: Sequelize.STRING }, { timestamps: false });
-
-  Player.belongsTo(Team);
-
-  Team.sync({ force: true });
-  Player.sync({ force: true }); */
+  res.sendStatus(200)
 });
-
-app.get('/products', (req, res) => {
-  Product.findAll().then(products => {
-    res.send(products)
-  })
-})
 
 
 app.listen(3000, () => {

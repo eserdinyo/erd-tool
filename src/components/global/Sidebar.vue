@@ -1,15 +1,13 @@
 <template lang="pug">
   .sidebar
     h4 Entity Relationship
-    button.aktarBtn(@click="createTable",v-if="!show") Veri Tabanına Aktar
+    button.aktarBtn(@click="createTable", v-if="!show") Veri Tabanına Aktar
     br
     hr(v-if="show")
     router-link.aktarBtn(to='/tables', tag="button", v-if="show") Dönüştür
 </template>
 
 <script>
-import { EventBus } from "@/main";
-
 export default {
   data() {
     return {
@@ -17,17 +15,14 @@ export default {
     };
   },
   methods: {
-    changeSide() {
-      this.show = !this.show;
-    },
     createTable() {
-      EventBus.$emit("createTable", 1);
+      this.$store.dispatch("sendDatabase");
     }
   },
   created() {
-    EventBus.$on("hideBtn", a => {
-      this.changeSide();
-    });
+    if (this.$route.name == "tables") {
+      this.show = false;
+    }
   }
 };
 </script>

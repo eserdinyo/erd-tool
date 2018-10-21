@@ -16,7 +16,6 @@
               select#element(v-model="item.itemKey", 
                               @change="changeItem(key,entity,$event.target.value)")
                 option(disabled, value='') ID
-                option(title="Unique", value='unique') #
                 option(title="Mandatory", value='mandatory') *
                 option(title="Optional", value='optional') o
           td

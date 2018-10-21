@@ -1,5 +1,5 @@
 import { ref } from "@/firebase/"
-import httpTables from '../../utils/http-tables'
+import http from '@/utils/http-tables'
 
 const state = {
   tables: [],
@@ -29,11 +29,12 @@ const actions = {
       state.tables = tables;
     });
   },
-  sendDatabase({ state }) {
-    httpTables.post('/tables', state.tables)
-      .catch(err => {
-        console.log(err);
-      })
+  async sendDatabase({ state }) {
+
+    const res = await http.post('/tables', state.tables);
+    if (res.data == "OK") {
+      alert("Tablolar veritabanına aktarıldı!")
+    }
   }
 }
 
