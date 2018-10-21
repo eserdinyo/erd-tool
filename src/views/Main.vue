@@ -119,7 +119,7 @@ export default {
         }
 
         // ************** //
-        //     M:M       //
+        //     M TO M       //
         // ************** //
         if (conID == 5) {
           let sourceX, targetX, sourceY, posX, posY, newEntityTarget;
