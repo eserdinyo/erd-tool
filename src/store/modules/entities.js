@@ -59,32 +59,46 @@ const actions = {
   delEntity({ state }) {
     ref.child(state.activeEntity).remove();
   },
-  addEntity({ commit, state }, pos) {
-    let posX, posY, multi;
-    if (pos) {
-      posX = pos.posX;
-      posY = pos.posY;
-      multi = 1;
+  addEntity({ commit, state }, entity) {
+    let posX, posY, multi, entityName, entityItems;
+    if (entity) {
+      posX = entity.posX;
+      posY = entity.posY;
+      multi = 2;
+      entityName = entity.entityName;
+      entityItems = [
+        {
+          itemKey: "unique",
+          itemName: `${entity.sourceName}Id`,
+          dataType: "INTEGER"
+        },
+        {
+          itemKey: "unique",
+          itemName: `${entity.targetName}Id`,
+          dataType: "INTEGER"
+        }
+      ]
 
     } else {
       posX = 20;
       posY = 80;
       multi = 0;
-    }
-    ref.push({
-      ID: jsPlumbUtil.uuid(),
-      entityName: "",
-      multi: multi,
-      entityX: posX,
-      entityY: posY,
-
-      entityItems: [
+      entityName = "";
+      entityItems = [
         {
           itemKey: "",
           itemName: "",
           dataType: "int"
         }
       ]
+    }
+    ref.push({
+      ID: jsPlumbUtil.uuid(),
+      entityName,
+      multi,
+      posX,
+      posY,
+      entityItems,
     });
   },
   initEntities({ state }) {

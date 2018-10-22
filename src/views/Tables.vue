@@ -54,6 +54,7 @@ export default {
   display: flex;
 }
 .main {
+  background: #f5f6fa;
   border: 1px solid rgba(#000, 0.2);
   width: 100%;
   height: 100vh;

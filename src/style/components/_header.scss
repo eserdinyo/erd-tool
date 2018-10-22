@@ -144,6 +144,7 @@ ul.menu li:hover {
   .bottom {
     display: flex;
     align-items: center;
+    user-select: none;
     &__selects {
       position: absolute;
       left: 50%;

@@ -26,7 +26,7 @@
       
         .buttons(v-if="show")
           button.addBtn(@click='addItem') +
-          button.subBtn(:disabled='firstItemKey == 0', @click='subItem') -
+          button.subBtn(@click='subItem') -
 
       
 </template>
@@ -74,6 +74,7 @@ export default {
 
 .buttons {
   margin-left: 20px;
+  user-select: none;
   & > * {
     height: 20px;
     width: 20px;

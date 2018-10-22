@@ -2,28 +2,33 @@
  .tablo.entity(:id="entity.ID")
     table(@mousedown="setActiveEntity(entity.id)" , 
           :class="{ activeEntity : activeEntity == entity.id}")
-      thead
+      thead(v-if="entity.multi==2")
+        th.enityName(colspan='4') {{entity.entityName}}
+      thead(v-else)
         th(colspan='4')
-          input#entityName(type='text', 
+          input#entityName(type='text',
                           placeholder='Varlık İsmi', 
                           :value='entity.entityName',
                           @keyup="sendEntityName(entity,$event.target.value)")
       tbody
         tr.row(v-for='(item,key) in entity.entityItems',
               :key='item.id')
-          td
+          td.enityName(v-if="entity.multi == 2") #
+          td(v-else)
             .field
               select#element(v-model="item.itemKey", 
                               @change="changeItem(key,entity,$event.target.value)")
                 option(disabled, value='') ID
+                option(title="Unique", value='unique') #
                 option(title="Mandatory", value='mandatory') *
                 option(title="Optional", value='optional') o
-          td
+          td.enityName(v-if="entity.multi == 2") {{item.itemName}}
+          td(v-else)
             .field
               input(type='text',:value="item.itemName", 
                     placeholder='İsmi', 
                     @keyup="sendItemName(key,entity, $event.target.value)")
-    .ep
+    .ep(v-if="entity.multi != 2")
 </template>
 
 <script>
@@ -149,6 +154,16 @@ input[type="text"] {
   background-color: rgba(204, 204, 204, 0.2);
   border: 1px solid rgba(170, 170, 170, 0.2);
   cursor: pointer;
+}
+
+.enityName {
+  padding: 5px;
+  font-weight: 400;
+  font-size: 13px;
+}
+
+.row:nth-child(odd) {
+  background: rgba(204, 204, 204, 0.3);
 }
 </style>
 

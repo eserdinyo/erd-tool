@@ -30,7 +30,7 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  background-color: #f2f2f2;
+  background-color: #f5f6fa;
   padding: 30px 10px;
   width: 300px;
   border-right: 1px solid rgba(0, 0, 0, 0.3);

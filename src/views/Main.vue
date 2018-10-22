@@ -65,8 +65,8 @@ export default {
       // ********************* //
       for (let i in this.entities) {
         $(`#${this.entities[i].ID}`).css({
-          left: this.entities[i].entityX,
-          top: this.entities[i].entityY
+          left: this.entities[i].posX,
+          top: this.entities[i].posY
         });
       }
 
@@ -118,33 +118,44 @@ export default {
           }
         }
 
-        // ************** //
-        //     M TO M       //
+        // **************  //
+        //     M TO M     //
         // ************** //
         if (conID == 5) {
-          let sourceX, targetX, sourceY, posX, posY, newEntityTarget;
+          let sourceX,
+            targetX,
+            sourceY,
+            posX,
+            posY,
+            newEntityTarget,
+            entityName,
+            sourceName,
+            targetName;
           this.entities.forEach(entity => {
             if (entity.ID == s) {
-              sourceX = entity.entityX;
-              sourceY = entity.entityY;
+              sourceX = entity.posX;
+              sourceY = entity.posY;
+              sourceName = entity.entityName;
             }
-            if (entity.ID == t) targetX = entity.entityX;
-
-            if (entity.multi == 1) {
-              newEntityTarget = entity.ID;
+            if (entity.ID == t) {
+              targetX = entity.posX;
+              targetName = entity.entityName;
             }
           });
 
           posX = (targetX - sourceX) / 2 + sourceX - 10;
           posY = sourceY + 210;
-
+          entityName = `${sourceName}_${targetName}`;
           this.$store.dispatch("addEntity", {
             posX,
-            posY
+            posY,
+            entityName,
+            sourceName,
+            targetName
           });
 
           this.entities.forEach(entity => {
-            if (entity.multi == 1) newEntityTarget = entity.ID;
+            if (entity.multi == 2) newEntityTarget = entity.ID;
           });
           refConnType.update({ connType: 4 });
           this.$store.commit("setConnectionType");
@@ -171,8 +182,8 @@ export default {
           containment: "main",
 
           stop: e => {
-            ref.child(this.activeEntity).update({ entityX: e.pos[0] });
-            ref.child(this.activeEntity).update({ entityY: e.pos[1] });
+            ref.child(this.activeEntity).update({ posX: e.pos[0] });
+            ref.child(this.activeEntity).update({ posY: e.pos[1] });
           }
         });
 
@@ -230,8 +241,8 @@ export default {
           containment: "main",
 
           stop: e => {
-            ref.child(this.activeEntity).update({ entityX: e.pos[0] });
-            ref.child(this.activeEntity).update({ entityY: e.pos[1] });
+            ref.child(this.activeEntity).update({ posX: e.pos[0] });
+            ref.child(this.activeEntity).update({ posY: e.pos[1] });
           }
         });
       }
@@ -278,7 +289,8 @@ export default {
   display: flex;
 }
 .main {
-  background-image: url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
+  background-image: linear-gradient(#f5f6fa77, #f5f6fa73),
+    url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
   background-repeat: repeat;
   border: 1px solid rgba(#000, 0.2);
   text-align: center;
