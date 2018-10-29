@@ -16,26 +16,6 @@ import { EventBus } from "@/main";
 import { mapGetters } from "vuex";
 
 export default {
-  data() {
-    return {
-      show: true
-    };
-  },
-  methods: {
-    forTable(str) {
-      return str.trim().toLowerCase() + "s";
-    },
-    forRefrence(str) {
-      return str.substr(0, str.length - 3).toLowerCase() + "s";
-    },
-    findObjectSize(obj) {
-      let size = 0;
-      for (let i in obj) {
-        size++;
-      }
-      return size;
-    }
-  },
   computed: {
     ...mapGetters(["tables"])
   },

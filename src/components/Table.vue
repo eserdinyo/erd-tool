@@ -24,7 +24,7 @@
                   option(title="TEXT", value='TEXT') TEXT
                   option(title="DATE", value='DATETIME') DATE
               td.field
-                p {{item.itemName}}
+                p {{item.itemName.replace(" ", "_")}}
 </template>
 
 <script>
@@ -40,8 +40,11 @@ export default {
         .child("entityItems")
         .child(key)
         .update({ dataType: value.toUpperCase() });
+    },
+    deleteSpace(str) {
+      return str.rep
     }
-  }
+  },
 };
 </script>
 

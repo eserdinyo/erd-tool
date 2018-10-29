@@ -4,9 +4,9 @@
     a.link(@click='addEntity')
       img(src="../../assets/img/table.png")
     hr
-    a.link(@click="sendConnType(1)")
+    a.link(@click="sendConnType(1, dashType1)")
       img(src="../../assets/img/conn1.png")
-    a.link(@click="sendConnType(2)")
+    a.link(@click="sendConnType(2, dashType2)")
       img(src="../../assets/img/conn2.png")
     a.link(@click="sendConnType(3)")
       img(src="../../assets/img/conn3.png")
@@ -19,16 +19,19 @@
 
 <script>
 import { EventBus } from "@/main";
-import { refConnType } from "@/firebase";
+import { refConnType, refDashType } from "@/firebase";
 
 export default {
   data() {
-    return {};
+    return {
+      dashType1: "2 1",
+      dashType2: "0",
+    };
   },
   methods: {
-    async sendConnType(type) {
-      await refConnType.update({ connType: type });
-      await this.$store.commit("setConnectionType");
+    async sendConnType(connType,dashType) {
+      await refConnType.update({ connType });
+      await refDashType.update({ dashType });
       location.reload();
     },
     addEntity() {

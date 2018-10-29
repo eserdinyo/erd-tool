@@ -3,10 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 
 const { getEntityDataType } = require('./utils/');
-
 const { sequelize } = require('./config/sequelize')
-const Sequelize = require('sequelize');
-
 
 const app = express();
 app.use(cors())
@@ -17,8 +14,6 @@ app.post('/tables', (req, res) => {
 
   tables.sort((a, b) => a.multi - b.multi);
 
-  console.log(JSON.stringify(tables, undefined, 2));
-
   tables.forEach(table => {
 
     if (table.multi == 2) {
@@ -28,7 +23,7 @@ app.post('/tables', (req, res) => {
     let columns = {}
 
     for (let i in table.entityItems) {
-      columns[table.entityItems[i].itemName] = getEntityDataType(table.entityItems[i].dataType);
+      columns[table.entityItems[i].itemName] = { type: getEntityDataType(table.entityItems[i].dataType), allowNull: false };
     }
 
     table.entityName = sequelize.define(table.entityName, columns, { timestamps: false });
@@ -36,37 +31,12 @@ app.post('/tables', (req, res) => {
   });
 
   for (let i = 0; i < tables.length - 1; i++) {
-    tables[tables.length - 1].entityName.belongsTo(tables[i].entityName);
+    tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, { foreignKey: { allowNull: true } });
   }
 
   tables.forEach(table => {
     table.entityName.sync({ force: true })
   })
-
-
-  /*
-  1:M
-    const tables = req.body;
-  
-    tables.sort((a, b) => a.multi - b.multi);
-    tables.forEach(table => {
-  
-    const columns = {}
-  
-    for (let i in table.entityItems) {
-      columns[table.entityItems[i].itemName] = getEntityDataType(table.entityItems[i].dataType);
-    }
-  
-    table.entityName = sequelize.define(table.entityName, columns, { timestamps: false });
-  
-  });
-  
-  tables[1].entityName.belongsTo(tables[0].entityName);
-  
-  
-  tables.forEach(table => {
-    table.entityName.sync({ force: true })
-  }) */
 
   res.sendStatus(200)
 });

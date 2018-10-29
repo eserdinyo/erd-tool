@@ -24,7 +24,6 @@ import AppToolbar from "@/components/global/Toolbar";
 export default {
   data() {
     return {
-      dash: "2 1"
     };
   },
   components: {
@@ -38,18 +37,14 @@ export default {
       "connections",
       "activeEntity",
       "connTypes",
-      "connType"
+      "connType",
+      "dashType",
     ])
   },
   methods: {
     // JSPLUMB //
     getflow() {
       var instance = jsPlumb.getInstance({
-        /*paintStyle: {
-          strokeWidth: 2,
-          straightdashstyle: "200 10 5",
-          stroke: "#445566"
-        },*/
         Connector: ["Flowchart", { curviness: 50 }],
         Endpoint: ["Dot", { radius: 1 }],
         EndpointStyle: { fill: "#191919" },
@@ -95,11 +90,13 @@ export default {
 
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
+          console.log(conID);
+          
 
-        // ************** //
-        //     1:M       //
-        // ************** //
-        if (conID == 4) {
+        // ******************************* //
+        //     1:M   ÇİFT TARAF ZORUNLU    //
+        // ******************************* //
+        if (conID == 4 || conID == 0) {
           let key = "";
 
           this.entities.forEach(entity => {
@@ -113,13 +110,14 @@ export default {
             refConn.push({
               sourceId: s,
               targetId: t,
+              dashType: this.dashType,
               overlay: this.connType
             });
           }
         }
 
         // **************  //
-        //     M TO M     //
+        //     M TO M ÇİFT TARAF ZORUNLU    //
         // ************** //
         if (conID == 5) {
           let sourceX,
@@ -162,11 +160,13 @@ export default {
           refConn.push({
             sourceId: s,
             targetId: newEntityTarget,
-            overlay: this.connType
+            dashType: this.dashType,
+            overlay: this.connType,
           });
           refConn.push({
             sourceId: t,
             targetId: newEntityTarget,
+            dashType: this.dashType,
             overlay: this.connType
           });
           location.reload();
@@ -193,14 +193,12 @@ export default {
         instance.makeSource(this.entities[i].ID, {
           filter: ".ep",
           anchor: "Continuous",
-          //connectorStyle: this.changeDashStyle(),
           connectorStyle: {
             stroke: "#191919",
             strokeWidth: 3,
             outlineStroke: "transparent",
             outlineWidth: 4,
-            straightdashstyle: "100 5 5"
-            //dashstyle: this.dash,
+            dashstyle: this.dashType,
           },
 
           connectionType: "basic",
@@ -211,7 +209,7 @@ export default {
         });
 
         // *********************   //
-        //       MAKE TARGET      //
+        //      MAKE TARGET       //
         // ********************* //
         instance.makeTarget(this.entities[i].ID, {
           dropOptions: { hoverClass: "dragHover" },
@@ -227,7 +225,11 @@ export default {
           source: this.connections[i].sourceId,
           target: this.connections[i].targetId,
           overlays: this.connections[i].overlay,
-          paintStyle: { stroke: "#191919", strokeWidth: 3, dashstyle: "0" }
+          paintStyle: {
+            stroke: "#191919",
+            strokeWidth: 3,
+            dashstyle: this.connections[i].dashType,
+          }
         });
       }
     },
@@ -247,20 +249,6 @@ export default {
         });
       }
     },
-    changeDashStyle(type) {
-      let color = "red";
-      // if (type == 2) this.dash = "2 1";
-      //console.log('in change');
-      if (type == 2) color = "yellow";
-
-      return {
-        stroke: color,
-        strokeWidth: 3,
-        outlineStroke: "transparent",
-        outlineWidth: 4,
-        dashstyle: this.dash
-      };
-    },
     init() {
       this.$store.commit("initConnectionTypes");
       this.$store.dispatch("initEntities").then(() => {
@@ -269,16 +257,11 @@ export default {
         });
       });
       this.$store.dispatch("getConnType");
+      this.$store.dispatch("getDashType");
     }
   },
-  watch: {},
-
   created() {
     this.init();
-
-    /* EventBus.$on("emitDashStyle", type => {
-      this.changeDashStyle(type);
-    }); */
   }
 };
 </script>
