@@ -1,8 +1,8 @@
 entities:
-    ❍ İki Tarafta zorunlu ilişkiler  
-     ❍ 1:1 ilişkiyi ekle
-     ❍ 1:M ilişkiyi ekle
-     ❍ M:M ilişki ekle
+    ✔ İki Tarafta zorunlu ilişkiler @done(18-12-02 16:40)
+     ✔ 1:1 ilişkiyi ekle @done(18-12-02 16:40)
+     ✔ 1:M ilişkiyi ekle @done(18-12-02 16:40)
+     ✔ M:M ilişki ekle @done(18-12-02 16:40)
     ❍ İki taraf seçimli ilişkiler
      ❍ 1:1 ilişkiyi ekle
      ❍ 1:M ilişkiyi ekle
@@ -13,5 +13,5 @@ entities:
      ❍ M:M ilişki ekle
 
 tables: 
-     ❍ Tabloları almayı ve sıralamayı async yap
+     ✔ Tabloları almayı ve sıralamayı async yap @done(18-12-02 16:40)
      

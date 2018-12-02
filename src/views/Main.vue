@@ -23,8 +23,7 @@ import AppToolbar from "@/components/global/Toolbar";
 
 export default {
   data() {
-    return {
-    };
+    return {};
   },
   components: {
     AppEntity,
@@ -38,7 +37,7 @@ export default {
       "activeEntity",
       "connTypes",
       "connType",
-      "dashType",
+      "dashType"
     ])
   },
   methods: {
@@ -90,8 +89,6 @@ export default {
 
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
-          console.log(conID);
-          
 
         // ******************************* //
         //     1:M   ÇİFT TARAF ZORUNLU    //
@@ -116,10 +113,10 @@ export default {
           }
         }
 
-        // **************  //
-        //     M TO M ÇİFT TARAF ZORUNLU    //
-        // ************** //
-        if (conID == 5) {
+        // ****************************************  //
+        //     M TO M ÇİFT TARAF ZORUNLU-SECIMLi    //
+        // *************************************** //
+        if (conID == 5 || conID == 11) {
           let sourceX,
             targetX,
             sourceY,
@@ -155,13 +152,15 @@ export default {
           this.entities.forEach(entity => {
             if (entity.multi == 2) newEntityTarget = entity.ID;
           });
-          refConnType.update({ connType: 4 });
-          this.$store.commit("setConnectionType");
+
+          refConnType.update({ connType: 2 });
+
+          this.$store.commit("setConnectionType", 2);
           refConn.push({
             sourceId: s,
             targetId: newEntityTarget,
             dashType: this.dashType,
-            overlay: this.connType,
+            overlay: this.connType
           });
           refConn.push({
             sourceId: t,
@@ -194,11 +193,11 @@ export default {
           filter: ".ep",
           anchor: "Continuous",
           connectorStyle: {
-            stroke: "#191919",
+            stroke: "#fff",
             strokeWidth: 3,
             outlineStroke: "transparent",
             outlineWidth: 4,
-            dashstyle: this.dashType,
+            dashstyle: this.dashType
           },
 
           connectionType: "basic",
@@ -226,9 +225,9 @@ export default {
           target: this.connections[i].targetId,
           overlays: this.connections[i].overlay,
           paintStyle: {
-            stroke: "#191919",
+            stroke: "#fff",
             strokeWidth: 3,
-            dashstyle: this.connections[i].dashType,
+            dashstyle: this.connections[i].dashType
           }
         });
       }
@@ -272,7 +271,7 @@ export default {
   display: flex;
 }
 .main {
-  background-image: linear-gradient(#f5f6fa77, #f5f6fa73),
+  background-image: linear-gradient(#191919d8, #191919d8),
     url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
   background-repeat: repeat;
   border: 1px solid rgba(#000, 0.2);

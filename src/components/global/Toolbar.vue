@@ -4,16 +4,20 @@
     a.link(@click='addEntity')
       img(src="../../assets/img/table.png")
     hr
-    a.link(@click="sendConnType(1, dashType1)")
+    a.link(@click="sendConnType(0, dashType1)")
       img(src="../../assets/img/conn1.png")
-    a.link(@click="sendConnType(2, dashType2)")
-      img(src="../../assets/img/conn2.png")
-    a.link(@click="sendConnType(3)")
+    a.link(@click="sendConnType(2, dashType1)")
       img(src="../../assets/img/conn3.png")
-    a.link(@click="sendConnType(4)")
+    a.link(@click="sendConnType(11, dashType1)")
+      img(src="../../assets/img/conn6.png")
+    hr
+    a.link(@click="sendConnType(0, dashType2)")
+      img(src="../../assets/img/conn2.png")
+    a.link(@click="sendConnType(2, dashType2)")
       img(src="../../assets/img/conn4.png")
-    a.link(@click="sendConnType(5)")
+    a.link(@click="sendConnType(10, dashType2)")
       img(src="../../assets/img/conn5.png")
+    
     
 </template>
 
@@ -25,11 +29,11 @@ export default {
   data() {
     return {
       dashType1: "2 1",
-      dashType2: "0",
+      dashType2: "0"
     };
   },
   methods: {
-    async sendConnType(connType,dashType) {
+    async sendConnType(connType, dashType) {
       await refConnType.update({ connType });
       await refDashType.update({ dashType });
       location.reload();
@@ -38,15 +42,14 @@ export default {
       this.$store.dispatch("addEntity");
       location.reload();
     }
-  },
-  created() {}
+  }
 };
 </script>
 
 
 <style lang="scss" scoped>
 .toolbar {
-  background-color: #f5f6fa;
+  background-color: #bdc3c7;
   padding: 30px 0;
   width: 50px;
   border-right: 1px solid rgba(0, 0, 0, 0.3);
@@ -76,4 +79,3 @@ export default {
   }
 }
 </style>
-

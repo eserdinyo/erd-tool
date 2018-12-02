@@ -251,17 +251,7 @@ export default {
         direction: 1
       }
     ],
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.95,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-        id: "label2"
-      }
-    ],
+
     [
       // Arrow
       "Arrow",

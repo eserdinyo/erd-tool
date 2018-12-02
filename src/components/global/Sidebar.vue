@@ -30,20 +30,20 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  background-color: #f5f6fa;
+  background-color: #191919d8;
   padding: 30px 10px;
   width: 300px;
-  border-right: 1px solid rgba(0, 0, 0, 0.3);
+  border-left: 1px solid rgba(255, 255, 255, 0.534);
   border-top: 1px solid rgba(0, 0, 0, 0.3);
   height: 100vh;
-  color: #5a5a5a;
+  color: #fff;
   text-align: center;
   flex-grow: 1;
 }
 
 h4 {
   text-align: center;
-  background-color: rgba(#5a5a5a, 0.1);
+  background-color: rgba(#fff, 0.1);
   border: none;
   border-radius: 4px;
   padding: 10px 10px;

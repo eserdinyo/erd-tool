@@ -86,7 +86,7 @@ table {
 table,
 th,
 td {
-  border: 2px solid #191919;
+  border: 2px solid #fff;
 }
 
 tr:nth-child(even) {
