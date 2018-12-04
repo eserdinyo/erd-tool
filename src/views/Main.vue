@@ -114,10 +114,11 @@ export default {
         }
 
         // ****************************************  //
-        //     M TO M ÇİFT TARAF ZORUNLU-SECIMLi    //
+        //     M TO M ÇİFT TARAF ZORUNLU-SECIMLİ   //
         // *************************************** //
         if (conID == 5 || conID == 11) {
           let sourceX,
+            key,
             targetX,
             sourceY,
             posX,
@@ -125,7 +126,21 @@ export default {
             newEntityTarget,
             entityName,
             sourceName,
-            targetName;
+            targetName,
+            entityType;
+
+          conID == 5 ? (entityType = "mandatory") : (entityType = "optional");
+
+          // entityType'ı güncelle
+          this.entities.forEach(entity => {
+            if (entity.ID == t) {
+              key = entity.id;
+              ref.child(key).update({ entityType });
+            }else if(entity.ID == s) {
+              key = entity.id;
+              ref.child(key).update({ entityType });
+            }
+          });
           this.entities.forEach(entity => {
             if (entity.ID == s) {
               sourceX = entity.posX;

@@ -14,4 +14,8 @@ entities:
 
 tables: 
      ✔ Tabloları almayı ve sıralamayı async yap @done(18-12-02 16:40)
+
+other:
+      ❍ Eğer seçimliyse null olabilir değilse not null bunu ayarla
+      
      

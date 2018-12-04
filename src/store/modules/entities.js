@@ -60,7 +60,7 @@ const actions = {
     ref.child(state.activeEntity).remove();
   },
   addEntity({ commit, state }, entity) {
-    let posX, posY, multi, entityName, entityItems;
+    let posX, posY, multi, entityName, entityItems, entityType = "";
     if (entity) {
       posX = entity.posX;
       posY = entity.posY;
@@ -80,8 +80,8 @@ const actions = {
       ]
 
     } else {
-      posX = 20;
-      posY = 80;
+      posX = 70;
+      posY = 90;
       multi = 0;
       entityName = "";
       entityItems = [
@@ -96,6 +96,7 @@ const actions = {
       ID: jsPlumbUtil.uuid(),
       entityName,
       multi,
+      entityType,
       posX,
       posY,
       entityItems,

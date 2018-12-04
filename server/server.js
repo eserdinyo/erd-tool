@@ -30,8 +30,15 @@ app.post('/tables', (req, res) => {
 
   });
 
+  // Creating M:M realtion table
   for (let i = 0; i < tables.length - 1; i++) {
-    tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, { foreignKey: { allowNull: true } });
+    //Çift taraf seçimli ise
+    if (tables[i].entityType == "mandatory") {
+      tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, { foreignKey: { allowNull: false } });
+    } else if (tables[i].entityType == "optional") {
+      // Çift taraf zorunlu ise 
+      tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, { foreignKey: { allowNull: true } });
+    }
   }
 
   tables.forEach(table => {
