@@ -30,7 +30,7 @@ export default {
 
 <style lang="scss" scoped>
 .sidebar {
-  background-color: #191919d8;
+  background-color: #f5f6fa;
   padding: 30px 10px;
   width: 300px;
   border-left: 1px solid rgba(255, 255, 255, 0.534);
@@ -43,7 +43,7 @@ export default {
 
 h4 {
   text-align: center;
-  background-color: rgba(#fff, 0.1);
+  background-color: rgba(#3d4752,1);
   border: none;
   border-radius: 4px;
   padding: 10px 10px;

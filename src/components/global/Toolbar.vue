@@ -17,19 +17,27 @@
       img(src="../../assets/img/conn4.png")
     a.link(@click="sendConnType(10, dashType2)")
       img(src="../../assets/img/conn5.png")
+    hr
+    a.link(@click="sendConnType(0, dashType3)")
+      img(src="../../assets/img/conn7.png")
+    a.link(@click="sendConnType(2, dashType3)")
+      img(src="../../assets/img/conn8.png")
+    a.link(@click="sendConnType(11, dashType3)")
+      img(src="../../assets/img/conn9.png")
+    
     
     
 </template>
 
 <script>
-import { EventBus } from "@/main";
 import { refConnType, refDashType } from "@/firebase";
 
 export default {
   data() {
     return {
-      dashType1: "2 1",
-      dashType2: "0"
+      dashType1: "0 5 5",
+      dashType2: "0",
+      dashType3: "150 5 3",
     };
   },
   methods: {
@@ -49,7 +57,7 @@ export default {
 
 <style lang="scss" scoped>
 .toolbar {
-  background-color: #bdc3c7;
+  background-color: #f5f6fa;
   padding: 30px 0;
   width: 50px;
   border-right: 1px solid rgba(0, 0, 0, 0.3);

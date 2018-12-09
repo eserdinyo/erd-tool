@@ -44,11 +44,11 @@ export default {
     // JSPLUMB //
     getflow() {
       var instance = jsPlumb.getInstance({
-        Connector: ["Flowchart", { curviness: 50 }],
+        Connector: ["Bezier", { curviness: 150 }],
         Endpoint: ["Dot", { radius: 1 }],
         EndpointStyle: { fill: "#191919" },
-        HoverPaintStyle: { stroke: "#c0392b", lineWidth: 4 },
-        EndpointHoverStyle: { fill: "#c0392b", stroke: "#c0392b" },
+        HoverPaintStyle: { stroke: "#c0392b", lineWidth: 10 },
+        EndpointHoverStyle: { fill: "#c0392b", stroke: "#c0392b", lineWidth: 10 },
         Anchor: ["Left", "Right", "TopCenter", "BottomCenter"],
         ConnectionOverlays: this.connType,
         Container: "main"
@@ -136,7 +136,7 @@ export default {
             if (entity.ID == t) {
               key = entity.id;
               ref.child(key).update({ entityType });
-            }else if(entity.ID == s) {
+            } else if (entity.ID == s) {
               key = entity.id;
               ref.child(key).update({ entityType });
             }
@@ -208,11 +208,11 @@ export default {
           filter: ".ep",
           anchor: "Continuous",
           connectorStyle: {
-            stroke: "#fff",
+            stroke: "#191919",
             strokeWidth: 3,
             outlineStroke: "transparent",
             outlineWidth: 4,
-            dashstyle: this.dashType
+            straightdashstyle: this.dashType,
           },
 
           connectionType: "basic",
@@ -240,14 +240,20 @@ export default {
           target: this.connections[i].targetId,
           overlays: this.connections[i].overlay,
           paintStyle: {
-            stroke: "#fff",
+            stroke: "#191919",
             strokeWidth: 3,
-            dashstyle: this.connections[i].dashType
+            straightdashstyle: this.connections[i].dashType
           }
         });
       }
     },
-    // JSPLUMB //
+    /* ************ */
+    // JSPLUMB-END //
+    /* *********** */
+
+    setConnType() {
+      return ""
+    },
 
     makeDraggable() {
       // Make Draggable
@@ -286,7 +292,7 @@ export default {
   display: flex;
 }
 .main {
-  background-image: linear-gradient(#191919d8, #191919d8),
+  background-image: linear-gradient(#f5f6faab, #f5f6faa1),
     url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
   background-repeat: repeat;
   border: 1px solid rgba(#000, 0.2);
