@@ -36,7 +36,7 @@ export default {
   data() {
     return {
       dashType1: "0 5 5",
-      dashType2: "0",
+      dashType2: "150 5 0",
       dashType3: "150 5 3",
     };
   },
