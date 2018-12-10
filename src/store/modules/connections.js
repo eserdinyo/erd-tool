@@ -1,4 +1,4 @@
-import { refConn, refConnType, refDashType } from "@/firebase";
+import { refConn, refConnType, refDashType, refGlobalConnType } from "@/firebase";
 import connectionTypes from '../data/connectionTypes';
 
 
@@ -15,6 +15,7 @@ const getters = {
     connTypes: state => state.connTypes,
     connType: state => state.connType,
     dashType: state => state.dashType,
+    globalConnType : state => state.globalConnType,
 }
 
 const mutations = {
@@ -27,6 +28,9 @@ const mutations = {
     },
     setDashType(state, payload) {
         state.dashType = payload;
+    },
+    setGlobalConnType(state, payload) {
+        state.globalConnType = payload;
     }
 }
 const actions = {
@@ -59,6 +63,14 @@ const actions = {
             const data = snap.val();
             commit('setDashType', data.dashType)
         });
+    },
+    async getGlobalConnType({commit}) {
+        await refGlobalConnType.on('value', snap => {
+            const data = snap.val();
+            console.log(data.globalConnType);
+            
+            commit('setGlobalConnType', data.globalConnType);
+        })
     }
 }
 

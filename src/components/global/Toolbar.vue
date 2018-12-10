@@ -6,23 +6,23 @@
     hr
     a.link(@click="sendConnType(0, dashType1)")
       img(src="../../assets/img/conn1.png")
-    a.link(@click="sendConnType(2, dashType1)")
+    a.link(@click="sendConnType(4, dashType1)")
       img(src="../../assets/img/conn3.png")
-    a.link(@click="sendConnType(11, dashType1)")
+    a.link(@click="sendConnType(10, dashType1)")
       img(src="../../assets/img/conn6.png")
     hr
-    a.link(@click="sendConnType(0, dashType2)")
+    a.link(@click="sendConnType(1, dashType2)")
       img(src="../../assets/img/conn2.png")
-    a.link(@click="sendConnType(2, dashType2)")
+    a.link(@click="sendConnType(5, dashType2)")
       img(src="../../assets/img/conn4.png")
-    a.link(@click="sendConnType(10, dashType2)")
+    a.link(@click="sendConnType(11, dashType2)")
       img(src="../../assets/img/conn5.png")
     hr
-    a.link(@click="sendConnType(0, dashType3)")
-      img(src="../../assets/img/conn7.png")
     a.link(@click="sendConnType(2, dashType3)")
+      img(src="../../assets/img/conn7.png")
+    a.link(@click="sendConnType(6, dashType3)")
       img(src="../../assets/img/conn8.png")
-    a.link(@click="sendConnType(11, dashType3)")
+    a.link(@click="sendConnType(12, dashType3)")
       img(src="../../assets/img/conn9.png")
     
     
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { refConnType, refDashType } from "@/firebase";
+import { refConnType, refDashType, refGlobalConnType } from "@/firebase";
 
 export default {
   data() {
@@ -38,12 +38,17 @@ export default {
       dashType1: "0 5 5",
       dashType2: "150 5 0",
       dashType3: "150 5 3",
+      globalConnType: ""
     };
   },
   methods: {
     async sendConnType(connType, dashType) {
+      if (connType == 2 || connType == 6 || connType == 12)
+        this.globalConnType = "Bezier";
+      else this.globalConnType = "Flowchart";
       await refConnType.update({ connType });
       await refDashType.update({ dashType });
+      await refGlobalConnType.update({ globalConnType: this.globalConnType });
       location.reload();
     },
     addEntity() {

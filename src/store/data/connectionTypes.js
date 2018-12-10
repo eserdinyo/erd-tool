@@ -1,7 +1,6 @@
 export default {
   con0: [
     [
-      // Line
       "Arrow",
       {
         location: 0,
@@ -12,12 +11,11 @@ export default {
     ]
   ],
   con1: [
-    // left 1 right 2
     [
       // Line
       "Arrow",
       {
-        location: 0.95,
+        location: 0,
         length: 1,
         foldback: 1,
         id: "1"
@@ -25,16 +23,14 @@ export default {
     ]
   ],
   con2: [
-    // left 1 right 3
     [
-      // Arrow
+      // Line
       "Arrow",
       {
-        location: 1,
-        id: "4",
-        length: 10,
-        foldback: 0.3,
-        direction: -1
+        location: 0,
+        length: 1,
+        foldback: 1,
+        id: "2"
       }
     ]
   ],
@@ -45,10 +41,10 @@ export default {
       "Arrow",
       {
         location: 1,
-        id: "3",
         length: 10,
         foldback: 0.3,
-        direction: -1
+        direction: -1,
+        id: "3",
       }
     ],
     [
@@ -59,81 +55,47 @@ export default {
         length: 1,
         foldback: 1,
         direction: 1,
-
         id: "label2"
       }
     ]
   ],
   con4: [
-    // left 2 right 1
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.05,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-
-        id: "4",
-        paintStyle: {
-          lineWidth: 50,
-          stroke: "black",
-          fill: "black"
-        }
-      }
-    ]
-  ],
-  con5: [
-    // left 2 right 2
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.05,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-
-        id: "5"
-      }
-    ],
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.95,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-
-        id: "label2"
-      }
-    ]
-  ],
-  con6: [
-    // left 2 right 3
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.05,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-
-        id: "6"
-      }
-    ],
+    // left 1 right 4
     [
       // Arrow
       "Arrow",
       {
         location: 1,
-        id: "arrow2",
         length: 10,
         foldback: 0.3,
-        direction: -1
+        direction: -1,
+        id: "4",
+      }
+    ]
+  ],
+  con5: [
+    [
+      // Arrow
+      "Arrow",
+      {
+        location: 1,
+        length: 10,
+        foldback: 0.3,
+        direction: -1,
+        id: "5",
+      }
+    ]
+  ],
+  con6: [
+    [
+      // Arrow
+      "Arrow",
+      {
+        location: 1,
+        length: 10,
+        foldback: 0.3,
+        direction: -1,
+        id: "6",
       }
     ]
   ],
@@ -147,7 +109,6 @@ export default {
         length: 1,
         foldback: 1,
         direction: 1,
-
         id: "7"
       }
     ],
@@ -159,7 +120,6 @@ export default {
         length: 1,
         foldback: 1,
         direction: 1,
-
         id: "label1"
       }
     ],
@@ -168,10 +128,10 @@ export default {
       "Arrow",
       {
         location: 1,
-        id: "arrow2",
         length: 10,
         foldback: 0.3,
-        direction: -1
+        direction: -1,
+        id: "arrow2",
       }
     ]
   ],
@@ -182,8 +142,8 @@ export default {
       "Arrow",
       {
         location: 0,
-        id: "8",
         length: 10,
+        id: "8",
         foldback: 0.3,
         direction: 1
       }
@@ -220,10 +180,10 @@ export default {
       "Arrow",
       {
         location: 0,
-        id: "5",
         length: 10,
         foldback: 0.3,
-        direction: 1
+        direction: 1,
+        id: "10",
       }
     ],
     [
@@ -245,10 +205,10 @@ export default {
       "Arrow",
       {
         location: 0,
-        id: "11",
         length: 10,
         foldback: 0.3,
-        direction: 1
+        direction: 1,
+        id: "11",
       }
     ],
 
@@ -265,23 +225,24 @@ export default {
     ]
   ],
   con12: [
-    // left 4 right 1
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.05,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-        id: "12"
-      }
-    ],
+    // left 3 right 4
     [
       // Arrow
       "Arrow",
       {
         location: 0,
+        length: 10,
+        foldback: 0.3,
+        direction: 1,
+        id: "12",
+      }
+    ],
+
+    [
+      // Arrow
+      "Arrow",
+      {
+        location: 1,
         id: "arrow1",
         length: 10,
         foldback: 0.3,

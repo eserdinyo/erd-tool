@@ -37,18 +37,23 @@ export default {
       "activeEntity",
       "connTypes",
       "connType",
-      "dashType"
+      "dashType",
+      "globalConnType"
     ])
   },
   methods: {
     // JSPLUMB //
     getflow() {
       var instance = jsPlumb.getInstance({
-        Connector: ["Bezier", { curviness: 150 }],
+        Connector: [this.globalConnType, { curviness: 150 }],
         Endpoint: ["Dot", { radius: 1 }],
         EndpointStyle: { fill: "#191919" },
         HoverPaintStyle: { stroke: "#c0392b", lineWidth: 10 },
-        EndpointHoverStyle: { fill: "#c0392b", stroke: "#c0392b", lineWidth: 10 },
+        EndpointHoverStyle: {
+          fill: "#c0392b",
+          stroke: "#c0392b",
+          lineWidth: 10
+        },
         Anchor: ["Left", "Right", "TopCenter", "BottomCenter"],
         ConnectionOverlays: this.connType,
         Container: "main"
@@ -90,16 +95,26 @@ export default {
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
 
+        console.log(conID);
+
         // ******************************* //
         //     1:M   ÇİFT TARAF ZORUNLU    //
         // ******************************* //
-        if (conID == 4 || conID == 0) {
-          let key = "";
+        if (conID == 4 || conID == 0 || conID == 1 || conID == 5) {
+          let key = "",
+            entityType = "";
+
+          conID == 0 || conID == 4 ? (entityType = "optional") : 0;
+          conID == 1 || conID == 5 ? (entityType = "mandatory") : 0;
 
           this.entities.forEach(entity => {
             if (entity.ID == t) {
               key = entity.id;
               ref.child(key).update({ multi: 1 });
+              ref.child(key).update({ entityType });
+            } else if (entity.ID == s) {
+              key = entity.id;
+              ref.child(key).update({ entityType });
             }
           });
 
@@ -114,9 +129,9 @@ export default {
         }
 
         // ****************************************  //
-        //     M TO M ÇİFT TARAF ZORUNLU-SECIMLİ   //
+        //     M TO M ÇİFT TARAF ZORUNLU || SECIMLİ //
         // *************************************** //
-        if (conID == 5 || conID == 11) {
+        if (conID == 10 || conID == 11) {
           let sourceX,
             key,
             targetX,
@@ -129,7 +144,7 @@ export default {
             targetName,
             entityType;
 
-          conID == 5 ? (entityType = "mandatory") : (entityType = "optional");
+          conID == 10 ? (entityType = "optional") : (entityType = "mandatory");
 
           // entityType'ı güncelle
           this.entities.forEach(entity => {
@@ -141,6 +156,8 @@ export default {
               ref.child(key).update({ entityType });
             }
           });
+
+          // get some values for new entity
           this.entities.forEach(entity => {
             if (entity.ID == s) {
               sourceX = entity.posX;
@@ -168,9 +185,123 @@ export default {
             if (entity.multi == 2) newEntityTarget = entity.ID;
           });
 
-          refConnType.update({ connType: 2 });
+          refConnType.update({ connType: 4 });
 
-          this.$store.commit("setConnectionType", 2);
+          this.$store.commit("setConnectionType", 4);
+          refConn.push({
+            sourceId: s,
+            targetId: newEntityTarget,
+            dashType: this.dashType,
+            overlay: this.connType
+          });
+          refConn.push({
+            sourceId: t,
+            targetId: newEntityTarget,
+            dashType: this.dashType,
+            overlay: this.connType
+          });
+          location.reload();
+        }
+        // ****************************************  //
+        //            1:1 SEÇİMLİ-ZORUNLU           //
+        // *************************************** //
+        if (conID == 2) {
+          this.entities.forEach(entity => {
+            if (entity.ID == t) {
+              key = entity.id;
+              ref.child(key).update({ multi: 1 });
+              ref.child(key).update({ entityType: "mandatory" });
+            } else if (entity.ID == s) {
+              key = entity.id;
+              ref.child(key).update({ entityType: "optinal" });
+            }
+          });
+
+          // ****************************************  //
+          //            1:M SEÇİMLİ-ZORUNLU           //
+          // *************************************** //
+        } else if (conID == 6) {
+          let key = "";
+
+          this.entities.forEach(entity => {
+            if (entity.ID == t) {
+              key = entity.id;
+              ref.child(key).update({ multi: 1 });
+              ref.child(key).update({ entityType: "mandatory" });
+            } else if (entity.ID == s) {
+              key = entity.id;
+              ref.child(key).update({ entityType: "optional" });
+            }
+          });
+
+          if (!(t.length < 20)) {
+            refConn.push({
+              sourceId: s,
+              targetId: t,
+              dashType: this.dashType,
+              overlay: this.connType
+            });
+          }
+        }
+        // ****************************************  //
+        //            M:M SEÇİMLİ-ZORUNLU           //
+        // *************************************** //
+        else if (conID == 12) {
+          let sourceX,
+            key,
+            targetX,
+            sourceY,
+            posX,
+            posY,
+            newEntityTarget,
+            entityName,
+            sourceName,
+            targetName,
+            entityType;
+
+          // entityType'ı güncelle
+          this.entities.forEach(entity => {
+            if (entity.ID == t) {
+              key = entity.id;
+              ref.child(key).update({ entityType: "mandatory" });
+            } else if (entity.ID == s) {
+              key = entity.id;
+              ref.child(key).update({ entityType: "optional" });
+            }
+          });
+
+          // get some values for new entity
+          this.entities.forEach(entity => {
+            if (entity.ID == s) {
+              sourceX = entity.posX;
+              sourceY = entity.posY;
+              sourceName = entity.entityName;
+            }
+            if (entity.ID == t) {
+              targetX = entity.posX;
+              targetName = entity.entityName;
+            }
+          });
+
+          posX = (targetX - sourceX) / 2 + sourceX - 10;
+          posY = sourceY + 300;
+          entityName = `${sourceName}_${targetName}`;
+
+          this.$store.dispatch("addEntity", {
+            posX,
+            posY,
+            entityName,
+            sourceName,
+            targetName
+          });
+
+          this.entities.forEach(entity => {
+            if (entity.multi == 2) newEntityTarget = entity.ID;
+          });
+
+          refConnType.update({ connType: 6 });
+
+          this.$store.commit("setConnectionType", 6);
           refConn.push({
             sourceId: s,
             targetId: newEntityTarget,
@@ -212,7 +343,7 @@ export default {
             strokeWidth: 3,
             outlineStroke: "transparent",
             outlineWidth: 4,
-            straightdashstyle: this.dashType,
+            straightdashstyle: this.dashType
           },
 
           connectionType: "basic",
@@ -252,7 +383,7 @@ export default {
     /* *********** */
 
     setConnType() {
-      return ""
+      return "";
     },
 
     makeDraggable() {
@@ -278,6 +409,7 @@ export default {
       });
       this.$store.dispatch("getConnType");
       this.$store.dispatch("getDashType");
+      this.$store.dispatch("getGlobalConnType");
     }
   },
   created() {
