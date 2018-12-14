@@ -21,7 +21,8 @@
         li View
         li Help
 
-      .bottom__selects
+      
+    //  .bottom__selects
       
       
         .buttons(v-if="show")

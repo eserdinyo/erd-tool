@@ -77,6 +77,12 @@ export default {
           }
         } else if (evt.keyCode == 27) {
           this.$store.commit("updateActive", 0);
+        } else if (evt.keyCode == 38) {
+          // Arrow Up
+          this.$store.dispatch("subItem");
+        } else if (evt.keyCode == 40) {
+          // Arrow Down
+          this.$store.dispatch("addItem");
         }
       };
     }

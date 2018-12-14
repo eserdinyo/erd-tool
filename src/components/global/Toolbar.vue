@@ -63,7 +63,6 @@ export default {
 <style lang="scss" scoped>
 .toolbar {
   background-color: #f5f6fa;
-  padding: 30px 0;
   width: 50px;
   border-right: 1px solid rgba(0, 0, 0, 0.3);
   border-top: 1px solid rgba(0, 0, 0, 0.3);

@@ -25,18 +25,16 @@ app.post('/tables', (req, res) => {
     for (let i in table.entityItems) {
       columns[table.entityItems[i].itemName] = { type: getEntityDataType(table.entityItems[i].dataType), allowNull: false };
     }
-
     table.entityName = sequelize.define(table.entityName, columns, { timestamps: false });
-
   });
 
   // Creating M:M realtion table
   for (let i = 0; i < tables.length - 1; i++) {
-    //Çift taraf seçimli ise
+    // Zorunlu taraf
     if (tables[i].entityType == "mandatory") {
       tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, { foreignKey: { allowNull: false } });
     } else if (tables[i].entityType == "optional") {
-      // Çift taraf zorunlu ise 
+    // Seçimli taraf
       tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, { foreignKey: { allowNull: true } });
     }
   }

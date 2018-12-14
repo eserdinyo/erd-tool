@@ -95,8 +95,6 @@ export default {
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
 
-        console.log(conID);
-
         // ******************************* //
         //     1:M   ÇİFT TARAF ZORUNLU    //
         // ******************************* //
@@ -171,7 +169,7 @@ export default {
           });
 
           posX = (targetX - sourceX) / 2 + sourceX - 10;
-          posY = sourceY + 210;
+          posY = sourceY + 300;
           entityName = `${sourceName}_${targetName}`;
           this.$store.dispatch("addEntity", {
             posX,

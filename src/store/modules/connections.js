@@ -67,8 +67,6 @@ const actions = {
     async getGlobalConnType({commit}) {
         await refGlobalConnType.on('value', snap => {
             const data = snap.val();
-            console.log(data.globalConnType);
-            
             commit('setGlobalConnType', data.globalConnType);
         })
     }
