@@ -69,9 +69,11 @@ export default {
       this.$store.dispatch("delEntity");
     },
     initForDelete() {
+      
       document.onkeydown = evt => {
+        
         evt = evt || window.event;
-        if (evt.keyCode == 46) {
+        if (evt.keyCode == 91) {
           if (this.activeEntity != 0) {
             this.delEntity();
           }
