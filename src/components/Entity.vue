@@ -2,9 +2,7 @@
  .tablo.entity(:id="entity.ID")
     table(@mousedown="setActiveEntity(entity.id)" , 
           :class="{ activeEntity : activeEntity == entity.id}")
-      thead(v-if="entity.multi==2")
-        th.enityName(colspan='4') {{entity.entityName}}
-      thead(v-else)
+      thead
         th(colspan='4')
           input#entityName(type='text',
                           placeholder='Varlık İsmi', 
@@ -13,17 +11,15 @@
       tbody
         tr.row(v-for='(item,key) in entity.entityItems',
               :key='item.id')
-          td.enityName(v-if="entity.multi == 2") #
-          td(v-else)
+          td
             .field
               select#element(v-model="item.itemKey", 
                               @change="changeItem(key,entity,$event.target.value)")
                 option(disabled, value='') ID
-                // option(title="Unique", value='unique') #
+                option(title="Unique", value='unique') #
                 option(title="Mandatory", value='mandatory') *
                 option(title="Optional", value='optional') o
-          td.enityName(v-if="entity.multi == 2") {{item.itemName}}
-          td(v-else)
+          td
             .field
               input(type='text',:value="item.itemName", 
                     placeholder='İsmi', 
@@ -69,9 +65,7 @@ export default {
       this.$store.dispatch("delEntity");
     },
     initForDelete() {
-      
       document.onkeydown = evt => {
-        
         evt = evt || window.event;
         if (evt.keyCode == 91) {
           if (this.activeEntity != 0) {
@@ -97,6 +91,7 @@ export default {
 
 
 <style lang="scss" scoped>
+
 .tablo {
   select {
     background: transparent;
@@ -154,8 +149,8 @@ input[type="text"] {
 
 .ep {
   position: absolute;
-  right: 64%;
-  top: 62px;
+  left: 23%;
+  top: 60px;
   width: 15px;
   height: 15px;
   border-radius: 50%;

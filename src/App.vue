@@ -9,7 +9,7 @@ import AppHeader from "@/components/global/Header";
 export default {
   name: "App",
   components: {
-    AppHeader,
+    AppHeader
   }
 };
 </script>
@@ -29,4 +29,13 @@ body {
   font-family: "Avenir", Helvetica, Arial, sans-serif;
 }
 
+.aLabel {
+  background-color: #c0392b;
+  color: #fff;
+  padding: 0.1rem .5rem;
+  border-radius: 3px;
+  font-size: 12px;
+  border: 1px solid #333;
+  cursor: pointer;
+}
 </style>

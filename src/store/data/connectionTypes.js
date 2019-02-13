@@ -44,7 +44,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: -1,
-        id: "3",
+        id: "3"
       }
     ],
     [
@@ -69,7 +69,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: -1,
-        id: "4",
+        id: "4"
       }
     ]
   ],
@@ -82,7 +82,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: -1,
-        id: "5",
+        id: "5"
       }
     ]
   ],
@@ -95,7 +95,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: -1,
-        id: "6",
+        id: "6"
       }
     ]
   ],
@@ -131,7 +131,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: -1,
-        id: "arrow2",
+        id: "arrow2"
       }
     ]
   ],
@@ -183,7 +183,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: 1,
-        id: "10",
+        id: "10"
       }
     ],
     [
@@ -208,7 +208,7 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: 1,
-        id: "11",
+        id: "11"
       }
     ],
 
@@ -234,10 +234,10 @@ export default {
         length: 10,
         foldback: 0.3,
         direction: 1,
-        id: "12",
+        id: "12"
       }
     ],
-
+    ["Label", { label: "Dönüştür", id: "convert", cssClass: "aLabel" }],
     [
       // Arrow
       "Arrow",
@@ -368,4 +368,4 @@ export default {
       }
     ]
   ]
-}
+};

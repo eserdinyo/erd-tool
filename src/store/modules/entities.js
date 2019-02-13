@@ -9,14 +9,14 @@ const state = {
     itemName: "",
     dataType: "int"
   }
-}
+};
 
 /* GETTERS */
 const getters = {
   activeEntity: state => state.activeEntity,
   entities: state => state.entities,
-  itemKey: state => state.itemKey,
-}
+  itemKey: state => state.itemKey
+};
 
 /* MUTATIONS */
 const mutations = {
@@ -26,7 +26,7 @@ const mutations = {
   setItemKey(state, itemKey) {
     state.itemKey = itemKey;
   }
-}
+};
 
 /* ACTIONS */
 const actions = {
@@ -47,38 +47,47 @@ const actions = {
         .child(key)
         .remove();
     }
-    commit('setItemKey', key)
+    commit("setItemKey", key);
   },
   addItem({ state, commit }) {
     ref
       .child(state.activeEntity)
       .child("entityItems")
       .push(state.item);
-    commit('setItemKey', 1)
+    commit("setItemKey", 1);
   },
   delEntity({ state }) {
     ref.child(state.activeEntity).remove();
   },
   addEntity({ commit, state }, entity) {
-    let posX, posY, multi, entityName, entityItems, entityType = "";
+    let posX,
+      posY,
+      multi,
+      entityName,
+      entityItems,
+      entityType = "";
     if (entity) {
       posX = entity.posX;
       posY = entity.posY;
       multi = 2;
-      entityName = entity.entityName;
+      entityName = "";
       entityItems = [
         {
           itemKey: "unique",
-          itemName: `${entity.sourceName}Id`,
+          itemName: `${entity.sourceName}`,
           dataType: "INTEGER"
         },
         {
           itemKey: "unique",
-          itemName: `${entity.targetName}Id`,
+          itemName: `${entity.targetName}`,
+          dataType: "INTEGER"
+        },
+        {
+          itemKey: "mandatory",
+          itemName: "",
           dataType: "INTEGER"
         }
-      ]
-
+      ];
     } else {
       posX = 70;
       posY = 90;
@@ -90,7 +99,7 @@ const actions = {
           itemName: "",
           dataType: "int"
         }
-      ]
+      ];
     }
     ref.push({
       ID: jsPlumbUtil.uuid(),
@@ -99,11 +108,10 @@ const actions = {
       entityType,
       posX,
       posY,
-      entityItems,
+      entityItems
     });
   },
   initEntities({ state }) {
-
     return new Promise((resolve, reject) => {
       ref.on("value", snap => {
         const data = snap.val();
@@ -115,15 +123,15 @@ const actions = {
           entities.push(entity);
         }
         state.entities = entities;
-        resolve('OK')
+        resolve("OK");
       });
-    })
+    });
   }
-}
+};
 
 export default {
   state,
   getters,
   mutations,
   actions
-}
+};

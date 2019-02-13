@@ -14,7 +14,7 @@ import $ from "jquery";
 
 import { jsPlumb } from "jsplumb";
 import { EventBus } from "@/main";
-import { ref, refConn, refConnType } from "@/firebase/";
+import { ref, refConn, refConnType, refGlobalConnType } from "@/firebase/";
 import { mapGetters } from "vuex";
 
 import AppSidebar from "@/components/global/Sidebar";
@@ -83,6 +83,93 @@ export default {
         });
 
         instance.deleteConnection(c);
+      });
+
+      // ********************* //
+      //         CLICK         //
+      // ********************* //
+      instance.bind("click", c => {
+        if (c.getOverlay("convert")) {
+          const conID =
+            c._jsPlumb.overlays[Object.keys(c._jsPlumb.overlays)[0]].id;
+          let s = c.sourceId,
+            t = c.targetId;
+
+          // **************************************  //
+          //            M:M SEÇİMLİ-ZORUNLU         //
+          // ************************************* //
+          if (conID == 12) {
+            let sourceX,
+              key,
+              targetX,
+              sourceY,
+              posX,
+              posY,
+              newEntityTarget,
+              sourceName,
+              targetName,
+              entityType,
+              dashType1 = "0 5 5",
+              dashType2 = "150 5 0";
+
+            // entityType'ı güncelle
+            this.entities.forEach(entity => {
+              if (entity.ID == t) {
+                key = entity.id;
+                ref.child(key).update({ entityType: "mandatory" });
+              } else if (entity.ID == s) {
+                key = entity.id;
+                ref.child(key).update({ entityType: "optional" });
+              }
+            });
+
+            // get some values for new entity
+            this.entities.forEach(entity => {
+              if (entity.ID == s) {
+                sourceX = entity.posX;
+                sourceY = entity.posY;
+                sourceName = `${entity.entityName}_${entity.entityItems[0].itemName}`;
+              }
+              if (entity.ID == t) {
+                targetX = entity.posX;
+                targetName = `${entity.entityName}_${entity.entityItems[0].itemName}`;
+              }
+            });
+
+            posX = (targetX - sourceX) / 2 + sourceX - 10;
+            posY = sourceY + 300;
+
+            this.$store.dispatch("addEntity", {
+              posX,
+              posY,
+              entityName,
+              sourceName,
+              targetName
+            });
+
+            this.entities.forEach(entity => {
+              if (entity.multi == 2) newEntityTarget = entity.ID;
+            });
+
+            refConnType.update({ connType: 6 });
+            refGlobalConnType.update({ globalConnType: "Flowchart" });
+
+            this.$store.commit("setConnectionType", 6);
+            refConn.push({
+              sourceId: s,
+              targetId: newEntityTarget,
+              dashType: dashType1,
+              overlay: this.connType
+            });
+            refConn.push({
+              sourceId: t,
+              targetId: newEntityTarget,
+              dashType: dashType2,
+              overlay: this.connType
+            });
+            location.reload();
+          }
+        }
       });
 
       // ********************* //
@@ -240,79 +327,6 @@ export default {
               overlay: this.connType
             });
           }
-        }
-        // ****************************************  //
-        //            M:M SEÇİMLİ-ZORUNLU           //
-        // *************************************** //
-        else if (conID == 12) {
-          let sourceX,
-            key,
-            targetX,
-            sourceY,
-            posX,
-            posY,
-            newEntityTarget,
-            entityName,
-            sourceName,
-            targetName,
-            entityType;
-
-          // entityType'ı güncelle
-          this.entities.forEach(entity => {
-            if (entity.ID == t) {
-              key = entity.id;
-              ref.child(key).update({ entityType: "mandatory" });
-            } else if (entity.ID == s) {
-              key = entity.id;
-              ref.child(key).update({ entityType: "optional" });
-            }
-          });
-
-          // get some values for new entity
-          this.entities.forEach(entity => {
-            if (entity.ID == s) {
-              sourceX = entity.posX;
-              sourceY = entity.posY;
-              sourceName = entity.entityName;
-            }
-            if (entity.ID == t) {
-              targetX = entity.posX;
-              targetName = entity.entityName;
-            }
-          });
-
-          posX = (targetX - sourceX) / 2 + sourceX - 10;
-          posY = sourceY + 300;
-          entityName = `${sourceName}_${targetName}`;
-
-          this.$store.dispatch("addEntity", {
-            posX,
-            posY,
-            entityName,
-            sourceName,
-            targetName
-          });
-
-          this.entities.forEach(entity => {
-            if (entity.multi == 2) newEntityTarget = entity.ID;
-          });
-
-          refConnType.update({ connType: 6 });
-
-          this.$store.commit("setConnectionType", 6);
-          refConn.push({
-            sourceId: s,
-            targetId: newEntityTarget,
-            dashType: this.dashType,
-            overlay: this.connType
-          });
-          refConn.push({
-            sourceId: t,
-            targetId: newEntityTarget,
-            dashType: this.dashType,
-            overlay: this.connType
-          });
-          location.reload();
         }
       });
 
