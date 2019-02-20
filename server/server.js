@@ -69,7 +69,7 @@ app.post("/tables", (req, res) => {
   }
 
   tables.forEach(table => {
-    if (table.entityName) {
+    if (table.entityType) {
       table.entityName.sync({ force: true });
     } else {
       setTimeout(() => {
