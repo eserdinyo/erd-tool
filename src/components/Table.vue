@@ -7,14 +7,20 @@
         tbody
           tr.tablo__header
             td Anahtar Tipi
+            td Zor/Sec
             td Veri Tipi
             td Sütun İsmi
           template(v-for="(item,key,index) in table.entityItems")
-            tr()
+            tr
               td.field
                 select#element()
                   option(value='', selected) None
                   option(title="Unique", value='unique') UK
+              td.field
+                p(v-if="item.itemKey == 'unique'") #
+                p(v-else-if="item.itemKey == 'mandatory'") *
+                p(v-else-if="item.itemKey == 'optional'") o
+                p(v-else) 
               td.field
                 select#element(v-model="item.dataType",
                               @change="changeDataType(key,table,$event.target.value)")

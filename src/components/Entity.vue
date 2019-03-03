@@ -149,13 +149,13 @@ input[type="text"] {
 
 .ep {
   position: absolute;
-  left: 23%;
+  left: 30%;
   top: 60px;
   width: 15px;
   height: 15px;
   border-radius: 50%;
   background-color: rgba(204, 204, 204, 0.2);
-  border: 1px solid rgba(170, 170, 170, 0.2);
+  border: 1px solid rgba(170, 170, 170, 0.8);
   cursor: pointer;
 }
 

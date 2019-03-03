@@ -1,9 +1,9 @@
 const Sequelize = require('sequelize')
 
-const sequelize = new Sequelize('senior', 'root', 'root', {
+const sequelize = new Sequelize('senior', 'root', '', {
   host: 'localhost',
   dialect: 'mysql',
-  port: '8889',
+  port: '3306',
   pool: {
     max: 5,
     min: 0,
