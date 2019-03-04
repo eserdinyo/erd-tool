@@ -74,6 +74,11 @@ const actions = {
       entityItems = [
         {
           itemKey: "unique",
+          itemName: `id`,
+          dataType: "INTEGER"
+        }
+       /*  {
+          itemKey: "unique",
           itemName: `${entity.sourceName}`,
           dataType: "INTEGER"
         },
@@ -86,7 +91,7 @@ const actions = {
           itemKey: "mandatory",
           itemName: "",
           dataType: "INTEGER"
-        }
+        } */
       ];
     } else {
       posX = 70;
@@ -97,7 +102,7 @@ const actions = {
         {
           itemKey: "",
           itemName: "",
-          dataType: "int"
+          dataType: "INTEGER"
         }
       ];
     }

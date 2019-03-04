@@ -1,14 +1,3 @@
-<template lang="pug">
-    .cover
-      app-toolbar
-      #main.main
-        app-entity(v-for='entity in entities', 
-          :key="entity.id"
-          :entity="entity")
-      app-sidebar
-</template>
-
-
 <script>
 import $ from "jquery";
 
@@ -430,6 +419,15 @@ export default {
 };
 </script>
 
+<template lang="pug">
+    .cover
+      app-toolbar
+      #main.main
+        app-entity(v-for='entity in entities', 
+          :key="entity.id"
+          :entity="entity")
+      app-sidebar
+</template>
 
 <style lang="scss" scoped>
 .cover {

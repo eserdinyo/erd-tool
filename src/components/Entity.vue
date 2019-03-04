@@ -67,7 +67,7 @@ export default {
     initForDelete() {
       document.onkeydown = evt => {
         evt = evt || window.event;
-        if (evt.keyCode == 91) {
+        if (evt.keyCode == 46) {
           if (this.activeEntity != 0) {
             this.delEntity();
           }
@@ -140,6 +140,10 @@ input[type="text"] {
 .entity {
   width: 250px;
   position: absolute;
+
+  &:hover .ep {
+    display: unset;
+  }
 }
 
 .activeEntity {
@@ -151,12 +155,13 @@ input[type="text"] {
   position: absolute;
   left: 30%;
   top: 60px;
-  width: 15px;
   height: 15px;
+  width: 15px;
   border-radius: 50%;
   background-color: rgba(204, 204, 204, 0.2);
   border: 1px solid rgba(170, 170, 170, 0.8);
   cursor: pointer;
+  display: none;
 }
 
 .enityName {
