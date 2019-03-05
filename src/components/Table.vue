@@ -12,7 +12,9 @@
             td Sütun İsmi
           template(v-for="(item,key,index) in table.entityItems")
             tr
-              td.field
+              td(v-if="(table.multi == 2 && !item.isShow)") FK
+              td(v-else-if="item.itemKey== 'unique'") PK
+              td.field(v-else)
                 select#element()
                   option(value='', selected) None
                   option(title="Unique", value='unique') UK

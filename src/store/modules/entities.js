@@ -74,24 +74,22 @@ const actions = {
       entityItems = [
         {
           itemKey: "unique",
-          itemName: `id`,
-          dataType: "INTEGER"
-        }
-       /*  {
+          itemName: "id",
+          dataType: "INTEGER",
+          isShow: true,
+        },
+        {
           itemKey: "unique",
           itemName: `${entity.sourceName}`,
-          dataType: "INTEGER"
+          dataType: "INTEGER",
+          isShow: false
         },
         {
           itemKey: "unique",
           itemName: `${entity.targetName}`,
-          dataType: "INTEGER"
-        },
-        {
-          itemKey: "mandatory",
-          itemName: "",
-          dataType: "INTEGER"
-        } */
+          dataType: "INTEGER",
+          isShow: false
+        }
       ];
     } else {
       posX = 70;
@@ -102,6 +100,7 @@ const actions = {
         {
           itemKey: "",
           itemName: "",
+          isShow: true,
           dataType: "INTEGER"
         }
       ];

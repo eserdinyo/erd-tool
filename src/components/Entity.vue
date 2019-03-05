@@ -10,7 +10,8 @@
                           @keyup="sendEntityName(entity,$event.target.value)")
       tbody
         tr.row(v-for='(item,key) in entity.entityItems',
-              :key='item.id')
+              :key='item.id',
+              v-if="!(entity.multi == 2 && !item.isShow)")
           td
             .field
               select#element(v-model="item.itemKey", 
