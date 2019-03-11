@@ -9,6 +9,7 @@ import { mapGetters } from "vuex";
 import AppSidebar from "@/components/global/Sidebar";
 import AppEntity from "@/components/Entity";
 import AppToolbar from "@/components/global/Toolbar";
+import { setTimeout } from "timers";
 
 export default {
   data() {
@@ -117,11 +118,15 @@ export default {
               if (entity.ID == s) {
                 sourceX = entity.posX;
                 sourceY = entity.posY;
-                sourceName = `${entity.entityName}_${entity.entityItems[0].itemName}`;
+                sourceName = `${entity.entityName}_${
+                  entity.entityItems[0].itemName
+                }`;
               }
               if (entity.ID == t) {
                 targetX = entity.posX;
-                targetName = `${entity.entityName}_${entity.entityItems[0].itemName}`;
+                targetName = `${entity.entityName}_${
+                  entity.entityItems[0].itemName
+                }`;
               }
             });
 
@@ -406,15 +411,27 @@ export default {
       this.$store.dispatch("initEntities").then(() => {
         this.$store.dispatch("initConnections").then(() => {
           this.getflow();
+          this.getNotes();
         });
       });
       this.$store.dispatch("getConnType");
       this.$store.dispatch("getDashType");
       this.$store.dispatch("getGlobalConnType");
+    },
+    getNotes() {
+      this.entities.map(entity => {
+        Object.values(entity.notes).map(note => {
+          this.$store.commit("setNotes", note);
+        });
+      });
+    },
+    addNote(entityID, id, msg) {
+      this.$store.dispatch("addNote", { entityID, id, msg });
     }
   },
   created() {
     this.init();
+    this.addNote("-LZBHBzetEiRM6p9oqmH", 21, "foo");
   }
 };
 </script>

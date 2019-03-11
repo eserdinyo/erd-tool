@@ -34,10 +34,20 @@ app.post("/tables", (req, res) => {
         };
       } */
 
-      columns[table.entityItems[i].itemName] = {
-        type: getEntityDataType(table.entityItems[i].dataType),
-        allowNull: false
-      };
+
+      if (table.entityItems[i].itemKey == "mandatory") {
+        columns[table.entityItems[i].itemName] = {
+          type: getEntityDataType(table.entityItems[i].dataType),
+          allowNull: false
+        };
+      } else if (table.entityItems[i].itemKey == "optional") {
+        columns[table.entityItems[i].itemName] = {
+          type: getEntityDataType(table.entityItems[i].dataType),
+          allowNull: true
+        };
+      }
+
+
 
       // Set PK
       columns[table.entityItems[0].itemName] = {

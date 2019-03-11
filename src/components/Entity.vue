@@ -26,6 +26,9 @@
                     placeholder='İsmi', 
                     @keyup="sendItemName(key,entity, $event.target.value)")
     .ep(v-if="entity.multi != 2")
+    .notes
+      .notes__note(v-for="note in entity.notes")
+        p {{note.id}}
 </template>
 
 <script>
@@ -93,6 +96,26 @@ export default {
 
 <style lang="scss" scoped>
 
+.notes {
+  display: flex;
+  position: absolute;
+  top: -14px;
+  left: 0;
+  &__note {
+    height: 13px;
+    width: 13px;
+    font-size: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 50%;
+    background-color: #e74c3c;
+    color: #fff;
+    margin-left: 5px;
+    font-weight: bold;
+  }
+}
+
 .tablo {
   select {
     background: transparent;
@@ -100,6 +123,7 @@ export default {
     border: 1px solid (#191919, 0.3);
     color: #191919;
   }
+  position: relative;
 }
 
 table {

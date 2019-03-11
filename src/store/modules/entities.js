@@ -2,6 +2,7 @@ import { ref } from "@/firebase";
 /* STATE */
 const state = {
   entities: [],
+  notes: [],
   activeEntity: 0,
   itemKey: "",
   item: {
@@ -15,7 +16,8 @@ const state = {
 const getters = {
   activeEntity: state => state.activeEntity,
   entities: state => state.entities,
-  itemKey: state => state.itemKey
+  itemKey: state => state.itemKey,
+  notes: state => state.notes,
 };
 
 /* MUTATIONS */
@@ -25,6 +27,9 @@ const mutations = {
   },
   setItemKey(state, itemKey) {
     state.itemKey = itemKey;
+  },
+  setNotes(state, note) {
+    state.notes.push(note);
   }
 };
 
@@ -79,13 +84,13 @@ const actions = {
           isShow: true,
         },
         {
-          itemKey: "unique",
+          itemKey: "optional",
           itemName: `${entity.sourceName}`,
           dataType: "INTEGER",
           isShow: false
         },
         {
-          itemKey: "unique",
+          itemKey: "mandatory",
           itemName: `${entity.targetName}`,
           dataType: "INTEGER",
           isShow: false
@@ -130,7 +135,17 @@ const actions = {
         resolve("OK");
       });
     });
-  }
+  },
+  addNote({ commit }, payload) {
+    const { entityID, id, msg } = payload;
+    ref
+      .child(entityID)
+      .child("notes")
+      .push({
+        id,
+        msg
+      });
+  },
 };
 
 export default {

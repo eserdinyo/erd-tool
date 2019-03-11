@@ -5,14 +5,26 @@
     br
     hr(v-if="show")
     router-link.aktarBtn(to='/tables', tag="button", v-if="show") Dönüştür
+    .notes__container
+      .notes__title Notlar
+      .notes
+        .notes__note(v-for="note in notes")
+          p.notes__note--number {{note.id}}. 
+          p {{note.msg}}
 </template>
 
 <script>
+import { mapGetters } from "vuex";
+
 export default {
   data() {
     return {
-      show: true
+      show: true,
+      showNotes: []
     };
+  },
+  computed: {
+    ...mapGetters(["notes"])
   },
   methods: {
     createTable() {
@@ -43,7 +55,7 @@ export default {
 
 h4 {
   text-align: center;
-  background-color: rgba(#3d4752,1);
+  background-color: rgba(#3d4752, 1);
   border: none;
   border-radius: 4px;
   padding: 10px 10px;
@@ -99,6 +111,35 @@ select {
   margin-right: 10px;
   margin-top: 20px;
   margin-bottom: 20px;
+}
+
+.notes {
+  &__container {
+    padding: 20px 0;
+    color: #333;
+    border-top: 1px solid #333;
+    margin-top: 20px;
+  }
+  &__title {
+    color: #333;
+    text-transform: uppercase;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+
+  &__note {
+    font-size: 14px;
+    text-align: left;
+    margin-bottom: 10px;
+    display: flex;
+    border-bottom: 1px solid #ccc;
+    padding-bottom: 5px;
+
+    &--number {
+      font-weight: bold;
+      margin-right: 5px;
+    }
+  }
 }
 </style>
 
