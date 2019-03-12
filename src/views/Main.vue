@@ -28,6 +28,7 @@ export default {
       "connTypes",
       "connType",
       "dashType",
+      "notes",
       "globalConnType"
     ])
   },
@@ -106,6 +107,7 @@ export default {
             this.entities.forEach(entity => {
               if (entity.ID == t) {
                 key = entity.id;
+                this.addNote(key, this.notes.length + 1, "hello world");
                 ref.child(key).update({ entityType: "mandatory" });
               } else if (entity.ID == s) {
                 key = entity.id;
@@ -420,9 +422,11 @@ export default {
     },
     getNotes() {
       this.entities.map(entity => {
-        Object.values(entity.notes).map(note => {
-          this.$store.commit("setNotes", note);
-        });
+        if (entity.notes) {
+          Object.values(entity.notes).forEach(note => {
+            this.$store.commit("setNotes", note);
+          });
+        }
       });
     },
     addNote(entityID, id, msg) {
@@ -431,7 +435,7 @@ export default {
   },
   created() {
     this.init();
-    this.addNote("-LZBHBzetEiRM6p9oqmH", 21, "foo");
+    // this.addNote("-LZBHBzetEiRM6p9oqmH", 21, "foo");
   }
 };
 </script>

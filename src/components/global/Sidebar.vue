@@ -19,8 +19,7 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
-      show: true,
-      showNotes: []
+      show: true
     };
   },
   computed: {
