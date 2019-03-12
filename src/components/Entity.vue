@@ -6,6 +6,7 @@
         th(colspan='4')
           input#entityName(type='text',
                           placeholder='Varlık İsmi', 
+                          style="text-transform:uppercase",
                           :value='entity.entityName',
                           @keyup="sendEntityName(entity,$event.target.value)")
       tbody

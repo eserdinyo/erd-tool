@@ -28,8 +28,16 @@ const mutations = {
   setItemKey(state, itemKey) {
     state.itemKey = itemKey;
   },
-  setNotes(state, note) {
-    state.notes.push(note);
+  setNotes(state) {
+    state.notes = [];
+
+    state.entities.map(entity => {
+      if (entity.notes) {
+        Object.values(entity.notes).forEach(note => {
+          state.notes.push(note);
+        });
+      }
+    });
   }
 };
 

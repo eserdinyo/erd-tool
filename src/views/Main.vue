@@ -120,15 +120,17 @@ export default {
               if (entity.ID == s) {
                 sourceX = entity.posX;
                 sourceY = entity.posY;
-                sourceName = `${entity.entityName}_${
-                  entity.entityItems[0].itemName
-                }`;
+                sourceName = `${entity.entityName.slice(
+                  entity.entityName.indexOf("/") + 1,
+                  entity.entityName.length
+                ).toLowerCase()}_${entity.entityItems[0].itemName}`;
               }
               if (entity.ID == t) {
                 targetX = entity.posX;
-                targetName = `${entity.entityName}_${
-                  entity.entityItems[0].itemName
-                }`;
+                targetName = `${entity.entityName.slice(
+                  entity.entityName.indexOf("/") + 1,
+                  entity.entityName.length
+                ).toLowerCase()}_${entity.entityItems[0].itemName}`;
               }
             });
 
@@ -413,22 +415,14 @@ export default {
       this.$store.dispatch("initEntities").then(() => {
         this.$store.dispatch("initConnections").then(() => {
           this.getflow();
-          this.getNotes();
+          this.$store.commit("setNotes");
         });
       });
       this.$store.dispatch("getConnType");
       this.$store.dispatch("getDashType");
       this.$store.dispatch("getGlobalConnType");
     },
-    getNotes() {
-      this.entities.map(entity => {
-        if (entity.notes) {
-          Object.values(entity.notes).forEach(note => {
-            this.$store.commit("setNotes", note);
-          });
-        }
-      });
-    },
+
     addNote(entityID, id, msg) {
       this.$store.dispatch("addNote", { entityID, id, msg });
     }

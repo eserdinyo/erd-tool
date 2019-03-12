@@ -3,7 +3,7 @@
     table#myTable
         thead
           th(colspan='4')
-              p#tableName {{table.entityName.toUpperCase() + 'S'}}
+              p#tableName {{setTableName(table.entityName)}}
         tbody
           tr.tablo__header
             td Anahtar Tipi
@@ -41,6 +41,7 @@ import { ref } from "@/firebase/";
 export default {
   name: "Table",
   props: ["table"],
+
   methods: {
     changeDataType(key, table, value) {
       ref
@@ -50,9 +51,12 @@ export default {
         .update({ dataType: value.toUpperCase() });
     },
     deleteSpace(str) {
-      return str.rep
+      return str.rep;
+    },
+    setTableName(name) {
+      if (name) return name.slice(0, name.indexOf("/")).toUpperCase();
     }
-  },
+  }
 };
 </script>
 
