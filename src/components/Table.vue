@@ -12,7 +12,8 @@
             td Sütun İsmi
           template(v-for="(item,key,index) in table.entityItems")
             tr
-              td(v-if="(table.multi == 2 && !item.isShow)") FK
+              td(v-if="(table.multi == 2 && !item.isShow && item.fk == 'fk1')") FK1
+              td(v-else-if="(table.multi == 2 && !item.isShow && item.fk == 'fk2')") FK2
               td(v-else-if="item.itemKey== 'unique'") PK
               td.field(v-else)
                 select#element()
@@ -54,7 +55,11 @@ export default {
       return str.rep;
     },
     setTableName(name) {
-      if (name) return name.slice(0, name.indexOf("/")).toUpperCase();
+      if (name.indexOf("/") != -1) {
+        return name.slice(0, name.indexOf("/")).toUpperCase();
+      } else if (name.indexOf("/") == -1) {
+        return name.toUpperCase();
+      }
     }
   }
 };

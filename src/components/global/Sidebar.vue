@@ -6,7 +6,7 @@
     hr(v-if="show")
     router-link.aktarBtn(to='/tables', tag="button", v-if="show") Dönüştür
     .notes__container
-      .notes__title Notlar
+      .notes__title Notes
       .notes
         .notes__note(v-for="note in notes")
           p.notes__note--number {{note.id}}. 

@@ -101,13 +101,14 @@ export default {
               targetName,
               entityType,
               dashType1 = "0 5 5",
-              dashType2 = "150 5 0";
+              dashType2 = "150 5 0",
+              msgTargetName,
+              msgSourceName;
 
             // entityType'ı güncelle
             this.entities.forEach(entity => {
               if (entity.ID == t) {
                 key = entity.id;
-                this.addNote(key, this.notes.length + 1, "hello world");
                 ref.child(key).update({ entityType: "mandatory" });
               } else if (entity.ID == s) {
                 key = entity.id;
@@ -120,19 +121,38 @@ export default {
               if (entity.ID == s) {
                 sourceX = entity.posX;
                 sourceY = entity.posY;
-                sourceName = `${entity.entityName.slice(
-                  entity.entityName.indexOf("/") + 1,
-                  entity.entityName.length
-                ).toLowerCase()}_${entity.entityItems[0].itemName}`;
+                msgSourceName = entity.entityName;
+                sourceName = `${entity.entityName
+                  .slice(
+                    entity.entityName.indexOf("/") + 1,
+                    entity.entityName.length
+                  )
+                  .toLowerCase()}_${entity.entityItems[0].itemName}`;
               }
               if (entity.ID == t) {
                 targetX = entity.posX;
-                targetName = `${entity.entityName.slice(
-                  entity.entityName.indexOf("/") + 1,
-                  entity.entityName.length
-                ).toLowerCase()}_${entity.entityItems[0].itemName}`;
+                msgTargetName = entity.entityName;
+
+                targetName = `${entity.entityName
+                  .slice(
+                    entity.entityName.indexOf("/") + 1,
+                    entity.entityName.length
+                  )
+                  .toLowerCase()}_${entity.entityItems[0].itemName}`;
               }
             });
+
+            this.addNote(
+              key,
+              this.notes.length + 1,
+              `Every ${msgTargetName.slice(
+                "0",
+                msgTargetName.indexOf("/")
+              ).toUpperCase()} must have a ${msgSourceName.slice(
+                "0",
+                msgSourceName.indexOf("/")
+              ).toUpperCase()}`
+            );
 
             posX = (targetX - sourceX) / 2 + sourceX - 10;
             posY = sourceY + 300;

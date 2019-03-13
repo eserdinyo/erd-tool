@@ -92,16 +92,18 @@ const actions = {
           isShow: true,
         },
         {
-          itemKey: "optional",
+          itemKey: "mandatory",
           itemName: `${entity.sourceName}`,
           dataType: "INTEGER",
-          isShow: false
+          isShow: false,
+          fk: "fk1",
         },
         {
           itemKey: "mandatory",
           itemName: `${entity.targetName}`,
           dataType: "INTEGER",
-          isShow: false
+          isShow: false,
+          fk: "fk2",
         }
       ];
     } else {
