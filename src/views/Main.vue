@@ -13,7 +13,13 @@ import { setTimeout } from "timers";
 
 export default {
   data() {
-    return {};
+    return {
+      isChoosed: "",
+      entityID: "",
+      sourceKey: "",
+      targetKey: "",
+      isPopupOpen: false
+    };
   },
   components: {
     AppEntity,
@@ -145,13 +151,11 @@ export default {
             this.addNote(
               key,
               this.notes.length + 1,
-              `Every ${msgTargetName.slice(
-                "0",
-                msgTargetName.indexOf("/")
-              ).toUpperCase()} must have a ${msgSourceName.slice(
-                "0",
-                msgSourceName.indexOf("/")
-              ).toUpperCase()}`
+              `Every ${msgTargetName
+                .slice("0", msgTargetName.indexOf("/"))
+                .toUpperCase()} must have a ${msgSourceName
+                .slice("0", msgSourceName.indexOf("/"))
+                .toUpperCase()}`
             );
 
             posX = (targetX - sourceX) / 2 + sourceX - 10;
@@ -175,12 +179,14 @@ export default {
             this.$store.commit("setConnectionType", 6);
             refConn.push({
               sourceId: s,
+              connType: 0,
               targetId: newEntityTarget,
               dashType: dashType1,
               overlay: this.connType
             });
             refConn.push({
               sourceId: t,
+              connType: 0,
               targetId: newEntityTarget,
               dashType: dashType2,
               overlay: this.connType
@@ -200,12 +206,17 @@ export default {
         const conID =
           ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
 
-        // ******************************* //
-        //     1:M   ÇİFT TARAF ZORUNLU    //
-        // ******************************* //
-        if (conID == 4 || conID == 0 || conID == 1 || conID == 5) {
+        console.log(conID);
+
+        // *******************************      //
+        //     1:M-1:1   ÇİFT TARAF ZORUNLU    //
+        // *******************************    //
+        if (conID == 0 || conID == 1 || conID == 5 || conID == 4) {
           let key = "",
-            entityType = "";
+            entityType = "",
+            connType = "";
+
+          conID == 1 ? (connType = 1) : (connType = 0);
 
           conID == 0 || conID == 4 ? (entityType = "optional") : 0;
           conID == 1 || conID == 5 ? (entityType = "mandatory") : 0;
@@ -213,10 +224,12 @@ export default {
           this.entities.forEach(entity => {
             if (entity.ID == t) {
               key = entity.id;
+              this.targetKey = key;
               ref.child(key).update({ multi: 1 });
               ref.child(key).update({ entityType });
             } else if (entity.ID == s) {
               key = entity.id;
+              this.sourceKey = key;
               ref.child(key).update({ entityType });
             }
           });
@@ -225,6 +238,7 @@ export default {
             refConn.push({
               sourceId: s,
               targetId: t,
+              connType,
               dashType: this.dashType,
               overlay: this.connType
             });
@@ -293,12 +307,16 @@ export default {
           this.$store.commit("setConnectionType", 4);
           refConn.push({
             sourceId: s,
+            connType: 0,
             targetId: newEntityTarget,
             dashType: this.dashType,
             overlay: this.connType
           });
           refConn.push({
             sourceId: t,
+
+            connType: 0,
+
             targetId: newEntityTarget,
             dashType: this.dashType,
             overlay: this.connType
@@ -341,6 +359,8 @@ export default {
             refConn.push({
               sourceId: s,
               targetId: t,
+              connType: 0,
+
               dashType: this.dashType,
               overlay: this.connType
             });
@@ -442,13 +462,52 @@ export default {
       this.$store.dispatch("getDashType");
       this.$store.dispatch("getGlobalConnType");
     },
-
     addNote(entityID, id, msg) {
       this.$store.dispatch("addNote", { entityID, id, msg });
+    },
+    getEntityName(name) {
+      if (name) {
+        return name.slice(0, name.indexOf("/")).toUpperCase();
+      }
+    },
+    getEntityFk(entity) {
+      this.entityID = entity.ID;
+
+      if (entity.id == this.sourceKey) {
+        ref.child(this.sourceKey).update({ multi: 1 });
+        ref.child(this.targetKey).update({ multi: 0 });
+      } else {
+        ref.child(this.targetKey).update({ multi: 1 });
+        ref.child(this.sourceKey).update({ multi: 0 });
+      }
+    },
+    closeModal() {
+      this.isPopupOpen = false;
+    },
+    goTables() {
+      this.$router.push({ name: "tables" });
     }
   },
   created() {
     this.init();
+
+    EventBus.$on("donustur", () => {
+      this.connections.forEach(conn => {
+        if (conn.connType == 1) {
+          this.entities.forEach(entity => {
+            if (entity.ID == conn.targetId) {
+              this.targetKey = entity.id;
+            } else if (entity.ID == conn.sourceId) {
+              this.sourceKey = entity.id;
+            }
+          });
+          this.isPopupOpen = true;
+        } else {
+          this.$router.push({ name: "tables" });
+        }
+      });
+    });
+
     // this.addNote("-LZBHBzetEiRM6p9oqmH", 21, "foo");
   }
 };
@@ -462,6 +521,13 @@ export default {
           :key="entity.id"
           :entity="entity")
       app-sidebar
+      .popup(v-if="isPopupOpen")
+        .popup__title Choose Foreign Key
+        .entities
+          .entity(v-for="entity in entities", @click="getEntityFk(entity)", :class="{popup__choosed:entity.ID == entityID}")
+            p {{getEntityName(entity.entityName)}}
+        a.popup__btn(@click="goTables") continue
+        a.popup__close(@click="closeModal") x
 </template>
 
 <style lang="scss" scoped>
@@ -476,6 +542,78 @@ export default {
   text-align: center;
   width: 100%;
   height: 100vh;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 300px;
+  width: 300px;
+  border-radius: 3px;
+  background-color: #ddd;
+  z-index: 9999999;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+  padding: 10px;
+
+  &__title {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  .entities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    margin-top: 20px;
+  }
+  .entity {
+    height: 30px;
+    width: auto;
+    border: 1px solid #1abc9c;
+    border-radius: 3px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    cursor: pointer;
+
+    p {
+      font-weight: bold;
+    }
+  }
+
+  &__btn {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #1abc9c;
+    color: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &__close {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor: pointer;
+  }
+
+  &__choosed {
+    background-color: #1abc9c;
+
+    p {
+      color: #fff;
+    }
+  }
 }
 </style>
 

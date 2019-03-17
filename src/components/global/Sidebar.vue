@@ -4,7 +4,7 @@
     button.aktarBtn(@click="createTable", v-if="!show") Veri Tabanına Aktar
     br
     hr(v-if="show")
-    router-link.aktarBtn(to='/tables', tag="button", v-if="show") Dönüştür
+    button.aktarBtn(@click="donustur" tag="button", v-if="show") Dönüştür
     .notes__container
       .notes__title Notes
       .notes
@@ -15,6 +15,7 @@
 
 <script>
 import { mapGetters } from "vuex";
+import { EventBus } from "@/main";
 
 export default {
   data() {
@@ -28,6 +29,9 @@ export default {
   methods: {
     createTable() {
       this.$store.dispatch("sendDatabase");
+    },
+    donustur() {
+      EventBus.$emit("donustur", 1);
     }
   },
   created() {
