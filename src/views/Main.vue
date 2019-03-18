@@ -216,10 +216,10 @@ export default {
             entityType = "",
             connType = "";
 
-          conID == 1 ? (connType = 1) : (connType = 0);
-
           conID == 0 || conID == 4 ? (entityType = "optional") : 0;
           conID == 1 || conID == 5 ? (entityType = "mandatory") : 0;
+
+          conID == 0 ? (connType = 0) : conID == 1 ? (connType = 1) : 0;
 
           this.entities.forEach(entity => {
             if (entity.ID == t) {
@@ -327,6 +327,7 @@ export default {
         //            1:1 SEÇİMLİ-ZORUNLU           //
         // *************************************** //
         if (conID == 2) {
+          let key = "";
           this.entities.forEach(entity => {
             if (entity.ID == t) {
               key = entity.id;
@@ -334,8 +335,15 @@ export default {
               ref.child(key).update({ entityType: "mandatory" });
             } else if (entity.ID == s) {
               key = entity.id;
-              ref.child(key).update({ entityType: "optinal" });
+              ref.child(key).update({ entityType: "optional" });
             }
+          });
+          refConn.push({
+            sourceId: s,
+            targetId: t,
+            connType: 2,
+            dashType: this.dashType,
+            overlay: this.connType
           });
 
           // ****************************************  //
@@ -359,7 +367,7 @@ export default {
             refConn.push({
               sourceId: s,
               targetId: t,
-              connType: 0,
+              connType: 6,
 
               dashType: this.dashType,
               overlay: this.connType
@@ -493,7 +501,7 @@ export default {
 
     EventBus.$on("donustur", () => {
       this.connections.forEach(conn => {
-        if (conn.connType == 1) {
+        if (conn.connType == 0 || conn.connType == 1 || conn.connType == 2) {
           this.entities.forEach(entity => {
             if (entity.ID == conn.targetId) {
               this.targetKey = entity.id;
