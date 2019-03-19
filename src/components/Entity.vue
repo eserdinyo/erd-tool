@@ -12,7 +12,7 @@
       tbody
         tr.row(v-for='(item,key) in entity.entityItems',
               :key='item.id',
-              v-if="!(entity.multi == 2 && !item.isShow)")
+              v-if="item.isShow")
           td
             .field
               select#element(v-model="item.itemKey", 

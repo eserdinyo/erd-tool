@@ -108,6 +108,7 @@ export default {
               entityType,
               dashType1 = "0 5 5",
               dashType2 = "150 5 0",
+              dashType3 = "150 5 3",
               msgTargetName,
               msgSourceName;
 
@@ -130,8 +131,8 @@ export default {
                 msgSourceName = entity.entityName;
                 sourceName = `${entity.entityName
                   .slice(
-                    entity.entityName.indexOf("/") + 1,
-                    entity.entityName.length
+                    entity.entityName.indexOf("[") + 1,
+                    entity.entityName.length - 1
                   )
                   .toLowerCase()}_${entity.entityItems[0].itemName}`;
               }
@@ -141,8 +142,8 @@ export default {
 
                 targetName = `${entity.entityName
                   .slice(
-                    entity.entityName.indexOf("/") + 1,
-                    entity.entityName.length
+                    entity.entityName.indexOf("[") + 1,
+                    entity.entityName.length - 1
                   )
                   .toLowerCase()}_${entity.entityItems[0].itemName}`;
               }
@@ -152,9 +153,9 @@ export default {
               key,
               this.notes.length + 1,
               `Every ${msgTargetName
-                .slice("0", msgTargetName.indexOf("/"))
+                .slice("0", msgTargetName.indexOf("["))
                 .toUpperCase()} must have a ${msgSourceName
-                .slice("0", msgSourceName.indexOf("/"))
+                .slice("0", msgSourceName.indexOf("["))
                 .toUpperCase()}`
             );
 
@@ -314,9 +315,7 @@ export default {
           });
           refConn.push({
             sourceId: t,
-
             connType: 0,
-
             targetId: newEntityTarget,
             dashType: this.dashType,
             overlay: this.connType
@@ -475,7 +474,7 @@ export default {
     },
     getEntityName(name) {
       if (name) {
-        return name.slice(0, name.indexOf("/")).toUpperCase();
+        return name.slice(0, name.indexOf("[")).toUpperCase();
       }
     },
     getEntityFk(entity) {
