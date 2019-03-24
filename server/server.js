@@ -19,22 +19,6 @@ app.post("/tables", (req, res) => {
     let columns = {};
 
     for (let i in table.entityItems) {
-      /* if (table.multi == 2) {
-        // Set PK
-        columns[table.entityItems[0].itemName] = {
-          type: getEntityDataType(table.entityItems[0].dataType),
-          primaryKey: true,
-          allowNull: false
-        };
-        // Set PK
-        columns[table.entityItems[1].itemName] = {
-          type: getEntityDataType(table.entityItems[1].dataType),
-          primaryKey: true,
-          allowNull: false
-        };
-      } */
-
-
       if (table.entityItems[i].itemKey == "mandatory") {
         columns[table.entityItems[i].itemName] = {
           type: getEntityDataType(table.entityItems[i].dataType),
@@ -65,6 +49,8 @@ app.post("/tables", (req, res) => {
 
   // Creating M:M realtion table
   for (let i = 0; i < tables.length - 1; i++) {
+
+
     // Zorunlu taraf
     if (tables[i].entityType == "mandatory") {
       tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, {
@@ -75,8 +61,19 @@ app.post("/tables", (req, res) => {
       tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, {
         foreignKey: { allowNull: true }
       });
+    } else if (tables[i].entityType == "mm") {
+      // çok'a çok iki taraf zorunlu
+      tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, {
+        foreignKey: { name: tables[tables.length - 1].entityItems[1].itemName, allowNull: false },
+      });
+      tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, {
+        foreignKey: { name: tables[tables.length - 1].entityItems[2].itemName, allowNull: false }
+      });
+
     }
   }
+
+
 
   tables.forEach(table => {
     if (table.entityType) {

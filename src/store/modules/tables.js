@@ -30,8 +30,19 @@ const actions = {
     });
   },
   async sendDatabase({ state }) {
+    const tables = [];
+    state.tables.forEach(table => {
 
-    const res = await http.post('/tables', state.tables);
+      if (table.entityName.indexOf("[") != -1) {
+        table.entityName = table.entityName.slice(0, table.entityName.indexOf("["))
+        tables.push(table);
+      } else {
+        tables.push(table);
+      }
+
+    })
+
+    const res = await http.post('/tables', tables);
     if (res.data == "OK") {
       alert("Tablolar veritabanına aktarıldı!")
     }

@@ -8,7 +8,8 @@ const state = {
   item: {
     itemKey: "",
     itemName: "",
-    dataType: "int"
+    dataType: "int",
+    isShow: true,
   }
 };
 
@@ -62,12 +63,28 @@ const actions = {
     }
     commit("setItemKey", key);
   },
-  addItem({ state, commit }) {
-    ref
-      .child(state.activeEntity)
-      .child("entityItems")
-      .push(state.item);
-    commit("setItemKey", 1);
+  addItem({ state, commit }, payload) {
+    console.log(payload);
+
+    if (payload) {
+      ref
+        .child(payload.id)
+        .child("entityItems")
+        .push({
+          itemKey: "mandatory",
+          itemName: payload.name,
+          dataType: "int",
+          isShow: true,
+        });
+
+    } else {
+      ref
+        .child(state.activeEntity)
+        .child("entityItems")
+        .push(state.item);
+      commit("setItemKey", 1);
+    }
+
   },
   delEntity({ state }) {
     ref.child(state.activeEntity).remove();

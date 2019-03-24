@@ -116,10 +116,10 @@ export default {
             this.entities.forEach(entity => {
               if (entity.ID == t) {
                 key = entity.id;
-                ref.child(key).update({ entityType: "mandatory" });
+                ref.child(key).update({ entityType: "mm" });
               } else if (entity.ID == s) {
                 key = entity.id;
-                ref.child(key).update({ entityType: "optional" });
+                ref.child(key).update({ entityType: "mm" });
               }
             });
 
@@ -180,14 +180,14 @@ export default {
             this.$store.commit("setConnectionType", 6);
             refConn.push({
               sourceId: s,
-              connType: 0,
+              connType: 6,
               targetId: newEntityTarget,
               dashType: dashType1,
               overlay: this.connType
             });
             refConn.push({
               sourceId: t,
-              connType: 0,
+              connType: 6,
               targetId: newEntityTarget,
               dashType: dashType2,
               overlay: this.connType
@@ -477,15 +477,32 @@ export default {
         return name.slice(0, name.indexOf("[")).toUpperCase();
       }
     },
-    getEntityFk(entity) {
-      this.entityID = entity.ID;
+    getEntityFk(ent) {
+      this.entityID = ent.ID;
 
-      if (entity.id == this.sourceKey) {
+      if (ent.id == this.sourceKey) {
         ref.child(this.sourceKey).update({ multi: 1 });
         ref.child(this.targetKey).update({ multi: 0 });
+        this.entities.forEach(entity => {
+          if (entity.id == this.targetKey) {
+            this.$store.dispatch("addItem", {
+              id: ent.id,
+              name: entity.entityName,
+              dataType: entity.entityItems[0].dataType,
+            });
+          }
+        });
       } else {
         ref.child(this.targetKey).update({ multi: 1 });
         ref.child(this.sourceKey).update({ multi: 0 });
+        this.entities.forEach(entity => {
+          if (entity.id == this.sourceKey) {
+            this.$store.dispatch("addItem", {
+              id: ent.id,
+              name: entity.entityName
+            });
+          }
+        });
       }
     },
     closeModal() {
