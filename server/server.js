@@ -54,12 +54,12 @@ app.post("/tables", (req, res) => {
     // Zorunlu taraf
     if (tables[i].entityType == "mandatory") {
       tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, {
-        foreignKey: { allowNull: false }
+        foreignKey: { name: Object.values(tables[tables.length - 1].entityItems)[Object.values(tables[tables.length - 1].entityItems).length - 1].itemName, allowNull: false }
       });
     } else if (tables[i].entityType == "optional") {
       // Seçimli taraf
       tables[tables.length - 1].entityName.belongsTo(tables[i].entityName, {
-        foreignKey: { allowNull: true }
+        foreignKey: { name: Object.values(tables[tables.length - 1].entityItems)[Object.values(tables[tables.length - 1].entityItems).length - 1].itemName, allowNull: true }
       });
     } else if (tables[i].entityType == "mm") {
       // çok'a çok iki taraf zorunlu

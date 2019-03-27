@@ -20,21 +20,9 @@
         li Edit
         li View
         li Help
-
-      
-    //  .bottom__selects
-      
-      
-        .buttons(v-if="show")
-          button.addBtn(@click='addItem') +
-          button.subBtn(@click='subItem') -
-
-      
 </template>
 
 <script>
-import $ from "jquery";
-
 export default {
   name: "Header",
   data() {

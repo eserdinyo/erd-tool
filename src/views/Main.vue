@@ -477,6 +477,10 @@ export default {
         return name.slice(0, name.indexOf("[")).toUpperCase();
       }
     },
+    getShortName(name) {
+      if (name)
+        return name.slice(name.indexOf("[") + 1, name.length - 1).toLowerCase();
+    },
     getEntityFk(ent) {
       this.entityID = ent.ID;
 
@@ -487,8 +491,10 @@ export default {
           if (entity.id == this.targetKey) {
             this.$store.dispatch("addItem", {
               id: ent.id,
-              name: entity.entityName,
-              dataType: entity.entityItems[0].dataType,
+              name: `${this.getShortName(entity.entityName)}_${
+                entity.entityItems[0].itemName
+              }`,
+              dataType: entity.entityItems[0].dataType
             });
           }
         });
@@ -499,7 +505,10 @@ export default {
           if (entity.id == this.sourceKey) {
             this.$store.dispatch("addItem", {
               id: ent.id,
-              name: entity.entityName
+              name: `${this.getShortName(entity.entityName)}_${
+                entity.entityItems[0].itemName
+              }`,
+              dataType: entity.entityItems[0].dataType
             });
           }
         });

@@ -64,8 +64,6 @@ const actions = {
     commit("setItemKey", key);
   },
   addItem({ state, commit }, payload) {
-    console.log(payload);
-
     if (payload) {
       ref
         .child(payload.id)
@@ -73,8 +71,9 @@ const actions = {
         .push({
           itemKey: "mandatory",
           itemName: payload.name,
-          dataType: "int",
-          isShow: true,
+          dataType: "INTEGER",
+          fk: "fk",
+          isShow: false,
         });
 
     } else {
