@@ -33,8 +33,8 @@ const actions = {
     const tables = [];
     state.tables.forEach(table => {
 
-      if (table.entityName.indexOf("[") != -1) {
-        table.entityName = table.entityName.slice(0, table.entityName.indexOf("["))
+      if (table.entityName.indexOf("(") != -1) {
+        table.entityName = table.entityName.slice(0, table.entityName.indexOf("("))
         tables.push(table);
       } else {
         tables.push(table);

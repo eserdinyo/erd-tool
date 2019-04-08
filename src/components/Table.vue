@@ -56,9 +56,9 @@ export default {
       return str.rep;
     },
     setTableName(name) {
-      if (name.indexOf("[") != -1) {
-        return name.slice(0, name.indexOf("[")).toUpperCase();
-      } else if (name.indexOf("[") == -1) {
+      if (name.indexOf("(") != -1) {
+        return name.slice(0, name.indexOf("(")).toUpperCase();
+      } else if (name.indexOf("(") == -1) {
         return name.toUpperCase();
       }
     }

@@ -30,6 +30,7 @@
     .notes
       .notes__note(v-for="note in entity.notes")
         p {{note.id}}
+    .line(v-if="entity.multi == 2")
 </template>
 
 <script>
@@ -188,6 +189,16 @@ input[type="text"] {
   border: 1px solid rgba(170, 170, 170, 0.8);
   cursor: pointer;
   display: none;
+}
+
+.line {
+  height: 3px;
+  width: 150px;
+  background-color: #000;
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translate(-100%,-50%);
 }
 
 .enityName {

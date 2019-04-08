@@ -526,7 +526,7 @@ export default {
 
     EventBus.$on("donustur", () => {
       this.connections.forEach(conn => {
-        if (conn.connType == 0 || conn.connType == 1 || conn.connType == 2) {
+        if (conn.connType == 0 || conn.connType == 1) {
           this.entities.forEach(entity => {
             if (entity.ID == conn.targetId) {
               this.targetKey = entity.id;
