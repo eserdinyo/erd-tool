@@ -4,5 +4,6 @@
         "titleBar.inactiveForeground": "#555",
         "titleBar.activeBackground": "#080808",
         "titleBar.inactiveBackground": "#080808",
-    }
+    },
+    "dimmer.enabled": true
 }

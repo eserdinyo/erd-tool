@@ -6,10 +6,10 @@
               p#tableName {{setTableName(table.entityName)}}
         tbody
           tr.tablo__header
-            td Anahtar Tipi
-            td Zor/Sec
-            td Veri Tipi
-            td Sütun İsmi
+            td Key Type
+            td Optionality
+            td Data Type
+            td Column Name
           template(v-for="(item,key,index) in table.entityItems")
             tr
               td(v-if="(table.multi == 2 && !item.isShow && item.fk == 'fk1')") FK1
@@ -21,8 +21,7 @@
                   option(value='', selected) None
                   option(title="Unique", value='unique') UK
               td.field
-                p(v-if="item.itemKey == 'unique'") #
-                p(v-else-if="item.itemKey == 'mandatory'") *
+                p(v-if="item.itemKey == 'mandatory' || item.itemKey == 'unique'") *
                 p(v-else-if="item.itemKey == 'optional'") o
                 p(v-else) 
               td.field
@@ -51,9 +50,6 @@ export default {
         .child("entityItems")
         .child(key)
         .update({ dataType: value.toUpperCase() });
-    },
-    deleteSpace(str) {
-      return str.rep;
     },
     setTableName(name) {
       if (name.indexOf("(") != -1) {
