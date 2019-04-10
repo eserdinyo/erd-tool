@@ -10,7 +10,8 @@
       ul.menu__ctn
         li(@click="isActive = !isActive") File
           ul.menu__ctn--file(:class="{active: isActive}", @mouseleave="isActive = !isActive")
-            li New Document
+            li 
+              a(@click="openNewProjectBox") New Project
             li Rename
             li Save
             li Save As
@@ -23,6 +24,8 @@
 </template>
 
 <script>
+import { EventBus } from "@/main";
+
 export default {
   name: "Header",
   data() {
@@ -43,6 +46,10 @@ export default {
     },
     subItem() {
       this.$store.dispatch("subItem");
+    },
+    openNewProjectBox() {
+      EventBus.$emit("openProjectBox", 1);
+
     }
   },
   watch: {

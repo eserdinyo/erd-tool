@@ -17,8 +17,10 @@
       img(src="../../assets/img/conn4.png")
     a.link(@click="sendConnType(11, dashType2)")
       img(src="../../assets/img/conn5.png")
-    a.link(@click="sendConnType(11, dashType2)")
+    a.link(@click="sendConnType(13, dashType2)")
       img(src="../../assets/img/conn10.png")
+    a.link(@click="sendConnType(14, dashType2)")
+      img(src="../../assets/img/conn11.png")
     hr
     a.link(@click="sendConnType(2, dashType3)")
       img(src="../../assets/img/conn7.png")

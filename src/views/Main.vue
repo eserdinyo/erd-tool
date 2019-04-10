@@ -3,7 +3,13 @@ import $ from "jquery";
 
 import { jsPlumb } from "jsplumb";
 import { EventBus } from "@/main";
-import { ref, refConn, refConnType, refGlobalConnType } from "@/firebase/";
+import {
+  ref,
+  refConn,
+  refConnType,
+  refGlobalConnType,
+  refProjects
+} from "@/firebase/";
 import { mapGetters } from "vuex";
 
 import AppSidebar from "@/components/global/Sidebar";
@@ -18,7 +24,9 @@ export default {
       entityID: "",
       sourceKey: "",
       targetKey: "",
-      isPopupOpen: false
+      isPopupOpen: false,
+      isNewProjectOpen: false,
+      projectName: "",
     };
   },
   components: {
@@ -212,7 +220,13 @@ export default {
         // *******************************      //
         //     1:M-1:1   ÇİFT TARAF ZORUNLU    //
         // *******************************    //
-        if (conID == 0 || conID == 1 || conID == 5 || conID == 4) {
+        if (
+          conID == 0 ||
+          conID == 1 ||
+          conID == 5 ||
+          conID == 4 ||
+          conID == 13
+        ) {
           let key = "",
             entityType = "",
             connType = "";
@@ -474,12 +488,12 @@ export default {
     },
     getEntityName(name) {
       if (name) {
-        return name.slice(0, name.indexOf("[")).toUpperCase();
+        return name.slice(0, name.indexOf("(")).toUpperCase();
       }
     },
     getShortName(name) {
       if (name)
-        return name.slice(name.indexOf("[") + 1, name.length - 1).toLowerCase();
+        return name.slice(name.indexOf("(") + 1, name.length - 1).toLowerCase();
     },
     getEntityFk(ent) {
       this.entityID = ent.ID;
@@ -519,6 +533,15 @@ export default {
     },
     goTables() {
       this.$router.push({ name: "tables" });
+    },
+    createProject() {
+      refProjects.push({
+        projectName: this.projectName,
+      });
+
+      this.isNewProjectOpen = false;
+      this.projectName = "";
+
     }
   },
   created() {
@@ -541,6 +564,10 @@ export default {
       });
     });
 
+    EventBus.$on("openProjectBox", () => {
+      this.isNewProjectOpen = true;
+    });
+
     // this.addNote("-LZBHBzetEiRM6p9oqmH", 21, "foo");
   }
 };
@@ -561,6 +588,12 @@ export default {
             p {{getEntityName(entity.entityName)}}
         a.popup__btn(@click="goTables") continue
         a.popup__close(@click="closeModal") x
+      .popup(v-if="isNewProjectOpen")
+        .popup__title Enter Project Name
+        input(v-model="projectName", placeholder="Project Name")
+        a.popup__btn(@click="createProject") Create
+        a.popup__close(@click="isNewProjectOpen = false") x
+
 </template>
 
 <style lang="scss" scoped>
@@ -589,6 +622,12 @@ export default {
   z-index: 9999999;
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
   padding: 10px;
+
+  input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+  }
 
   &__title {
     text-align: center;
