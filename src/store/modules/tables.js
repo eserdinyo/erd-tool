@@ -15,15 +15,17 @@ const mutations = {
 
 const actions = {
 
-  getTables({ state }) {
+  getTables({ state, rootState }) {
     ref.on("value", snap => {
       const data = snap.val();
 
       const tables = [];
       for (let key in data) {
         const table = data[key];
-        table.id = key;
-        tables.push(table);
+        if (table.projectID == rootState.projects.projectID) {
+          table.id = key;
+          tables.push(table);
+        }
       }
 
       state.tables = tables;
