@@ -16,6 +16,7 @@ import AppSidebar from "@/components/global/Sidebar";
 import AppEntity from "@/components/Entity";
 import AppToolbar from "@/components/global/Toolbar";
 import { setTimeout } from "timers";
+import firebase from "firebase";
 
 export default {
   data() {
@@ -27,6 +28,7 @@ export default {
       isPopupOpen: false,
       isNewProjectOpen: false,
       projectName: "",
+      currentUser: ""
     };
   },
   components: {
@@ -43,7 +45,8 @@ export default {
       "connType",
       "dashType",
       "notes",
-      "globalConnType"
+      "globalConnType",
+      "projectID"
     ])
   },
   methods: {
@@ -191,14 +194,16 @@ export default {
               connType: 6,
               targetId: newEntityTarget,
               dashType: dashType1,
-              overlay: this.connType
+              overlay: this.connType,
+              projectID: this.projectID
             });
             refConn.push({
               sourceId: t,
               connType: 6,
               targetId: newEntityTarget,
               dashType: dashType2,
-              overlay: this.connType
+              overlay: this.connType,
+              projectID: this.projectID
             });
             location.reload();
           }
@@ -255,7 +260,8 @@ export default {
               targetId: t,
               connType,
               dashType: this.dashType,
-              overlay: this.connType
+              overlay: this.connType,
+              projectID: this.projectID
             });
           }
         }
@@ -325,14 +331,16 @@ export default {
             connType: 0,
             targetId: newEntityTarget,
             dashType: this.dashType,
-            overlay: this.connType
+            overlay: this.connType,
+            projectID: this.projectID
           });
           refConn.push({
             sourceId: t,
             connType: 0,
             targetId: newEntityTarget,
             dashType: this.dashType,
-            overlay: this.connType
+            overlay: this.connType,
+            projectID: this.projectID
           });
           location.reload();
         }
@@ -356,7 +364,8 @@ export default {
             targetId: t,
             connType: 2,
             dashType: this.dashType,
-            overlay: this.connType
+            overlay: this.connType,
+            projectID: this.projectID
           });
 
           // ****************************************  //
@@ -383,7 +392,8 @@ export default {
               connType: 6,
 
               dashType: this.dashType,
-              overlay: this.connType
+              overlay: this.connType,
+              projectID: this.projectID
             });
           }
         }
@@ -537,15 +547,16 @@ export default {
     createProject() {
       refProjects.push({
         projectName: this.projectName,
+        userID: this.currentUser.uid
       });
 
       this.isNewProjectOpen = false;
       this.projectName = "";
-
     }
   },
   created() {
     this.init();
+    this.currentUser = firebase.auth().currentUser;
 
     EventBus.$on("donustur", () => {
       this.connections.forEach(conn => {
@@ -566,6 +577,10 @@ export default {
 
     EventBus.$on("openProjectBox", () => {
       this.isNewProjectOpen = true;
+    });
+
+    EventBus.$on("initProject", () => {
+      location.reload();
     });
 
     // this.addNote("-LZBHBzetEiRM6p9oqmH", 21, "foo");

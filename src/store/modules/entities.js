@@ -88,12 +88,13 @@ const actions = {
   delEntity({ state }) {
     ref.child(state.activeEntity).remove();
   },
-  addEntity({ commit, state }, entity) {
+  addEntity({ commit, state, rootState }, entity) {
     let posX,
       posY,
       multi,
       entityName,
       entityItems,
+      projectID = rootState.projects.projectID,
       entityType = "";
     if (entity) {
       posX = entity.posX;
@@ -143,10 +144,14 @@ const actions = {
       entityType,
       posX,
       posY,
-      entityItems
+      entityItems,
+      projectID,
     });
   },
-  initEntities({ state }) {
+  initEntities({ state, rootState }) {
+    const projectID = rootState.projects.projectID;
+    console.log(projectID);
+
     return new Promise((resolve, reject) => {
       ref.on("value", snap => {
         const data = snap.val();
@@ -154,8 +159,11 @@ const actions = {
 
         for (let key in data) {
           const entity = data[key];
-          entity.id = key;
-          entities.push(entity);
+          if (entity.projectID == projectID) {
+            entity.id = key;
+            entities.push(entity);
+          }
+
         }
         state.entities = entities;
         resolve("OK");
