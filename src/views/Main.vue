@@ -239,7 +239,11 @@ export default {
           conID == 0 || conID == 4 ? (entityType = "optional") : 0;
           conID == 1 || conID == 5 ? (entityType = "mandatory") : 0;
 
-          conID == 0 ? (connType = 0) : conID == 1 ? (connType = 1) : 0;
+          conID == 0
+            ? (connType = 0)
+            : conID == 1
+            ? (connType = 1)
+            : (connType = 2);
 
           this.entities.forEach(entity => {
             if (entity.ID == t) {
@@ -253,6 +257,11 @@ export default {
               ref.child(key).update({ entityType });
             }
           });
+
+          if (conID == 13) {
+            this.addNote(key, this.notes.length + 1, "FK değiştirilemez");
+            location.reload();
+          }
 
           if (!(t.length < 20)) {
             refConn.push({

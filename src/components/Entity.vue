@@ -5,7 +5,7 @@
       thead
         th(colspan='4')
           input#entityName(type='text',
-                          placeholder='Varlık İsmi', 
+                          placeholder='Entity Name', 
                           style="text-transform:uppercase",
                           :value='entity.entityName',
                           @keyup="sendEntityName(entity,$event.target.value)")
@@ -24,7 +24,7 @@
           td
             .field
               input(type='text',:value="item.itemName", 
-                    placeholder='İsmi', 
+                    placeholder='Name', 
                     @keyup="sendItemName(key,entity, $event.target.value)")
     .ep(v-if="entity.multi != 2")
     .notes

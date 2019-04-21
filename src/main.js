@@ -9,6 +9,7 @@ import firebase from "firebase";
 
 Vue.config.productionTip = false;
 
+
 export const EventBus = new Vue();
 
 let app;
