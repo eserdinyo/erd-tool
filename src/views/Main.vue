@@ -25,6 +25,7 @@ export default {
       entityID: "",
       sourceKey: "",
       targetKey: "",
+      targetEntity: "",
       isPopupOpen: false,
       isNewProjectOpen: false,
       projectName: "",
@@ -249,6 +250,7 @@ export default {
             if (entity.ID == t) {
               key = entity.id;
               this.targetKey = key;
+              this.targetEntity = entity;
               ref.child(key).update({ multi: 1 });
               ref.child(key).update({ entityType });
             } else if (entity.ID == s) {
@@ -260,7 +262,23 @@ export default {
 
           if (conID == 13) {
             this.addNote(key, this.notes.length + 1, "FK değiştirilemez");
+            this.$store.dispatch("addItem", {
+              id: this.sourceKey,
+              name: `${this.getShortName(this.targetEntity.entityName)}_${
+                this.targetEntity.entityItems[0].itemName
+              }`,
+              dataType: "INTEGER"
+            });
             location.reload();
+          }
+          if (conID == 5) {
+            this.$store.dispatch("addItem", {
+              id: this.sourceKey,
+              name: `${this.getShortName(this.targetEntity.entityName)}_${
+                this.targetEntity.entityItems[0].itemName
+              }`,
+              dataType: "INTEGER"
+            });
           }
 
           if (!(t.length < 20)) {

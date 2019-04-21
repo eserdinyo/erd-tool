@@ -8,7 +8,7 @@ const state = {
   item: {
     itemKey: "",
     itemName: "",
-    dataType: "int",
+    dataType: "INTEGER",
     isShow: true,
   }
 };

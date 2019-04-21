@@ -47,12 +47,6 @@ export default {
     }
   },
   methods: {
-    addItem() {
-      this.$store.dispatch("addItem");
-    },
-    subItem() {
-      this.$store.dispatch("subItem");
-    },
     openNewProjectBox() {
       EventBus.$emit("openProjectBox", 1);
     },
