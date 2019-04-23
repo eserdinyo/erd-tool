@@ -31,8 +31,11 @@ const actions = {
       state.tables = tables;
     });
   },
-  async sendDatabase({ state }) {
+  async sendDatabase({ state, rootState }) {
     const tables = [];
+    const connID = rootState.connections.connections[0].connType;
+    console.log(connID);
+
     state.tables.forEach(table => {
 
       if (table.entityName.indexOf("(") != -1) {
@@ -44,7 +47,9 @@ const actions = {
 
     })
 
-    const res = await http.post('/tables', tables);
+    const res = await http.post('/tables', {
+      tables, connID
+    });
     if (res.data == "OK") {
       alert("Tablolar veritabanına aktarıldı!")
     }

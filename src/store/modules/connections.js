@@ -15,7 +15,7 @@ const getters = {
     connTypes: state => state.connTypes,
     connType: state => state.connType,
     dashType: state => state.dashType,
-    globalConnType : state => state.globalConnType,
+    globalConnType: state => state.globalConnType,
 }
 
 const mutations = {
@@ -34,7 +34,9 @@ const mutations = {
     }
 }
 const actions = {
-    initConnections({ state }) {
+    initConnections({ state, rootState }) {
+        const projectID = rootState.projects.projectID;
+
         return new Promise((resolve, reject) => {
             refConn.on("value", snap => {
                 const data = snap.val();
@@ -42,8 +44,10 @@ const actions = {
                 const connections = [];
                 for (let key in data) {
                     const conn = data[key];
-                    conn.id = key;
-                    connections.push(conn);
+                    if (conn.projectID == projectID) {
+                        conn.id = key;
+                        connections.push(conn);
+                    }
                 }
                 state.connections = connections;
                 resolve('OK')
@@ -64,7 +68,7 @@ const actions = {
             commit('setDashType', data.dashType)
         });
     },
-    async getGlobalConnType({commit}) {
+    async getGlobalConnType({ commit }) {
         await refGlobalConnType.on('value', snap => {
             const data = snap.val();
             commit('setGlobalConnType', data.globalConnType);

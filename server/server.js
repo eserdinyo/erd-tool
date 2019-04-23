@@ -10,7 +10,20 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.post("/tables", (req, res) => {
-  const tables = req.body;
+  const connID = req.body.connID;
+  const tables = req.body.tables;
+
+  if(connID == 14) {
+    
+
+
+
+
+
+  }
+
+  
+  /* 
   tables.sort((a, b) => a.multi - b.multi);
 
   // ********** //
@@ -74,18 +87,18 @@ app.post("/tables", (req, res) => {
   }
 
 
-
   tables.forEach(table => {
     if (table.entityType) {
       table.entityName.sync({ force: true });
-    } else {
+    }
+    else {
       setTimeout(() => {
-        tables[2].entityName.sync({ force: true });
+        table.entityName.sync({ force: true });
       }, 1000);
     }
   });
 
-  res.sendStatus(200);
+  res.sendStatus(200); */
 });
 
 app.listen(3000, () => {

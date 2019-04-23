@@ -239,13 +239,9 @@ export default {
             connType = "";
 
           conID == 0 || conID == 4 ? (entityType = "optional") : 0;
-          conID == 1 || conID == 5 ? (entityType = "mandatory") : 0;
-
-          conID == 0
-            ? (connType = 0)
-            : conID == 1
-            ? (connType = 1)
-            : (connType = 2);
+          conID == 1 || conID == 5 || conID == 13 || conID == 14
+            ? (entityType = "mandatory")
+            : 0;
 
           this.entities.forEach(entity => {
             if (entity.ID == t) {
@@ -257,12 +253,12 @@ export default {
             } else if (entity.ID == s) {
               key = entity.id;
               this.sourceKey = key;
-              ref.child(key).update({ entityType });
+              // ref.child(key).update({ entityType });
             }
           });
 
           if (conID == 13 || conID == 14) {
-            this.addNote(key, this.notes.length + 1, "FK değiştirilemez");
+            this.addNote(key, this.notes.length + 1, "You can't change the FK");
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
               name: `${this.getShortName(this.targetEntity.entityName)}_${
@@ -286,7 +282,7 @@ export default {
             refConn.push({
               sourceId: s,
               targetId: t,
-              connType,
+              connType: conID,
               dashType: this.dashType,
               overlay: this.connType,
               projectID: this.projectID
@@ -532,8 +528,7 @@ export default {
     getShortName(name) {
       if (name.indexOf("(") != -1)
         return name.slice(name.indexOf("(") + 1, name.length - 1).toLowerCase();
-      else
-        return name;
+      else return name;
     },
     getEntityFk(ent) {
       this.entityID = ent.ID;

@@ -150,7 +150,6 @@ const actions = {
   },
   initEntities({ state, rootState }) {
     const projectID = rootState.projects.projectID;
-    console.log(projectID);
 
     return new Promise((resolve, reject) => {
       ref.on("value", snap => {
