@@ -231,7 +231,8 @@ export default {
           conID == 1 ||
           conID == 5 ||
           conID == 4 ||
-          conID == 13
+          conID == 13 ||
+          conID == 14
         ) {
           let key = "",
             entityType = "",
@@ -260,7 +261,7 @@ export default {
             }
           });
 
-          if (conID == 13) {
+          if (conID == 13 || conID == 14) {
             this.addNote(key, this.notes.length + 1, "FK değiştirilemez");
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
@@ -529,8 +530,10 @@ export default {
       }
     },
     getShortName(name) {
-      if (name)
+      if (name.indexOf("(") != -1)
         return name.slice(name.indexOf("(") + 1, name.length - 1).toLowerCase();
+      else
+        return name;
     },
     getEntityFk(ent) {
       this.entityID = ent.ID;

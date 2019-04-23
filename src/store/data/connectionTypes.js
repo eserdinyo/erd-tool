@@ -293,22 +293,11 @@ export default {
       // Line
       "Arrow",
       {
-        location: 0.05,
+        location: 0.95,
         length: 1,
         foldback: 1,
         direction: 1,
         id: "14"
-      }
-    ],
-    [
-      // Arrow
-      "Arrow",
-      {
-        location: 0,
-        id: "arrow1",
-        length: 10,
-        foldback: 0.3,
-        direction: -1
       }
     ],
     [

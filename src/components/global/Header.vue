@@ -86,6 +86,7 @@ export default {
 @import "@/style/main.scss";
 
 .top {
+  background-color: red;
   a {
     cursor: pointer;
   }
