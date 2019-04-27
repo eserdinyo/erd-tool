@@ -1,6 +1,5 @@
 <template lang="pug">
   .toolbar
-
     a.link(@click='addEntity')
       img(src="../../assets/img/table.png")
     hr
@@ -28,10 +27,7 @@
       img(src="../../assets/img/conn8.png")
     a.link(@click="sendConnType(12, dashType3)")
       img(src="../../assets/img/conn9.png")
-    
-    
-    
-    
+
 </template>
 
 <script>

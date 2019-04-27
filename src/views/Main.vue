@@ -13,9 +13,8 @@ import {
 import { mapGetters } from "vuex";
 
 import AppSidebar from "@/components/global/Sidebar";
-import AppEntity from "@/components/Entity";
 import AppToolbar from "@/components/global/Toolbar";
-import { setTimeout } from "timers";
+import AppEntity from "@/components/Entity";
 import firebase from "firebase";
 
 export default {
@@ -68,7 +67,7 @@ export default {
         Container: "main"
       });
 
-      // ********************* //
+      // *********************** //
       //   SET ENTITY POSITION  //
       // ********************* //
       for (let i in this.entities) {
