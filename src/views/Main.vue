@@ -16,6 +16,7 @@ import AppSidebar from "@/components/global/Sidebar";
 import AppToolbar from "@/components/global/Toolbar";
 import AppEntity from "@/components/Entity";
 import firebase from "firebase";
+import { debug } from "util";
 
 export default {
   data() {
@@ -252,7 +253,7 @@ export default {
             } else if (entity.ID == s) {
               key = entity.id;
               this.sourceKey = key;
-              // ref.child(key).update({ entityType });
+              ref.child(key).update({ entityType });
             }
           });
 
@@ -531,6 +532,8 @@ export default {
     },
     getEntityFk(ent) {
       this.entityID = ent.ID;
+      const optionality =
+        ent.entityType == "mandatory" ? "mandatory" : "optional";
 
       if (ent.id == this.sourceKey) {
         ref.child(this.sourceKey).update({ multi: 1 });
@@ -539,6 +542,7 @@ export default {
           if (entity.id == this.targetKey) {
             this.$store.dispatch("addItem", {
               id: ent.id,
+              itemKey: optionality,
               name: `${this.getShortName(entity.entityName)}_${
                 entity.entityItems[0].itemName
               }`,
@@ -553,6 +557,7 @@ export default {
           if (entity.id == this.sourceKey) {
             this.$store.dispatch("addItem", {
               id: ent.id,
+              itemKey: optionality,
               name: `${this.getShortName(entity.entityName)}_${
                 entity.entityItems[0].itemName
               }`,

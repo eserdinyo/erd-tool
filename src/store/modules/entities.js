@@ -69,7 +69,7 @@ const actions = {
         .child(payload.id)
         .child("entityItems")
         .push({
-          itemKey: "mandatory",
+          itemKey: payload.itemKey,
           itemName: payload.name,
           dataType: "INTEGER",
           fk: "fk",

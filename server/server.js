@@ -39,7 +39,7 @@ app.post("/tables", (req, res) => {
   if (connID == 0) {
     let emptyIndex;
     tables.forEach((table, index) => {
-      if (!table.entityType) {
+      if (table.multi == 0) {
         emptyIndex = index;
       }
     })
@@ -60,7 +60,53 @@ app.post("/tables", (req, res) => {
 
     // DEFINE RELATIONS
     tables.forEach(table => {
-      if (table.entityType) {
+      if (table.multi == 1) {
+        tables[emptyIndex].entityName.belongsTo(table.entityName, {
+          foreignKey: { name: Object.values(tables[emptyIndex].entityItems)[Object.values(tables[emptyIndex].entityItems).length - 1].itemName, allowNull: true }
+        });
+      }
+    })
+
+    // CREATING TABLES
+    tables.forEach(table => {
+      if (table.multi == 1) {
+        table.entityName.sync({ force: true });
+      }
+      else {
+        setTimeout(() => {
+          table.entityName.sync({ force: true });
+        }, 1000);
+      }
+    });
+
+    res.sendStatus(200);
+  }
+
+  if (connID == 1) {
+    let emptyIndex;
+    tables.forEach((table, index) => {
+      if (table.multi == 0) {
+        emptyIndex = index;
+      }
+    })
+    tables.forEach(table => {
+      let columns = {};
+
+      // SET COLUMNS NULL OR NOT NULL
+      Object.values(table.entityItems).forEach((item, index) => {
+        nullOrNotNullAndPK(columns, item, index);
+      })
+
+      // DEFINE TABLES
+      table.entityName = sequelize.define(table.entityName, columns, {
+        underscored: true,
+        timestamps: false
+      });
+    })
+
+    // DEFINE RELATIONS
+    tables.forEach(table => {
+      if (table.multi == 1) {
         tables[emptyIndex].entityName.belongsTo(table.entityName, {
           foreignKey: { name: Object.values(tables[emptyIndex].entityItems)[Object.values(tables[emptyIndex].entityItems).length - 1].itemName, allowNull: false }
         });
@@ -69,7 +115,7 @@ app.post("/tables", (req, res) => {
 
     // CREATING TABLES
     tables.forEach(table => {
-      if (table.entityType) {
+      if (table.multi == 1) {
         table.entityName.sync({ force: true });
       }
       else {
