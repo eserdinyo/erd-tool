@@ -9,12 +9,77 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
+function nullOrNotNullAndPK(columns, item, index) {
+  if (item.itemKey == 'mandatory') {
+    columns[item.itemName] = {
+      type: getEntityDataType(item.dataType),
+      allowNull: false
+    }
+  } else if (item.itemKey == 'optional') {
+    columns[item.itemName] = {
+      type: getEntityDataType(item.dataType),
+      allowNull: true
+    }
+  }
+
+  // SET PRIMARY KEY 
+  if (index == 0) {
+    columns[item.itemName] = {
+      type: getEntityDataType(item.dataType),
+      primaryKey: true,
+      allowNull: false,
+    }
+  }
+}
+
 app.post("/tables", (req, res) => {
   const connID = req.body.connID;
   const tables = req.body.tables;
 
-  if (connID == 1) {
-    
+  if (connID == 0) {
+    let emptyIndex;
+    tables.forEach((table, index) => {
+      if (!table.entityType) {
+        emptyIndex = index;
+      }
+    })
+    tables.forEach(table => {
+      let columns = {};
+
+      // SET COLUMNS NULL OR NOT NULL
+      Object.values(table.entityItems).forEach((item, index) => {
+        nullOrNotNullAndPK(columns, item, index);
+      })
+
+      // DEFINE TABLES
+      table.entityName = sequelize.define(table.entityName, columns, {
+        underscored: true,
+        timestamps: false
+      });
+    })
+
+    // DEFINE RELATIONS
+    tables.forEach(table => {
+      if (table.entityType) {
+        tables[emptyIndex].entityName.belongsTo(table.entityName, {
+          foreignKey: { name: Object.values(tables[emptyIndex].entityItems)[Object.values(tables[emptyIndex].entityItems).length - 1].itemName, allowNull: false }
+        });
+      }
+    })
+
+    // CREATING TABLES
+    tables.forEach(table => {
+      if (table.entityType) {
+        table.entityName.sync({ force: true });
+      }
+      else {
+        setTimeout(() => {
+          table.entityName.sync({ force: true });
+        }, 1000);
+      }
+    });
+
+    res.sendStatus(200);
   }
 
   if (connID == 14) {
@@ -22,28 +87,10 @@ app.post("/tables", (req, res) => {
     tables.forEach(table => {
       let columns = {};
 
-      //SET COLUMNS NULL OR NOT NULL
+      // SET COLUMNS NULL OR NOT NULL
       Object.values(table.entityItems).forEach((item, index) => {
-        if (item.itemKey == 'mandatory') {
-          columns[item.itemName] = {
-            type: getEntityDataType(item.dataType),
-            allowNull: false
-          }
-        } else if (item.itemKey == 'optional') {
-          columns[item.itemName] = {
-            type: getEntityDataType(item.dataType),
-            allowNull: true
-          }
-        }
 
-        // SET PRIMARY KEY 
-        if (index == 0) {
-          columns[item.itemName] = {
-            type: getEntityDataType(item.dataType),
-            primaryKey: true,
-            allowNull: false,
-          }
-        }
+        nullOrNotNullAndPK(columns, item, index);
 
         // SET FK TO PK ALSO
         if (index == Object.values(table.entityItems).length - 1 && !table.entityType) {
