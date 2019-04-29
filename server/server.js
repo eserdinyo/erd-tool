@@ -36,7 +36,7 @@ app.post("/tables", (req, res) => {
   const connID = req.body.connID;
   const tables = req.body.tables;
 
-  if (connID == 0) {
+  if (connID == 0 || connID == 4) {
     let emptyIndex;
     tables.forEach((table, index) => {
       if (table.multi == 0) {
@@ -82,7 +82,7 @@ app.post("/tables", (req, res) => {
     res.sendStatus(200);
   }
 
-  if (connID == 1) {
+  if (connID == 1 || connID == 5) {
     let emptyIndex;
     tables.forEach((table, index) => {
       if (table.multi == 0) {

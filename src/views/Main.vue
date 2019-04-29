@@ -268,9 +268,20 @@ export default {
             });
             location.reload();
           }
+          if (conID == 4) {
+            this.$store.dispatch("addItem", {
+              id: this.sourceKey,
+              itemKey: "optional",
+              name: `${this.getShortName(this.targetEntity.entityName)}_${
+                this.targetEntity.entityItems[0].itemName
+              }`,
+              dataType: "INTEGER"
+            });
+          }
           if (conID == 5) {
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
+              itemKey: "mandatory",
               name: `${this.getShortName(this.targetEntity.entityName)}_${
                 this.targetEntity.entityItems[0].itemName
               }`,
