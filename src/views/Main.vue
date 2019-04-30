@@ -261,6 +261,7 @@ export default {
             this.addNote(key, this.notes.length + 1, "You can't change the FK");
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
+              itemKey: "mandatory",
               name: `${this.getShortName(this.targetEntity.entityName)}_${
                 this.targetEntity.entityItems[0].itemName
               }`,

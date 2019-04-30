@@ -82,7 +82,7 @@ app.post("/tables", (req, res) => {
     res.sendStatus(200);
   }
 
-  if (connID == 1 || connID == 5) {
+  if (connID == 1 || connID == 5 || connID == 13) {
     let emptyIndex;
     tables.forEach((table, index) => {
       if (table.multi == 0) {
@@ -127,6 +127,8 @@ app.post("/tables", (req, res) => {
 
     res.sendStatus(200);
   }
+
+
 
   if (connID == 14) {
 
