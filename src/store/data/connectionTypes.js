@@ -186,6 +186,7 @@ export default {
         id: "10"
       }
     ],
+    ["Label", { label: "Dönüştür", id: "convert", cssClass: "aLabel" }],
     [
       // Arrow
       "Arrow",
@@ -211,7 +212,7 @@ export default {
         id: "11"
       }
     ],
-
+    ["Label", { label: "Dönüştür", id: "convert", cssClass: "aLabel" }],
     [
       // Arrow
       "Arrow",
@@ -267,7 +268,7 @@ export default {
       // Arrow
       "Arrow",
       {
-        location: .865,
+        location: 0.865,
         id: "arrow1",
         length: 10,
         foldback: 0.3,
@@ -278,14 +279,13 @@ export default {
       // Arrow
       "Arrow",
       {
-        location: .90,
+        location: 0.9,
         id: "arrow2",
         length: 10,
         foldback: 0.3,
         direction: 1
       }
-    ],
-    
+    ]
   ],
   con14: [
     // left 4 right 3

@@ -30,7 +30,8 @@
     .notes
       .notes__note(v-for="note in entity.notes")
         p {{note.id}}
-    .line(v-if="entity.multi == 2")
+    .line1(v-if="entity.multi == 2")
+    .line2(v-if="entity.multi == 2")
 </template>
 
 <script>
@@ -73,7 +74,8 @@ export default {
     initForDelete() {
       document.onkeydown = evt => {
         evt = evt || window.event;
-        if (evt.keyCode == 46) {
+        
+        if (evt.keyCode == 93) {
           if (this.activeEntity != 0) {
             this.delEntity();
           }
@@ -180,7 +182,7 @@ input[type="text"] {
 
 .ep {
   position: absolute;
-  left: 30%;
+  left: 23.35%;
   top: 60px;
   height: 15px;
   width: 15px;
@@ -191,7 +193,7 @@ input[type="text"] {
   display: none;
 }
 
-.line {
+.line1 {
   height: 3px;
   width: 150px;
   background-color: #000;
@@ -199,6 +201,16 @@ input[type="text"] {
   left: 0;
   top: 50%;
   transform: translate(-100%,-50%);
+}
+
+.line2 {
+  height: 3px;
+  width: 150px;
+  background-color: #000;
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translate(100%, -50%);
 }
 
 .enityName {

@@ -107,7 +107,7 @@ export default {
           // **************************************  //
           //            M:M SEÇİMLİ-ZORUNLU         //
           // ************************************* //
-          if (conID == 12) {
+          if (conID == 10 || conID == 11 || conID == 12) {
             let sourceX,
               key,
               targetX,
@@ -118,11 +118,21 @@ export default {
               sourceName,
               targetName,
               entityType,
-              dashType1 = "0 5 5",
-              dashType2 = "150 5 0",
-              dashType3 = "150 5 3",
+              dashType1,
+              dashType2,
+              // dashType2 = "150 5 0",
+              //dashType3 = "150 5 3",
               msgTargetName,
               msgSourceName;
+
+            if (conID == 10) {
+              dashType1 = "0 5 5";
+               dashType2 = "0 5 5";
+            }
+            if(conID == 11) {
+              dashType1 = "150 5 0";
+              dashType2 = "150 5 0";
+            }
 
             // entityType'ı güncelle
             this.entities.forEach(entity => {
@@ -207,6 +217,10 @@ export default {
               projectID: this.projectID
             });
             location.reload();
+          }
+
+          if (conID == 10) {
+            console.log("...");
           }
         }
       });
@@ -305,7 +319,16 @@ export default {
         // ****************************************  //
         //     M TO M ÇİFT TARAF ZORUNLU || SECIMLİ //
         // *************************************** //
-        if (conID == 10 || conID == 11) {
+
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        //   WILL BE DELETE LATER
+        /*  if (conID == 10 || conID == 11) {
           let sourceX,
             key,
             targetX,
@@ -379,7 +402,7 @@ export default {
             projectID: this.projectID
           });
           location.reload();
-        }
+        } */
         // ****************************************  //
         //            1:1 SEÇİMLİ-ZORUNLU           //
         // *************************************** //

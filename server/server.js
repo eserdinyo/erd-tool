@@ -10,25 +10,25 @@ app.use(cors());
 app.use(bodyParser.json());
 
 function nullOrNotNullAndPK(columns, item, index) {
-  if (item.itemKey == 'mandatory') {
+  if (item.itemKey == "mandatory") {
     columns[item.itemName] = {
       type: getEntityDataType(item.dataType),
       allowNull: false
-    }
-  } else if (item.itemKey == 'optional') {
+    };
+  } else if (item.itemKey == "optional") {
     columns[item.itemName] = {
       type: getEntityDataType(item.dataType),
       allowNull: true
-    }
+    };
   }
 
-  // SET PRIMARY KEY 
+  // SET PRIMARY KEY
   if (index == 0) {
     columns[item.itemName] = {
       type: getEntityDataType(item.dataType),
       primaryKey: true,
-      allowNull: false,
-    }
+      allowNull: false
+    };
   }
 }
 
@@ -42,37 +42,41 @@ app.post("/tables", (req, res) => {
       if (table.multi == 0) {
         emptyIndex = index;
       }
-    })
+    });
     tables.forEach(table => {
       let columns = {};
 
       // SET COLUMNS NULL OR NOT NULL
       Object.values(table.entityItems).forEach((item, index) => {
         nullOrNotNullAndPK(columns, item, index);
-      })
+      });
 
       // DEFINE TABLES
       table.entityName = sequelize.define(table.entityName, columns, {
         underscored: true,
         timestamps: false
       });
-    })
+    });
 
     // DEFINE RELATIONS
     tables.forEach(table => {
       if (table.multi == 1) {
         tables[emptyIndex].entityName.belongsTo(table.entityName, {
-          foreignKey: { name: Object.values(tables[emptyIndex].entityItems)[Object.values(tables[emptyIndex].entityItems).length - 1].itemName, allowNull: true }
+          foreignKey: {
+            name: Object.values(tables[emptyIndex].entityItems)[
+              Object.values(tables[emptyIndex].entityItems).length - 1
+            ].itemName,
+            allowNull: true
+          }
         });
       }
-    })
+    });
 
     // CREATING TABLES
     tables.forEach(table => {
       if (table.multi == 1) {
         table.entityName.sync({ force: true });
-      }
-      else {
+      } else {
         setTimeout(() => {
           table.entityName.sync({ force: true });
         }, 1000);
@@ -88,37 +92,41 @@ app.post("/tables", (req, res) => {
       if (table.multi == 0) {
         emptyIndex = index;
       }
-    })
+    });
     tables.forEach(table => {
       let columns = {};
 
       // SET COLUMNS NULL OR NOT NULL
       Object.values(table.entityItems).forEach((item, index) => {
         nullOrNotNullAndPK(columns, item, index);
-      })
+      });
 
       // DEFINE TABLES
       table.entityName = sequelize.define(table.entityName, columns, {
         underscored: true,
         timestamps: false
       });
-    })
+    });
 
     // DEFINE RELATIONS
     tables.forEach(table => {
       if (table.multi == 1) {
         tables[emptyIndex].entityName.belongsTo(table.entityName, {
-          foreignKey: { name: Object.values(tables[emptyIndex].entityItems)[Object.values(tables[emptyIndex].entityItems).length - 1].itemName, allowNull: false }
+          foreignKey: {
+            name: Object.values(tables[emptyIndex].entityItems)[
+              Object.values(tables[emptyIndex].entityItems).length - 1
+            ].itemName,
+            allowNull: false
+          }
         });
       }
-    })
+    });
 
     // CREATING TABLES
     tables.forEach(table => {
       if (table.multi == 1) {
         table.entityName.sync({ force: true });
-      }
-      else {
+      } else {
         setTimeout(() => {
           table.entityName.sync({ force: true });
         }, 1000);
@@ -128,27 +136,31 @@ app.post("/tables", (req, res) => {
     res.sendStatus(200);
   }
 
-
+  if (connID == 10) {
+    console.log('...');
+    
+  }
 
   if (connID == 14) {
-
     tables.forEach(table => {
       let columns = {};
 
       // SET COLUMNS NULL OR NOT NULL
       Object.values(table.entityItems).forEach((item, index) => {
-
         nullOrNotNullAndPK(columns, item, index);
 
         // SET FK TO PK ALSO
-        if (index == Object.values(table.entityItems).length - 1 && !table.entityType) {
+        if (
+          index == Object.values(table.entityItems).length - 1 &&
+          !table.entityType
+        ) {
           columns[item.itemName] = {
             type: getEntityDataType(item.dataType),
             primaryKey: true,
-            allowNull: false,
-          }
+            allowNull: false
+          };
         }
-      })
+      });
 
       // DEFINE TABLES
       table.entityName = sequelize.define(table.entityName, columns, {
@@ -159,15 +171,19 @@ app.post("/tables", (req, res) => {
 
     // DEFINE RELATIONS
     tables[0].entityName.belongsTo(tables[1].entityName, {
-      foreignKey: { name: Object.values(tables[0].entityItems)[Object.values(tables[0].entityItems).length - 1].itemName, allowNull: false }
+      foreignKey: {
+        name: Object.values(tables[0].entityItems)[
+          Object.values(tables[0].entityItems).length - 1
+        ].itemName,
+        allowNull: false
+      }
     });
 
     // CREATING TABLES
     tables.forEach(table => {
       if (table.entityType) {
         table.entityName.sync({ force: true });
-      }
-      else {
+      } else {
         setTimeout(() => {
           table.entityName.sync({ force: true });
         }, 1000);
