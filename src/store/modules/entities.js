@@ -4,6 +4,7 @@ const state = {
   entities: [],
   notes: [],
   activeEntity: 0,
+  isSubType: false,
   itemKey: "",
   item: {
     itemKey: "",
@@ -24,7 +25,12 @@ const getters = {
 /* MUTATIONS */
 const mutations = {
   updateActive(state, entity) {
-    state.activeEntity = entity;
+    state.activeEntity = entity.id;
+    if (entity.entityType == "subtype") {
+      state.isSubType = true;
+    } else {
+      state.isSubType = false;
+    }
   },
   setItemKey(state, itemKey) {
     state.itemKey = itemKey;
@@ -75,6 +81,23 @@ const actions = {
           fk: "fk",
           isShow: false
         });
+    } else if (state.isSubType) {
+      let activeEntity;
+      state.entities.forEach(entity => {
+        Object.values(entity.subEntities).forEach(subEntity => {
+          if (subEntity.id == state.activeEntity) {
+            activeEntity = entity.id;
+          }
+        });
+      });
+
+      ref
+        .child(activeEntity)
+        .child("subEntities")
+        .child(state.activeEntity)
+        .child("entityItems")
+        .push(state.item);
+      commit("setItemKey", 1);
     } else {
       ref
         .child(state.activeEntity)
@@ -148,6 +171,32 @@ const actions = {
       entityItems,
       projectID
     });
+  },
+  addSubEntity({}, entityID) {
+    ref
+      .child(entityID)
+      .child("subEntities")
+      .push({
+        id: "",
+        ID: jsPlumbUtil.uuid(),
+        entityName: "",
+        entityType: "subtype",
+        entityItems: [
+          {
+            itemKey: "",
+            itemName: "",
+            isShow: true,
+            dataType: "INTEGER"
+          }
+        ]
+      })
+      .then(res => {
+        ref
+          .child(entityID)
+          .child("subEntities")
+          .child(res.key)
+          .update({ id: res.key });
+      });
   },
   initEntities({ state, rootState }) {
     const projectID = rootState.projects.projectID;

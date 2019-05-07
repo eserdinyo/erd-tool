@@ -1,7 +1,7 @@
 <template lang="pug">
  .tablo.entity(:id="entity.ID")
-    table(@mousedown="setActiveEntity(entity.id)" , 
-          :class="{ activeEntity : activeEntity == entity.id}")
+    table(@mousedown="setActiveEntity(entity)",
+    :class="{ activeEntity : activeEntity == entity.id}")
       thead
         th(colspan='4')
           input#entityName(type='text',
@@ -26,13 +26,41 @@
               input(type='text',:value="item.itemName", 
                     placeholder='Name', 
                     @keyup="sendItemName(key,entity, $event.target.value)")
+    .subEntity(v-for="subEntity in entity.subEntities")
+      .tablo
+        table(@mousedown="setActiveEntity(subEntity)",
+        :class="{ activeEntity : activeEntity == subEntity.id}")
+          thead
+            th(colspan='4')
+              input#entityName(type='text',
+                              placeholder='Entity Name', 
+                              style="text-transform:uppercase",
+                              :value='subEntity.entityName',
+                              @keyup="sendEntityName(entity,$event.target.value)")
+          tbody
+            tr.row(v-for='(item,key) in subEntity.entityItems',
+              :key='item.id',
+              v-if="item.isShow")
+              td
+                .field
+                  select
+                    option(disabled, value='') ID
+                    option(title="Unique", value='unique') #
+                    option(title="Mandatory", value='mandatory') *
+                    option(title="Optional", value='optional') o
+              td
+                .field
+                  input(type='text',:value="item.itemName", 
+                    placeholder='Name', 
+                    @keyup="sendItemName(key,entity, $event.target.value)")
+
     .ep(v-if="entity.multi != 2")
     .notes
       .notes__note(v-for="note in entity.notes")
         p {{note.id}}
     .line1(v-if="entity.multi == 2")
     .line2(v-if="entity.multi == 2 && entity.connType == '10'")
-    .subType Add SubType
+    .subType(@click="addSubEntity(entity.id)") Add SubType
     
 </template>
 
@@ -50,6 +78,9 @@ export default {
     }
   },
   methods: {
+    addSubEntity(entityID) {
+      this.$store.dispatch("addSubEntity", entityID);
+    },
     sendItemName(key, entity, value) {
       ref
         .child(entity.id)
@@ -135,7 +166,6 @@ table {
   width: 100%;
   margin-bottom: 3px;
   padding-bottom: 3px;
-  border: 2px solid rgba(#191919, 0.7);
   border-radius: 3px;
   background-color: rgba(#fff, 1);
   z-index: 99;
@@ -148,6 +178,9 @@ th {
 td {
   padding: 5px 10px;
   text-align: center;
+}
+tr {
+  height: 20px !important;
 }
 input[type="text"] {
   width: 100%;
@@ -170,19 +203,30 @@ input[type="text"] {
 .entity {
   width: 250px;
   position: absolute;
+  border: 2px solid rgba(#191919, 0.7);
+  border-radius: 5px;
 
   &:hover .ep,
+  &:hover .ep1,
   &:hover .subType {
     display: unset;
   }
 }
 
-.activeEntity {
-  border: 2px solid rgba(#e74c3c, 0.7);
-  box-shadow: 0 10px 20px rgba(51, 51, 51, 0.4);
+.subEntity {
+  width: 200px;
+  margin: 0 auto;
+  border: 2px solid rgba(#191919, 0.7);
+  margin-bottom: 10px;
+  border-radius: 5px;
 }
 
-.ep {
+.activeEntity {
+  border: 2px solid #1abb9c;
+  box-shadow: 0 4px 8px rgba(#1abb9c, 0.7);
+}
+
+.ep, .ep1 {
   position: absolute;
   left: 23.35%;
   top: 60px;
@@ -227,9 +271,9 @@ input[type="text"] {
 
 .subType {
   position: absolute;
-  bottom: 0%;
+  bottom: -5%;
   left: 50%;
-  transform: translate(-50%, 100%);
+  transform: translateX(-50%);
   border-radius: 3px;
   background-color: #2fbc9c;
   color: #fff;
