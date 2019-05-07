@@ -9,7 +9,7 @@ const state = {
     itemKey: "",
     itemName: "",
     dataType: "INTEGER",
-    isShow: true,
+    isShow: true
   }
 };
 
@@ -18,7 +18,7 @@ const getters = {
   activeEntity: state => state.activeEntity,
   entities: state => state.entities,
   itemKey: state => state.itemKey,
-  notes: state => state.notes,
+  notes: state => state.notes
 };
 
 /* MUTATIONS */
@@ -73,9 +73,8 @@ const actions = {
           itemName: payload.name,
           dataType: "INTEGER",
           fk: "fk",
-          isShow: false,
+          isShow: false
         });
-
     } else {
       ref
         .child(state.activeEntity)
@@ -83,22 +82,23 @@ const actions = {
         .push(state.item);
       commit("setItemKey", 1);
     }
-
   },
   delEntity({ state }) {
     ref.child(state.activeEntity).remove();
   },
-  addEntity({ commit, state, rootState }, entity) {
+  addEntity({ rootState }, entity) {
     let posX,
       posY,
       multi,
       entityName,
       entityItems,
+      connType = "",
       projectID = rootState.projects.projectID,
       entityType = "";
     if (entity) {
       posX = entity.posX;
       posY = entity.posY;
+      connType = entity.connType;
       multi = 2;
       entityName = "";
       entityItems = [
@@ -106,21 +106,21 @@ const actions = {
           itemKey: "unique",
           itemName: "id",
           dataType: "INTEGER",
-          isShow: true,
+          isShow: true
         },
         {
           itemKey: "mandatory",
           itemName: `${entity.sourceName}`,
           dataType: "INTEGER",
           isShow: false,
-          fk: "fk1",
+          fk: "fk1"
         },
         {
           itemKey: "mandatory",
           itemName: `${entity.targetName}`,
           dataType: "INTEGER",
           isShow: false,
-          fk: "fk2",
+          fk: "fk2"
         }
       ];
     } else {
@@ -144,8 +144,9 @@ const actions = {
       entityType,
       posX,
       posY,
+      connType,
       entityItems,
-      projectID,
+      projectID
     });
   },
   initEntities({ state, rootState }) {
@@ -162,7 +163,6 @@ const actions = {
             entity.id = key;
             entities.push(entity);
           }
-
         }
         state.entities = entities;
         resolve("OK");
@@ -178,7 +178,7 @@ const actions = {
         id,
         msg
       });
-  },
+  }
 };
 
 export default {

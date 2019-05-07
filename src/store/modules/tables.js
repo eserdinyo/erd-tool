@@ -1,20 +1,18 @@
-import { ref } from "@/firebase/"
-import http from '@/utils/http-tables'
+import { ref } from "@/firebase/";
+import getConnType from "@/utils/getConnType";
+import http from "@/utils/http-tables";
 
 const state = {
-  tables: [],
-}
+  tables: []
+};
 
 const getters = {
-  tables: state => state.tables,
-}
+  tables: state => state.tables
+};
 
-const mutations = {
-
-}
+const mutations = {};
 
 const actions = {
-
   getTables({ state, rootState }) {
     ref.on("value", snap => {
       const data = snap.val();
@@ -33,32 +31,38 @@ const actions = {
   },
   async sendDatabase({ state, rootState }) {
     const tables = [];
-    const connID = rootState.connections.connections[0].connType;
-    console.log(connID);
+    let connID = rootState.connections.connections[0].connType;
+    const connections = rootState.connections.connections;
 
     state.tables.forEach(table => {
-
       if (table.entityName.indexOf("(") != -1) {
-        table.entityName = table.entityName.slice(0, table.entityName.indexOf("("))
+        table.entityName = table.entityName.slice(
+          0,
+          table.entityName.indexOf("(")
+        );
         tables.push(table);
       } else {
         tables.push(table);
       }
+    });
 
-    })
+    if (connections.length > 1) {
+      connID = getConnType(connections);
+    }
 
-    const res = await http.post('/tables', {
-      tables, connID
+    const res = await http.post("/tables", {
+      tables,
+      connID
     });
     if (res.data == "OK") {
-      alert("Tablolar veritabanına aktarıldı!")
+      alert("Tablolar veritabanına aktarıldı!");
     }
   }
-}
+};
 
 export default {
   state,
   getters,
   mutations,
   actions
-}
+};

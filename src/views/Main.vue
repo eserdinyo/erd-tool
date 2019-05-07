@@ -127,10 +127,14 @@ export default {
 
             if (conID == 10) {
               dashType1 = "0 5 5";
-               dashType2 = "0 5 5";
+              dashType2 = "0 5 5";
             }
-            if(conID == 11) {
+            if (conID == 11) {
               dashType1 = "150 5 0";
+              dashType2 = "150 5 0";
+            }
+            if (conID == 12) {
+              dashType1 = "0 5 5";
               dashType2 = "150 5 0";
             }
 
@@ -189,7 +193,8 @@ export default {
               posY,
               entityName,
               sourceName,
-              targetName
+              targetName,
+              connType: conID
             });
 
             this.entities.forEach(entity => {

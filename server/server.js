@@ -136,9 +136,57 @@ app.post("/tables", (req, res) => {
     res.sendStatus(200);
   }
 
-  if (connID == 10) {
-    console.log('...');
-    
+  if (connID == 12) {
+    let fk1, fk2;
+    tables[2].entityItems.forEach(item => {
+      if (item.fk == "fk1") {
+        fk1 = item.itemName;
+      } else if (item.fk == "fk2") {
+        fk2 = item.itemName;
+      }
+    });
+
+    tables.forEach(table => {
+      let columns = {};
+
+      // SET COLUMNS NULL OR NOT NULL
+      Object.values(table.entityItems).forEach((item, index) => {
+        nullOrNotNullAndPK(columns, item, index);
+      });
+
+      // DEFINE TABLES
+      table.entityName = sequelize.define(table.entityName, columns, {
+        underscored: true,
+        timestamps: false
+      });
+    });
+
+    tables[2].entityName.belongsTo(tables[0].entityName, {
+      foreignKey: {
+        name: fk1,
+        allowNull: false
+      }
+    });
+    tables[2].entityName.belongsTo(tables[1].entityName, {
+      foreignKey: {
+        name: fk2,
+        allowNull: false
+      }
+    });
+
+    // CREATING TABLES
+    tables.forEach(table => {
+      table.entityName.sync({ force: true });
+      /* if (table.multi == 2) {
+        table.entityName.sync({ force: true });
+      } else {
+        setTimeout(() => {
+          table.entityName.sync({ force: true });
+        }, 1000);
+      } */
+    });
+
+    res.sendStatus(200);
   }
 
   if (connID == 14) {

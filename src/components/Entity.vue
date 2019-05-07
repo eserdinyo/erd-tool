@@ -31,7 +31,9 @@
       .notes__note(v-for="note in entity.notes")
         p {{note.id}}
     .line1(v-if="entity.multi == 2")
-    .line2(v-if="entity.multi == 2")
+    .line2(v-if="entity.multi == 2 && entity.connType == '10'")
+    .subType Add SubType
+    
 </template>
 
 <script>
@@ -74,7 +76,7 @@ export default {
     initForDelete() {
       document.onkeydown = evt => {
         evt = evt || window.event;
-        
+
         if (evt.keyCode == 93) {
           if (this.activeEntity != 0) {
             this.delEntity();
@@ -99,7 +101,6 @@ export default {
 
 
 <style lang="scss" scoped>
-
 .notes {
   display: flex;
   position: absolute;
@@ -170,7 +171,8 @@ input[type="text"] {
   width: 250px;
   position: absolute;
 
-  &:hover .ep {
+  &:hover .ep,
+  &:hover .subType {
     display: unset;
   }
 }
@@ -200,7 +202,7 @@ input[type="text"] {
   position: absolute;
   left: 0;
   top: 50%;
-  transform: translate(-100%,-50%);
+  transform: translate(-100%, -50%);
 }
 
 .line2 {
@@ -221,6 +223,20 @@ input[type="text"] {
 
 .row:nth-child(odd) {
   background: rgba(204, 204, 204, 0.3);
+}
+
+.subType {
+  position: absolute;
+  bottom: 0%;
+  left: 50%;
+  transform: translate(-50%, 100%);
+  border-radius: 3px;
+  background-color: #2fbc9c;
+  color: #fff;
+  font-size: 10px;
+  padding: 2px 5px;
+  cursor: pointer;
+  display: none;
 }
 </style>
 

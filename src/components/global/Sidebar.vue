@@ -117,6 +117,7 @@ select {
 }
 
 .notes {
+  overflow-y: scroll;
   &__container {
     padding: 20px 0;
     color: #333;
