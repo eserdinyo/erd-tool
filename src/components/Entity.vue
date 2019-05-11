@@ -43,7 +43,8 @@
               v-if="item.isShow")
               td
                 .field
-                  select
+                  select#element(v-model="item.itemKey", 
+                        @change="changeItem(key,subEntity,$event.target.value)")
                     option(disabled, value='') ID
                     option(title="Unique", value='unique') #
                     option(title="Mandatory", value='mandatory') *
@@ -52,7 +53,7 @@
                 .field
                   input(type='text',:value="item.itemName", 
                     placeholder='Name', 
-                    @keyup="sendItemName(key,entity, $event.target.value)")
+                    @keyup="sendItemName(key,subEntity, $event.target.value)")
 
     .ep(v-if="entity.multi != 2")
     .notes
@@ -85,20 +86,59 @@ export default {
       this.$store.dispatch("addSubEntity", entityID);
     },
     // CHANGE ITEM NAME
-    sendItemName(key, entity, value) {
-      ref
-        .child(entity.id)
-        .child("entityItems")
-        .child(key)
-        .update({ itemName: value });
+    sendItemName(key, entityLocal, value) {
+      if (entityLocal.entityType == "subtype") {
+        let topEntity;
+        this.entities.forEach(entity => {
+          Object.values(entity.subEntities).forEach(subEntity => {
+            if (subEntity.id == entityLocal.id) {
+              topEntity = entity.id;
+            }
+          });
+        });
+
+        ref
+          .child(topEntity)
+          .child("subEntities")
+          .child(entityLocal.id)
+          .child("entityItems")
+          .child(key)
+          .update({ itemName: value });
+      } else {
+        ref
+          .child(entityLocal.id)
+          .child("entityItems")
+          .child(key)
+          .update({ itemName: value });
+      }
     },
     // CHANGE ITEM KEY
-    changeItem(key, entity, value) {
-      ref
-        .child(entity.id)
-        .child("entityItems")
-        .child(key)
-        .update({ itemKey: value });
+    changeItem(key, entityLocal, value) {
+      if (entityLocal.entityType == "subtype") {
+        let topEntity;
+        this.entities.forEach(entity => {
+          Object.values(entity.subEntities).forEach(subEntity => {
+            if (subEntity.id == entityLocal.id) {
+              topEntity = entity.id;
+            }
+          });
+        });
+
+        ref
+          .child(topEntity)
+          .child("subEntities")
+          .child(entityLocal.id)
+          .child("entityItems")
+          .child(key)
+          .update({ itemKey: value });
+      } else {
+        ref
+          .child(localEntity.id)
+          .child("entityItems")
+          .child(key)
+          .update({ itemKey: value });
+        ƒ;
+      }
     },
 
     // CHANGE ENTITY OR SUBENTITY NAMES
