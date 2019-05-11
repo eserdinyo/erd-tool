@@ -7,17 +7,18 @@ entities:
      ✔ 1:1 ilişkiyi ekle @done(18-12-08 22:39)
      ✔ 1:M ilişkiyi ekle @done(18-12-08 22:39)
      ✔ M:M ilişki ekle @done(18-12-08 22:39)
-    ❍ Bir taraf seçimli bir taraf zorunlu ilişkiler
-     ❍ 1:1 ilişkiyi ekle
-     ❍ 1:M ilişkiyi ekle
-     ❍ M:M ilişki ekle
+    ✔ Bir taraf seçimli bir taraf zorunlu ilişkiler @done(19-05-11 12:50)
+     ✔ 1:1 ilişkiyi ekle @done(19-05-11 12:50)
+     ✔ 1:M ilişkiyi ekle @done(19-05-11 12:50)
+     ✔ M:M ilişki ekle @done(19-05-11 12:50)
+    ☐ Fix the sub entity item name and item key 
 
 tables: 
      ✔ Tabloları almayı ve sıralamayı async yap @done(18-12-02 16:40)
 
 other:
       ✔ Eğer seçimliyse null olabilir değilse not null bunu ayarla @done(18-12-08 22:38)
-      ❍ bir taraf seçimli bir taraf zorunluyu arayüze ekle
+      ✔ bir taraf seçimli bir taraf zorunluyu arayüze ekle @done(19-05-11 12:51)
 
       
      
