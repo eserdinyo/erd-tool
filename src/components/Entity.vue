@@ -36,7 +36,7 @@
                               placeholder='Entity Name', 
                               style="text-transform:uppercase",
                               :value='subEntity.entityName',
-                              @keyup="sendEntityName(entity,$event.target.value)")
+                              @keyup="sendEntityName(subEntity,$event.target.value)")
           tbody
             tr.row(v-for='(item,key) in subEntity.entityItems',
               :key='item.id',
@@ -66,6 +66,7 @@
 
 <script>
 import { ref } from "@/firebase/";
+import { mapGetters } from "vuex";
 
 export default {
   props: ["entity"],
@@ -75,12 +76,15 @@ export default {
   computed: {
     activeEntity() {
       return this.$store.getters.activeEntity;
-    }
+    },
+    ...mapGetters(["entities"])
   },
   methods: {
+    // ADDING SUB ENTITY TO TOP ENTITY
     addSubEntity(entityID) {
       this.$store.dispatch("addSubEntity", entityID);
     },
+    // CHANGE ITEM NAME
     sendItemName(key, entity, value) {
       ref
         .child(entity.id)
@@ -88,6 +92,7 @@ export default {
         .child(key)
         .update({ itemName: value });
     },
+    // CHANGE ITEM KEY
     changeItem(key, entity, value) {
       ref
         .child(entity.id)
@@ -95,8 +100,27 @@ export default {
         .child(key)
         .update({ itemKey: value });
     },
-    sendEntityName(entity, value) {
-      ref.child(entity.id).update({ entityName: value });
+
+    // CHANGE ENTITY OR SUBENTITY NAMES
+    sendEntityName(entityLocal, value) {
+      if (entityLocal.entityType == "subtype") {
+        let topEntity;
+        this.entities.forEach(entity => {
+          Object.values(entity.subEntities).forEach(subEntity => {
+            if (subEntity.id == entityLocal.id) {
+              topEntity = entity.id;
+            }
+          });
+        });
+
+        ref
+          .child(topEntity)
+          .child("subEntities")
+          .child(entityLocal.id)
+          .update({ entityName: value });
+      } else {
+        ref.child(entityLocal.id).update({ entityName: value });
+      }
     },
     setActiveEntity(entity) {
       this.$store.commit("updateActive", entity);
@@ -226,7 +250,8 @@ input[type="text"] {
   box-shadow: 0 4px 8px rgba(#1abb9c, 0.7);
 }
 
-.ep, .ep1 {
+.ep,
+.ep1 {
   position: absolute;
   left: 23.35%;
   top: 60px;
