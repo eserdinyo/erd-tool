@@ -31,8 +31,8 @@ const actions = {
   },
   async sendDatabase({ state, rootState }) {
     const tables = [];
-    let connID = rootState.connections.connections[0].connType;
-    const connections = rootState.connections.connections;
+    // let connID = rootState.connections.connections[0].connType;
+    // const connections = rootState.connections.connections;
 
     state.tables.forEach(table => {
       if (table.entityName.indexOf("(") != -1) {
@@ -46,13 +46,13 @@ const actions = {
       }
     });
 
-    if (connections.length > 1) {
+   /*  if (connections.length > 1) {
       connID = getConnType(connections);
-    }
+    } */
 
     const res = await http.post("/tables", {
       tables,
-      connID
+      // connID
     });
     if (res.data == "OK") {
       alert("Tablolar veritabanına aktarıldı!");

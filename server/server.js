@@ -11,12 +11,12 @@ app.use(bodyParser.json());
 
 function nullOrNotNullAndPK(columns, item, index) {
   if (item.itemKey == "mandatory") {
-    columns[item.itemName] = {
+    columns[item.itemName.replace(' ', '_')] = {
       type: getEntityDataType(item.dataType),
       allowNull: false
     };
   } else if (item.itemKey == "optional") {
-    columns[item.itemName] = {
+    columns[item.itemName.replace(' ', '_')] = {
       type: getEntityDataType(item.dataType),
       allowNull: true
     };
@@ -35,6 +35,37 @@ function nullOrNotNullAndPK(columns, item, index) {
 app.post("/tables", (req, res) => {
   const connID = req.body.connID;
   const tables = req.body.tables;
+
+
+
+  // FOR SUB AND SUPERTYPES
+  tables.forEach(table => {
+    if (Object.values(table.subEntities).length > 0) {
+      let columns = {};
+
+      // SET COLUMNS NULL OR NOT NULL
+      Object.values(table.entityItems).forEach((item, index) => {
+        nullOrNotNullAndPK(columns, item, index);
+      });
+
+      // SET SUBENTITY COLUMNS NULL OR NOT NULL
+      Object.values(table.subEntities).forEach(subEntity => {
+        Object.values(subEntity.entityItems).forEach((item, index) => {
+          nullOrNotNullAndPK(columns, item, index + 1);
+        });
+      })
+
+      // DEFINE TABLES
+      table.entityName = sequelize.define(table.entityName.toLowerCase(), columns, {
+        underscored: true,
+        timestamps: false
+      });
+
+      table.entityName.sync({ force: true });
+
+      res.sendStatus(200);
+    }
+  });
 
   if (connID == 0 || connID == 4) {
     let emptyIndex;
