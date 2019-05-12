@@ -10,8 +10,31 @@
             td Optionality
             td Data Type
             td Column Name
-          template(v-for="(item,key,index) in table.entityItems")
-            tr
+          tr(v-for="(item,key,index) in table.entityItems")
+            td(v-if="(table.multi == 2 && !item.isShow && item.fk == 'fk1')") FK1
+            td(v-else-if="(!item.isShow && item.fk == 'fk')") FK
+            td(v-else-if="(table.multi == 2 && !item.isShow && item.fk == 'fk2')") FK2
+            td(v-else-if="item.itemKey== 'unique'") PK
+            td.field(v-else)
+              select#element()
+                option(value='', selected) None
+                option(title="Unique", value='unique') UK
+            td.field
+              p(v-if="item.itemKey == 'mandatory' || item.itemKey == 'unique'") *
+              p(v-else-if="item.itemKey == 'optional'") o
+              p(v-else) 
+            td.field
+              select#element(v-model="item.dataType",
+                            @change="changeDataType(key,table,$event.target.value)")
+                option(disabled, value='') Veri Tipi
+                option(title="INT", value='INTEGER') INT
+                option(title="CHAR", value='CHAR') VARCHAR
+                option(title="TEXT", value='TEXT') TEXT
+                option(title="DATE", value='DATETIME') DATE
+            td.field
+              p {{item.itemName.replace(" ", "_")}}
+          template(v-for="subEntity in table.subEntities")
+            tr(v-for="(item,key,index) in subEntity.entityItems")
               td(v-if="(table.multi == 2 && !item.isShow && item.fk == 'fk1')") FK1
               td(v-else-if="(!item.isShow && item.fk == 'fk')") FK
               td(v-else-if="(table.multi == 2 && !item.isShow && item.fk == 'fk2')") FK2
@@ -26,7 +49,7 @@
                 p(v-else) 
               td.field
                 select#element(v-model="item.dataType",
-                              @change="changeDataType(key,table,$event.target.value)")
+                              @change="changeDataType(key,table,$event.target.value, subEntity)")
                   option(disabled, value='') Veri Tipi
                   option(title="INT", value='INTEGER') INT
                   option(title="CHAR", value='CHAR') VARCHAR
@@ -44,12 +67,23 @@ export default {
   props: ["table"],
 
   methods: {
-    changeDataType(key, table, value) {
-      ref
-        .child(table.id)
-        .child("entityItems")
-        .child(key)
-        .update({ dataType: value.toUpperCase() });
+    changeDataType(key, table, value, subEntity) {
+      if (subEntity) {
+        const subID = subEntity.id;
+        ref
+          .child(table.id)
+          .child("subEntities")
+          .child(subID)
+          .child("entityItems")
+          .child(key)
+          .update({ dataType: value.toUpperCase() });
+      } else {
+        ref
+          .child(table.id)
+          .child("entityItems")
+          .child(key)
+          .update({ dataType: value.toUpperCase() });
+      }
     },
     setTableName(name) {
       if (name.indexOf("(") != -1) {

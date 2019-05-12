@@ -628,7 +628,9 @@ export default {
     this.currentUser = firebase.auth().currentUser;
 
     EventBus.$on("donustur", () => {
-      this.connections.forEach(conn => {
+      this.$router.push({ name: "tables" });
+
+      /* this.connections.forEach(conn => {
         if (conn.connType == 0 || conn.connType == 1) {
           this.entities.forEach(entity => {
             if (entity.ID == conn.targetId) {
@@ -641,7 +643,7 @@ export default {
         } else {
           this.$router.push({ name: "tables" });
         }
-      });
+      }); */
     });
 
     EventBus.$on("openProjectBox", () => {

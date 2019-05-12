@@ -140,7 +140,6 @@ export default {
         ƒ;
       }
     },
-
     // CHANGE ENTITY OR SUBENTITY NAMES
     sendEntityName(entityLocal, value) {
       if (entityLocal.entityType == "subtype") {
