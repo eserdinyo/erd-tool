@@ -26,6 +26,7 @@ export default {
       sourceKey: "",
       targetKey: "",
       targetEntity: "",
+      sourceEntity: '',
       isPopupOpen: false,
       isNewProjectOpen: false,
       projectName: "",
@@ -54,6 +55,21 @@ export default {
     // JSPLUMB //
     getflow() {
       var instance = jsPlumb.getInstance({
+        Connector: [this.globalConnType, { curviness: 150 }],
+        Endpoint: ["Dot", { radius: 1 }],
+        EndpointStyle: { fill: "#191919" },
+        HoverPaintStyle: { stroke: "#c0392b", lineWidth: 10 },
+        EndpointHoverStyle: {
+          fill: "#c0392b",
+          stroke: "#c0392b",
+          lineWidth: 10
+        },
+        Anchor: ["Left", "Right", "TopCenter", "BottomCenter"],
+        ConnectionOverlays: this.connType,
+        Container: "main"
+      });
+
+      var instance2 = jsPlumb.getInstance({
         Connector: [this.globalConnType, { curviness: 150 }],
         Endpoint: ["Dot", { radius: 1 }],
         EndpointStyle: { fill: "#191919" },
@@ -251,7 +267,8 @@ export default {
           conID == 5 ||
           conID == 4 ||
           conID == 13 ||
-          conID == 14
+          conID == 14 ||
+          conID == 15
         ) {
           let key = "",
             entityType = "",
@@ -271,6 +288,7 @@ export default {
               ref.child(key).update({ entityType });
             } else if (entity.ID == s) {
               key = entity.id;
+              this.sourceEntity = entity;
               this.sourceKey = key;
               ref.child(key).update({ entityType });
             }
@@ -299,6 +317,16 @@ export default {
             });
           }
           if (conID == 5) {
+            this.$store.dispatch("addItem", {
+              id: this.sourceKey,
+              itemKey: "mandatory",
+              name: `${this.getShortName(this.targetEntity.entityName)}_${
+                this.targetEntity.entityItems[0].itemName
+              }`,
+              dataType: "INTEGER"
+            });
+          }
+          if (conID == 15) {
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
               itemKey: "mandatory",
@@ -507,6 +535,33 @@ export default {
         });
       }
 
+      // *********************** //
+      // MAKE SUBENTITIES SOURCE //
+      // ********************** //
+      /* this.entities.forEach(entity => {
+        if (Object.values(entity.subEntities).length > 0) {
+          Object.values(entity.subEntities).forEach(subEntity => {
+            instance.makeSource(subEntity.ID, {
+              filter: ".ep1",
+              anchor: "Continuous",
+              connectorStyle: {
+                stroke: "#191919",
+                strokeWidth: 3,
+                outlineStroke: "transparent",
+                outlineWidth: 4,
+                straightdashstyle: this.dashType
+              },
+
+              connectionType: "basic",
+              extract: {
+                action: "the-action"
+              },
+              maxConnections: 2
+            });
+          });
+        }
+      }); */
+
       // *********************   //
       // SET INIT CONNECTION    //
       // ********************* //
@@ -526,10 +581,6 @@ export default {
     /* ************ */
     // JSPLUMB-END //
     /* *********** */
-
-    setConnType() {
-      return "";
-    },
 
     makeDraggable() {
       // Make Draggable
@@ -568,7 +619,7 @@ export default {
     getShortName(name) {
       if (name.indexOf("(") != -1)
         return name.slice(name.indexOf("(") + 1, name.length - 1).toLowerCase();
-      else return name;
+      else return name.toLowerCase();
     },
     getEntityFk(ent) {
       this.entityID = ent.ID;

@@ -36,11 +36,10 @@ app.post("/tables", (req, res) => {
   const connID = req.body.connID;
   const tables = req.body.tables;
 
+  if (connID == undefined) {
 
 
-  // FOR SUB AND SUPERTYPES
-  tables.forEach(table => {
-    if (Object.values(table.subEntities).length > 0) {
+    tables.forEach(table => {
       let columns = {};
 
       // SET COLUMNS NULL OR NOT NULL
@@ -48,24 +47,56 @@ app.post("/tables", (req, res) => {
         nullOrNotNullAndPK(columns, item, index);
       });
 
+
       // SET SUBENTITY COLUMNS NULL OR NOT NULL
-      Object.values(table.subEntities).forEach(subEntity => {
-        Object.values(subEntity.entityItems).forEach((item, index) => {
-          nullOrNotNullAndPK(columns, item, index + 1);
-        });
-      })
+      if (table.subEntities) {
+        Object.values(table.subEntities).forEach(subEntity => {
+          Object.values(subEntity.entityItems).forEach((item, index) => {
+            nullOrNotNullAndPK(columns, item, index + 1);
+          });
+        })
+      }
 
       // DEFINE TABLES
-      table.entityName = sequelize.define(table.entityName.toLowerCase(), columns, {
+      table.entityName = sequelize.define(table.entityName, columns, {
         underscored: true,
         timestamps: false
       });
+    });
 
-      table.entityName.sync({ force: true });
+    // DEFINE RELATIONS
 
-      res.sendStatus(200);
-    }
-  });
+    Object.values(tables[0].entityItems).forEach(item => {
+      if (item.fk == 'fk1') {
+        tables[0].entityName.belongsTo(tables[1].entityName, {
+          foreignKey: {
+            name: item.itemName,
+            allowNull: false
+          }
+        });
+      }
+    })
+
+    Object.values(tables[0].entityItems).forEach(item => {
+      if (item.fk == 'fk2') {
+        tables[0].entityName.belongsTo(tables[2].entityName, {
+          foreignKey: {
+            name: item.itemName,
+            allowNull: false
+          }
+        });
+      }
+    })
+
+
+
+    // CREATING TABLES
+    tables[1].entityName.sync({ force: true });
+    tables[2].entityName.sync({ force: true });
+    tables[0].entityName.sync({ force: true });
+
+    res.sendStatus(200);
+  }
 
   if (connID == 0 || connID == 4) {
     let emptyIndex;

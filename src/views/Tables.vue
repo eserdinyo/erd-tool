@@ -33,6 +33,7 @@ export default {
 .cover {
   display: flex;
 }
+
 .main {
   background: #f5f6fa;
   border: 1px solid rgba(#000, 0.2);
@@ -41,6 +42,7 @@ export default {
   display: grid;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
+  padding-bottom: 200px;
 }
 </style>
 

@@ -14,6 +14,8 @@
       img(src="../../assets/img/conn2.png")
     a.link(@click="sendConnType(5, dashType2)")
       img(src="../../assets/img/conn4.png")
+    a.link(@click="sendConnType(15, dashType2)")
+      img(src="../../assets/img/conn12.png")
     a.link(@click="sendConnType(11, dashType2)")
       img(src="../../assets/img/conn5.png")
     a.link(@click="sendConnType(13, dashType2)")

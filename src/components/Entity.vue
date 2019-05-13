@@ -54,7 +54,7 @@
                   input(type='text',:value="item.itemName", 
                     placeholder='Name', 
                     @keyup="sendItemName(key,subEntity, $event.target.value)")
-
+      .ep1(v-if="entity.multi != 2")
     .ep(v-if="entity.multi != 2")
     .notes
       .notes__note(v-for="note in entity.notes")
@@ -133,11 +133,10 @@ export default {
           .update({ itemKey: value });
       } else {
         ref
-          .child(localEntity.id)
+          .child(entityLocal.id)
           .child("entityItems")
           .child(key)
           .update({ itemKey: value });
-        ƒ;
       }
     },
     // CHANGE ENTITY OR SUBENTITY NAMES
@@ -282,6 +281,7 @@ input[type="text"] {
   border: 2px solid rgba(#191919, 0.7);
   margin-bottom: 10px;
   border-radius: 5px;
+  position: relative;
 }
 
 .activeEntity {

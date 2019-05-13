@@ -11,9 +11,9 @@
             td Data Type
             td Column Name
           tr(v-for="(item,key,index) in table.entityItems")
-            td(v-if="(table.multi == 2 && !item.isShow && item.fk == 'fk1')") FK1
+            td(v-if="(!item.isShow && item.fk == 'fk1')") FK1
+            td(v-else-if="(!item.isShow && item.fk == 'fk2')") FK2
             td(v-else-if="(!item.isShow && item.fk == 'fk')") FK
-            td(v-else-if="(table.multi == 2 && !item.isShow && item.fk == 'fk2')") FK2
             td(v-else-if="item.itemKey== 'unique'") PK
             td.field(v-else)
               select#element()
