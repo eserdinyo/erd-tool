@@ -16,7 +16,6 @@ import AppSidebar from "@/components/global/Sidebar";
 import AppToolbar from "@/components/global/Toolbar";
 import AppEntity from "@/components/Entity";
 import firebase from "firebase";
-import { debug } from "util";
 
 export default {
   data() {
@@ -55,21 +54,6 @@ export default {
     // JSPLUMB //
     getflow() {
       var instance = jsPlumb.getInstance({
-        Connector: [this.globalConnType, { curviness: 150 }],
-        Endpoint: ["Dot", { radius: 1 }],
-        EndpointStyle: { fill: "#191919" },
-        HoverPaintStyle: { stroke: "#c0392b", lineWidth: 10 },
-        EndpointHoverStyle: {
-          fill: "#c0392b",
-          stroke: "#c0392b",
-          lineWidth: 10
-        },
-        Anchor: ["Left", "Right", "TopCenter", "BottomCenter"],
-        ConnectionOverlays: this.connType,
-        Container: "main"
-      });
-
-      var instance2 = jsPlumb.getInstance({
         Connector: [this.globalConnType, { curviness: 150 }],
         Endpoint: ["Dot", { radius: 1 }],
         EndpointStyle: { fill: "#191919" },
