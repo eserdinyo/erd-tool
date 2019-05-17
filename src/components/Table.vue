@@ -11,9 +11,7 @@
             td Data Type
             td Column Name
           tr(v-for="(item,key,index) in table.entityItems")
-            td(v-if="(!item.isShow && item.fk == 'fk1')") FK1
-            td(v-else-if="(!item.isShow && item.fk == 'fk2')") FK2
-            td(v-else-if="(!item.isShow && item.fk == 'fk')") FK
+            td(v-if="(!item.isShow && item.fk == 'fk')") FK {{ getFK(key) }}
             td(v-else-if="item.itemKey== 'unique'") PK
             td.field(v-else)
               select#element()
@@ -65,8 +63,24 @@ import { ref } from "@/firebase/";
 export default {
   name: "Table",
   props: ["table"],
+  data() {
+    return {
+      i: 1,
+      temp: []
+    };
+  },
 
   methods: {
+    getFK(key) {
+      if (!this.temp.includes(key)) {
+        this.temp.push(key);
+      } else {
+        if (this.temp.includes(key)) {
+          let foo = this.temp.indexOf(key);
+          return (foo += 1);
+        }
+      }
+    },
     changeDataType(key, table, value, subEntity) {
       if (subEntity) {
         const subID = subEntity.id;
@@ -92,7 +106,8 @@ export default {
         return name.toUpperCase();
       }
     }
-  }
+  },
+  created() {}
 };
 </script>
 

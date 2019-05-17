@@ -25,7 +25,7 @@ export default {
       sourceKey: "",
       targetKey: "",
       targetEntity: "",
-      sourceEntity: '',
+      sourceEntity: "",
       isPopupOpen: false,
       isNewProjectOpen: false,
       projectName: "",
@@ -238,9 +238,10 @@ export default {
           t = ci.targetId;
 
         const conID =
-          ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
-
-        console.log(conID);
+					ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
+					
+					console.log(conID);
+					
 
         // *******************************      //
         //     1:M-1:1   ÇİFT TARAF ZORUNLU    //
@@ -300,7 +301,7 @@ export default {
               dataType: "INTEGER"
             });
           }
-          if (conID == 5) {
+          if (conID == 5 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
               itemKey: "mandatory",
@@ -310,7 +311,7 @@ export default {
               dataType: "INTEGER"
             });
           }
-          if (conID == 15) {
+          if (conID == 15 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
               itemKey: "mandatory",
@@ -329,6 +330,18 @@ export default {
               dashType: this.dashType,
               overlay: this.connType,
               projectID: this.projectID
+            });
+          }
+
+          // ************************* //
+          // ADD RELATIONS TO HIMSELF //
+          // ********************** //
+          if (s == t) {
+            this.$store.dispatch("addItem", {
+              id: this.targetKey,
+              itemKey: "mandatory",
+              name: `${this.getShortName(this.targetEntity.entityName)}_type`,
+              dataType: "INTEGER"
             });
           }
         }
@@ -507,7 +520,7 @@ export default {
           extract: {
             action: "the-action"
           },
-          maxConnections: 2
+          maxConnections: 3
         });
 
         // *********************   //
@@ -518,33 +531,6 @@ export default {
           anchor: "Continuous"
         });
       }
-
-      // *********************** //
-      // MAKE SUBENTITIES SOURCE //
-      // ********************** //
-      /* this.entities.forEach(entity => {
-        if (Object.values(entity.subEntities).length > 0) {
-          Object.values(entity.subEntities).forEach(subEntity => {
-            instance.makeSource(subEntity.ID, {
-              filter: ".ep1",
-              anchor: "Continuous",
-              connectorStyle: {
-                stroke: "#191919",
-                strokeWidth: 3,
-                outlineStroke: "transparent",
-                outlineWidth: 4,
-                straightdashstyle: this.dashType
-              },
-
-              connectionType: "basic",
-              extract: {
-                action: "the-action"
-              },
-              maxConnections: 2
-            });
-          });
-        }
-      }); */
 
       // *********************   //
       // SET INIT CONNECTION    //

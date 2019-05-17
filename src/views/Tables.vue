@@ -1,7 +1,7 @@
 <template lang="pug">
     .cover
         .main
-          app-table(v-for="table in tables",
+          app-table(v-for="(table, idx) in tables",
             :table="table"
             :key="table.id")
         app-sidebar
@@ -16,8 +16,15 @@ import { EventBus } from "@/main";
 import { mapGetters } from "vuex";
 
 export default {
+  data() {
+    return {
+    }
+  },
   computed: {
     ...mapGetters(["tables"])
+  },
+  methods: {
+  
   },
   components: {
     AppSidebar,
