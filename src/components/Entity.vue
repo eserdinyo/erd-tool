@@ -1,5 +1,5 @@
 <template lang="pug">
- .tablo.entity(:id="entity.ID")
+ .tablo.entity(:id="entity.ID", :class="{ isYay: entity.isYay }")
     table(@mousedown="setActiveEntity(entity)",
     :class="{ activeEntity : activeEntity == entity.id}")
       thead
@@ -56,6 +56,7 @@
                     @keyup="sendItemName(key,subEntity, $event.target.value)")
       .ep1(v-if="entity.multi != 2")
     .ep(v-if="entity.multi != 2")
+    .yay(v-if='entity.isYay')
     .notes
       .notes__note(v-for="note in entity.notes")
         p {{note.id}}
@@ -263,7 +264,7 @@ input[type="text"] {
   margin: 0;
 }
 .entity {
-  width: 250px;
+  width: 170px;
   position: absolute;
   border: 2px solid rgba(#191919, 0.7);
   border-radius: 5px;
@@ -276,7 +277,7 @@ input[type="text"] {
 }
 
 .subEntity {
-  width: 200px;
+  width: 160px;
   margin: 0 auto;
   border: 2px solid rgba(#191919, 0.7);
   margin-bottom: 10px;
@@ -292,7 +293,7 @@ input[type="text"] {
 .ep,
 .ep1 {
   position: absolute;
-  left: 23.35%;
+  left: 31.35%;
   top: 60px;
   height: 15px;
   width: 15px;
@@ -345,6 +346,45 @@ input[type="text"] {
   padding: 2px 5px;
   cursor: pointer;
   display: none;
+}
+
+.yay {
+  height: 300px;
+  width: 15px;
+  position: absolute;
+  right: -20%;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 2px solid #191919;
+  border-top-right-radius: 15px;
+  border-bottom-right-radius: 15px;
+  border-left: none;
+
+  &::after {
+    content: "";
+    height: 10px;
+    width: 10px;
+    border: 2px solid #191919;
+    border-radius: 50%;
+    position: absolute;
+    top: 19.5%;
+    right: -60%;
+  }
+
+  &::before {
+    content: "";
+    height: 10px;
+    width: 10px;
+    border: 2px solid #191919;
+    border-radius: 50%;
+    position: absolute;
+    bottom: 19.5%;
+    right: -60%;
+  }
+}
+
+.isYay {
+  height: 500px !important;
 }
 </style>
 

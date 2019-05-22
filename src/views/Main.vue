@@ -238,10 +238,9 @@ export default {
           t = ci.targetId;
 
         const conID =
-					ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
-					
-					console.log(conID);
-					
+          ci._jsPlumb.overlays[Object.keys(ci._jsPlumb.overlays)[0]].id;
+
+        console.log(conID);
 
         // *******************************      //
         //     1:M-1:1   ÇİFT TARAF ZORUNLU    //

@@ -27,13 +27,17 @@
       img(src="../../assets/img/conn7.png")
     a.link(@click="sendConnType(6, dashType3)")
       img(src="../../assets/img/conn8.png")
-    a.link(@click="sendConnType(12, dashType3)")
-      img(src="../../assets/img/conn9.png")
+    //a.link(@click="sendConnType(16, dashType4)")
+      img(src="../../assets/img/conn16.png")
+    hr
+    a.link(@click='makeYay')
+      img(src='../../assets/img/yay.png')
 
 </template>
 
 <script>
-import { refConnType, refDashType, refGlobalConnType } from "@/firebase";
+import { ref, refConnType, refDashType, refGlobalConnType } from "@/firebase";
+import { mapGetters } from "vuex";
 
 export default {
   data() {
@@ -41,12 +45,16 @@ export default {
       dashType1: "0 5 5",
       dashType2: "150 5 0",
       dashType3: "150 5 3",
+      dashType4: "5 150 3",
       globalConnType: ""
     };
   },
+  computed: {
+    ...mapGetters(["activeEntity"])
+  },
   methods: {
     async sendConnType(connType, dashType) {
-      if (connType == 2 || connType == 6 || connType == 12)
+      if (connType == 2 || connType == 6 || connType == 12 || connType == 16)
         this.globalConnType = "Bezier";
       else this.globalConnType = "Flowchart";
       await refConnType.update({ connType });
@@ -57,7 +65,13 @@ export default {
     addEntity() {
       this.$store.dispatch("addEntity");
       location.reload();
+    },
+    makeYay() {
+      ref.child(this.activeEntity).update({ isYay: true });
     }
+  },
+  created() {
+    console.log(this.activeEntity);
   }
 };
 </script>

@@ -327,48 +327,15 @@ export default {
   ],
   con16: [
     [
-      // Line
-      "Arrow",
-      {
-        location: 0.05,
-        length: 1,
-        foldback: 1,
-        direction: 1,
-        id: "16"
-      }
-    ],
-    [
       // Arrow
       "Arrow",
       {
         location: 0,
-        id: "arrow1",
         length: 10,
         foldback: 0.3,
-        direction: 1
-      }
-    ],
-    [
-      // Line
-      "Arrow",
-      {
-        location: 0.95,
-        length: 1,
-        foldback: 1,
         direction: 1,
-        id: "label1"
-      }
-    ],
-    [
-      // Arrow
-      "Arrow",
-      {
-        location: 1,
-        id: "arrow2",
-        length: 10,
-        foldback: 0.3,
-        direction: -1
+        id: "16"
       }
     ]
-  ]
+  ],
 };
