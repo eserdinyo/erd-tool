@@ -338,4 +338,18 @@ export default {
       }
     ]
   ],
+  con17: [
+    // left 1 right 4
+    [
+      // Arrow
+      "Arrow",
+      {
+        location: 0,
+        length: 10,
+        foldback: 0.3,
+        direction: 1,
+        id: "17"
+      }
+    ]
+  ],
 };

@@ -252,13 +252,15 @@ export default {
           conID == 4 ||
           conID == 13 ||
           conID == 14 ||
-          conID == 15
+          conID == 17
         ) {
           let key = "",
             entityType = "",
             connType = "";
 
-          conID == 0 || conID == 4 ? (entityType = "optional") : 0;
+          conID == 0 || conID == 4 || conID == 17
+            ? (entityType = "optional")
+            : 0;
           conID == 1 || conID == 5 || conID == 13 || conID == 14
             ? (entityType = "mandatory")
             : 0;
@@ -290,7 +292,7 @@ export default {
             });
             location.reload();
           }
-          if (conID == 4) {
+          if (conID == 1 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
               itemKey: "optional",
@@ -300,27 +302,27 @@ export default {
               dataType: "INTEGER"
             });
           }
+          if (conID == 4 && s != t) {
+            this.$store.dispatch("addItem", {
+              id: this.targetKey,
+              itemKey: "optional",
+              name: `${this.getShortName(this.sourceEntity.entityName)}_${
+                this.sourceEntity.entityItems[0].itemName
+              }`,
+              dataType: "INTEGER"
+            });
+          }
+          // s != t means it's not itself
           if (conID == 5 && s != t) {
             this.$store.dispatch("addItem", {
-              id: this.sourceKey,
+              id: this.targetKey,
               itemKey: "mandatory",
-              name: `${this.getShortName(this.targetEntity.entityName)}_${
-                this.targetEntity.entityItems[0].itemName
+              name: `${this.getShortName(this.sourceEntity.entityName)}_${
+                this.sourceEntity.entityItems[0].itemName
               }`,
               dataType: "INTEGER"
             });
           }
-          if (conID == 15 && s != t) {
-            this.$store.dispatch("addItem", {
-              id: this.sourceKey,
-              itemKey: "mandatory",
-              name: `${this.getShortName(this.targetEntity.entityName)}_${
-                this.targetEntity.entityItems[0].itemName
-              }`,
-              dataType: "INTEGER"
-            });
-          }
-
           if (!(t.length < 20)) {
             refConn.push({
               sourceId: s,
@@ -344,94 +346,6 @@ export default {
             });
           }
         }
-
-        // ****************************************  //
-        //     M TO M ÇİFT TARAF ZORUNLU || SECIMLİ //
-        // *************************************** //
-
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        //   WILL BE DELETE LATER
-        /*  if (conID == 10 || conID == 11) {
-          let sourceX,
-            key,
-            targetX,
-            sourceY,
-            posX,
-            posY,
-            newEntityTarget,
-            entityName,
-            sourceName,
-            targetName,
-            entityType;
-
-          conID == 10 ? (entityType = "optional") : (entityType = "mandatory");
-
-          // entityType'ı güncelle
-          this.entities.forEach(entity => {
-            if (entity.ID == t) {
-              key = entity.id;
-              ref.child(key).update({ entityType });
-            } else if (entity.ID == s) {
-              key = entity.id;
-              ref.child(key).update({ entityType });
-            }
-          });
-
-          // get some values for new entity
-          this.entities.forEach(entity => {
-            if (entity.ID == s) {
-              sourceX = entity.posX;
-              sourceY = entity.posY;
-              sourceName = entity.entityName;
-            }
-            if (entity.ID == t) {
-              targetX = entity.posX;
-              targetName = entity.entityName;
-            }
-          });
-
-          posX = (targetX - sourceX) / 2 + sourceX - 10;
-          posY = sourceY + 300;
-          entityName = `${sourceName}_${targetName}`;
-          this.$store.dispatch("addEntity", {
-            posX,
-            posY,
-            entityName,
-            sourceName,
-            targetName
-          });
-
-          this.entities.forEach(entity => {
-            if (entity.multi == 2) newEntityTarget = entity.ID;
-          });
-
-          refConnType.update({ connType: 4 });
-
-          this.$store.commit("setConnectionType", 4);
-          refConn.push({
-            sourceId: s,
-            connType: 0,
-            targetId: newEntityTarget,
-            dashType: this.dashType,
-            overlay: this.connType,
-            projectID: this.projectID
-          });
-          refConn.push({
-            sourceId: t,
-            connType: 0,
-            targetId: newEntityTarget,
-            dashType: this.dashType,
-            overlay: this.connType,
-            projectID: this.projectID
-          });
-          location.reload();
-        } */
         // ****************************************  //
         //            1:1 SEÇİMLİ-ZORUNLU           //
         // *************************************** //

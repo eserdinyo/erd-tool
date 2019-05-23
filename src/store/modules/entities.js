@@ -19,7 +19,7 @@ const getters = {
   activeEntity: state => state.activeEntity,
   entities: state => state.entities,
   itemKey: state => state.itemKey,
-  notes: state => state.notes
+  notes: state => state.notes,
 };
 
 /* MUTATIONS */
@@ -45,7 +45,7 @@ const mutations = {
         });
       }
     });
-  }
+  },
 };
 
 /* ACTIONS */
@@ -80,7 +80,7 @@ const actions = {
           dataType: "INTEGER",
           fk: "fk",
           isShow: false
-        });
+        })
     } else if (state.isSubType) {
       let activeEntity;
       state.entities.forEach(entity => {
@@ -172,7 +172,7 @@ const actions = {
       projectID
     });
   },
-  addSubEntity({}, entityID) {
+  addSubEntity({ }, entityID) {
     ref
       .child(entityID)
       .child("subEntities")
@@ -226,7 +226,7 @@ const actions = {
       .push({
         id,
         msg
-      });
+      })
   }
 };
 
