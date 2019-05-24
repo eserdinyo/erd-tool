@@ -248,6 +248,7 @@ export default {
         if (
           conID == 0 ||
           conID == 1 ||
+          conID == 2 ||
           conID == 5 ||
           conID == 4 ||
           conID == 13 ||
@@ -313,7 +314,7 @@ export default {
             });
           }
           // s != t means it's not itself
-          if (conID == 5 && s != t) {
+          if ((conID == 2 || conID == 5) && s != t) {
             this.$store.dispatch("addItem", {
               id: this.targetKey,
               itemKey: "mandatory",
@@ -349,7 +350,7 @@ export default {
         // ****************************************  //
         //            1:1 SEÇİMLİ-ZORUNLU           //
         // *************************************** //
-        if (conID == 2) {
+        /* if (conID == 2) {
           let key = "";
           this.entities.forEach(entity => {
             if (entity.ID == t) {
@@ -369,11 +370,11 @@ export default {
             overlay: this.connType,
             projectID: this.projectID
           });
-
-          // ****************************************  //
-          //            1:M SEÇİMLİ-ZORUNLU           //
-          // *************************************** //
-        } else if (conID == 6) {
+        } */
+        // ****************************************  //
+        //            1:M SEÇİMLİ-ZORUNLU           //
+        // *************************************** //
+        else if (conID == 6) {
           let key = "";
 
           this.entities.forEach(entity => {
@@ -495,9 +496,9 @@ export default {
       this.$store.dispatch("addNote", { entityID, id, msg });
     },
     getEntityName(name) {
-      if (name) {
+      if (name.includes('(')) {
         return name.slice(0, name.indexOf("(")).toUpperCase();
-      }
+      }else return name.toUpperCase();
     },
     getShortName(name) {
       if (name.indexOf("(") != -1)
@@ -562,10 +563,10 @@ export default {
     this.currentUser = firebase.auth().currentUser;
 
     EventBus.$on("donustur", () => {
-      this.$router.push({ name: "tables" });
-
-      /* this.connections.forEach(conn => {
-        if (conn.connType == 0 || conn.connType == 1) {
+      if (
+        this.connections.some(conn => conn.connType == 0 || conn.connType == 1)
+      ) {
+        this.connections.forEach(conn => {
           this.entities.forEach(entity => {
             if (entity.ID == conn.targetId) {
               this.targetKey = entity.id;
@@ -573,11 +574,11 @@ export default {
               this.sourceKey = entity.id;
             }
           });
-          this.isPopupOpen = true;
-        } else {
-          this.$router.push({ name: "tables" });
-        }
-      }); */
+        });
+        this.isPopupOpen = true;
+      } else {
+        this.$router.push({ name: "tables" });
+      }
     });
 
     EventBus.$on("openProjectBox", () => {
