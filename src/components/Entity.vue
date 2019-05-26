@@ -60,7 +60,7 @@
     .notes
       .notes__note(v-for="note in entity.notes")
         p {{note.id}}
-    .line1(v-if="entity.multi == 2")
+    .line1(v-if="entity.multi == 2 && entity.connType == '10'")
     .line2(v-if="entity.multi == 2 && entity.connType == '10'")
     .subType(@click="addSubEntity(entity.id)") Add SubType
     

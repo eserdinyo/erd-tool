@@ -84,6 +84,11 @@ export default {
       instance.bind("dblclick", c => {
         let s = c.endpoints[0].elementId;
         let t = c.endpoints[1].elementId;
+        this.entities.forEach(entity => {
+          if (entity.ID == c.targetId || entity.ID == c.sourceId) {
+            ref.child(entity.id).update({ multi: "0" });
+          }
+        });
 
         this.connections.forEach(conn => {
           if (conn.sourceId == s && conn.targetId == t) {
@@ -155,23 +160,16 @@ export default {
                 sourceX = entity.posX;
                 sourceY = entity.posY;
                 msgSourceName = entity.entityName;
-                sourceName = `${entity.entityName
-                  .slice(
-                    entity.entityName.indexOf("(") + 1,
-                    entity.entityName.length - 1
-                  )
-                  .toLowerCase()}_${entity.entityItems[0].itemName}`;
+                sourceName = `${this.getShortName(entity.entityName)}_${
+                  entity.entityItems[0].itemName
+                }`;
               }
               if (entity.ID == t) {
                 targetX = entity.posX;
                 msgTargetName = entity.entityName;
-
-                targetName = `${entity.entityName
-                  .slice(
-                    entity.entityName.indexOf("(") + 1,
-                    entity.entityName.length - 1
-                  )
-                  .toLowerCase()}_${entity.entityItems[0].itemName}`;
+                targetName = `${this.getShortName(entity.entityName)}_${
+                  entity.entityItems[0].itemName
+                }`;
               }
             });
 
@@ -233,7 +231,7 @@ export default {
       // ********************* //
       // CONNECTION DRAG STOP  //
       // ********************* //
-      instance.bind("connectionDragStop", ci => {
+      instance.bind("connectionDragStop", ci => { 
         let s = ci.sourceId,
           t = ci.targetId;
 
@@ -242,9 +240,9 @@ export default {
 
         console.log(conID);
 
-        // *******************************      //
-        //     1:M-1:1   ÇİFT TARAF ZORUNLU    //
         // *******************************    //
+        //     1:M-1:1   ÇİFT TARAF ZORUNLU  //
+        // *******************************  //
         if (
           conID == 0 ||
           conID == 1 ||
@@ -293,7 +291,7 @@ export default {
             });
             location.reload();
           }
-          if (conID == 1 && s != t) {
+          /*  if (conID == 1 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.sourceKey,
               itemKey: "optional",
@@ -302,7 +300,7 @@ export default {
               }`,
               dataType: "INTEGER"
             });
-          }
+          } */
           if (conID == 4 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.targetKey,
@@ -496,9 +494,9 @@ export default {
       this.$store.dispatch("addNote", { entityID, id, msg });
     },
     getEntityName(name) {
-      if (name.includes('(')) {
+      if (name.includes("(")) {
         return name.slice(0, name.indexOf("(")).toUpperCase();
-      }else return name.toUpperCase();
+      } else return name.toUpperCase();
     },
     getShortName(name) {
       if (name.indexOf("(") != -1)

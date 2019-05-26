@@ -34,9 +34,6 @@ const actions = {
     let connID = rootState.connections.connections[0].connType;
     const connections = rootState.connections.connections;
 
-    console.log(connections);
-    
-
     state.tables.forEach(table => {
       if (table.entityName.indexOf("(") != -1) {
         table.entityName = table.entityName.slice(
