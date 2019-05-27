@@ -5,6 +5,7 @@ const state = {
   notes: [],
   activeEntity: 0,
   isSubType: false,
+  lastItemKey: '',
   itemKey: "",
   item: {
     itemKey: "",
@@ -20,6 +21,7 @@ const getters = {
   entities: state => state.entities,
   itemKey: state => state.itemKey,
   notes: state => state.notes,
+  lastItemKey: state => state.lastItemKey,
 };
 
 /* MUTATIONS */
@@ -32,8 +34,8 @@ const mutations = {
       state.isSubType = false;
     }
   },
-  setItemKey(state, itemKey) {
-    state.itemKey = itemKey;
+  setItemKey(state, payload) {
+    state.itemKey = payload;
   },
   setNotes(state) {
     state.notes = [];
@@ -46,6 +48,9 @@ const mutations = {
       }
     });
   },
+  SET_LAST_ITEM_KEY(state, payload) {
+    state.lastItemKey = payload;
+  }
 };
 
 /* ACTIONS */
@@ -80,6 +85,8 @@ const actions = {
           dataType: "INTEGER",
           fk: "fk",
           isShow: false
+        }).then(res => {
+          commit('SET_LAST_ITEM_KEY', res.key);
         })
     } else if (state.isSubType) {
       let activeEntity;

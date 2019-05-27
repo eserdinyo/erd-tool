@@ -47,8 +47,12 @@ export default {
       "dashType",
       "notes",
       "globalConnType",
-      "projectID"
-    ])
+      "projectID",
+      "lastItemKey"
+    ]),
+    chooseEntity() {
+      return this.entities.filter(entity => entity.multi == 0);
+    }
   },
   methods: {
     // JSPLUMB //
@@ -94,6 +98,16 @@ export default {
           if (conn.sourceId == s && conn.targetId == t) {
             refConn.child(conn.id).remove();
           }
+
+          this.entities.forEach(entity => {
+            if (conn.entityID == entity.id) {
+              ref
+                .child(conn.entityID)
+                .child("entityItems")
+                .child(conn.fkID)
+                .remove();
+            }
+          });
         });
 
         instance.deleteConnection(c);
@@ -231,7 +245,7 @@ export default {
       // ********************* //
       // CONNECTION DRAG STOP  //
       // ********************* //
-      instance.bind("connectionDragStop", ci => { 
+      instance.bind("connectionDragStop", ci => {
         let s = ci.sourceId,
           t = ci.targetId;
 
@@ -264,20 +278,52 @@ export default {
             ? (entityType = "mandatory")
             : 0;
 
-          this.entities.forEach(entity => {
-            if (entity.ID == t) {
-              key = entity.id;
-              this.targetKey = key;
-              this.targetEntity = entity;
-              ref.child(key).update({ multi: 1 });
-              ref.child(key).update({ entityType });
-            } else if (entity.ID == s) {
-              key = entity.id;
-              this.sourceEntity = entity;
-              this.sourceKey = key;
-              ref.child(key).update({ entityType });
-            }
-          });
+          // 1 ve 2. icin farkli islemler yap
+          if (conID == 0 || conID == 1) {
+            this.entities.forEach(entity => {
+              if (entity.ID == t) {
+                key = entity.id;
+                this.targetKey = key;
+                this.targetEntity = entity;
+                ref.child(key).update({ entityType });
+              } else if (entity.ID == s) {
+                key = entity.id;
+                this.sourceEntity = entity;
+                this.sourceKey = key;
+                ref.child(key).update({ entityType });
+              }
+            });
+
+            this.entities.forEach(entity => {
+              if (entity.isYay) {
+                console.log("yay");
+
+                ref.child(this.targetKey).update({ belongsYay: true });
+              }
+            });
+          } else {
+            this.entities.forEach(entity => {
+              if (entity.ID == t) {
+                key = entity.id;
+                this.targetKey = key;
+                this.targetEntity = entity;
+                ref.child(key).update({ multi: 1 });
+                ref.child(key).update({ entityType });
+              } else if (entity.ID == s) {
+                key = entity.id;
+                this.sourceEntity = entity;
+                this.sourceKey = key;
+                ref.child(key).update({ entityType });
+              }
+            });
+            this.entities.forEach(entity => {
+              if (entity.isYay) {
+                console.log("yay");
+
+                ref.child(this.sourceKey).update({ belongsYay: true });
+              }
+            });
+          }
 
           if (conID == 13 || conID == 14) {
             this.addNote(key, this.notes.length + 1, "You can't change the FK");
@@ -291,16 +337,6 @@ export default {
             });
             location.reload();
           }
-          /*  if (conID == 1 && s != t) {
-            this.$store.dispatch("addItem", {
-              id: this.sourceKey,
-              itemKey: "optional",
-              name: `${this.getShortName(this.targetEntity.entityName)}_${
-                this.targetEntity.entityItems[0].itemName
-              }`,
-              dataType: "INTEGER"
-            });
-          } */
           if (conID == 4 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.targetKey,
@@ -312,7 +348,7 @@ export default {
             });
           }
           // s != t means it's not itself
-          if ((conID == 2 || conID == 5) && s != t) {
+          if (conID == 5 && s != t) {
             this.$store.dispatch("addItem", {
               id: this.targetKey,
               itemKey: "mandatory",
@@ -323,14 +359,21 @@ export default {
             });
           }
           if (!(t.length < 20)) {
-            refConn.push({
-              sourceId: s,
-              targetId: t,
-              connType: conID,
-              dashType: this.dashType,
-              overlay: this.connType,
-              projectID: this.projectID
-            });
+            refConn
+              .push({
+                sourceId: s,
+                targetId: t,
+                connType: conID,
+                dashType: this.dashType,
+                overlay: this.connType,
+                projectID: this.projectID
+              })
+              .then(res => {
+                refConn.child(res.key).update({
+                  entityID: this.targetKey,
+                  fkID: this.lastItemKey
+                });
+              });
           }
 
           // ************************* //
@@ -345,30 +388,6 @@ export default {
             });
           }
         }
-        // ****************************************  //
-        //            1:1 SEÇİMLİ-ZORUNLU           //
-        // *************************************** //
-        /* if (conID == 2) {
-          let key = "";
-          this.entities.forEach(entity => {
-            if (entity.ID == t) {
-              key = entity.id;
-              ref.child(key).update({ multi: 1 });
-              ref.child(key).update({ entityType: "mandatory" });
-            } else if (entity.ID == s) {
-              key = entity.id;
-              ref.child(key).update({ entityType: "optional" });
-            }
-          });
-          refConn.push({
-            sourceId: s,
-            targetId: t,
-            connType: 2,
-            dashType: this.dashType,
-            overlay: this.connType,
-            projectID: this.projectID
-          });
-        } */
         // ****************************************  //
         //            1:M SEÇİMLİ-ZORUNLU           //
         // *************************************** //
