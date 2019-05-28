@@ -161,9 +161,10 @@ th {
   padding: 0;
 }
 td {
-  padding: 5px 10px;
+  padding: 3px 6px;
   text-align: center;
   border-radius: 3px;
+  font-size: 14px;
 }
 input[type="text"] {
   width: 100%;

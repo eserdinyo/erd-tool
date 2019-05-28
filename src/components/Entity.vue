@@ -349,11 +349,11 @@ input[type="text"] {
 }
 
 .yay {
-  height: 300px;
+  height: 220px;
   width: 15px;
   position: absolute;
   right: -20%;
-  top: 50%;
+  top: 59%;
   transform: translateY(-50%);
   border: 2px solid #191919;
   border-top-right-radius: 15px;
@@ -367,7 +367,7 @@ input[type="text"] {
     border: 2px solid #191919;
     border-radius: 50%;
     position: absolute;
-    top: 19.5%;
+    top: 26%;
     right: -60%;
   }
 
@@ -378,7 +378,7 @@ input[type="text"] {
     border: 2px solid #191919;
     border-radius: 50%;
     position: absolute;
-    bottom: 19.5%;
+    bottom: 10%;
     right: -60%;
   }
 }

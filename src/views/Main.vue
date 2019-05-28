@@ -29,7 +29,8 @@ export default {
       isPopupOpen: false,
       isNewProjectOpen: false,
       projectName: "",
-      currentUser: ""
+      currentUser: "",
+      isSource: ""
     };
   },
   components: {
@@ -88,26 +89,31 @@ export default {
       instance.bind("dblclick", c => {
         let s = c.endpoints[0].elementId;
         let t = c.endpoints[1].elementId;
+        let findConn;
+
+        // DELETE MULTI BOT OF SIDE
         this.entities.forEach(entity => {
           if (entity.ID == c.targetId || entity.ID == c.sourceId) {
             ref.child(entity.id).update({ multi: "0" });
           }
         });
 
+        // DELETE FK ITEM AND CONN
         this.connections.forEach(conn => {
           if (conn.sourceId == s && conn.targetId == t) {
+            findConn = conn;
             refConn.child(conn.id).remove();
           }
+        });
 
-          this.entities.forEach(entity => {
-            if (conn.entityID == entity.id) {
-              ref
-                .child(conn.entityID)
-                .child("entityItems")
-                .child(conn.fkID)
-                .remove();
-            }
-          });
+        this.entities.forEach(entity => {
+          if (findConn.entityID == entity.id) {
+            ref
+              .child(findConn.entityID)
+              .child("entityItems")
+              .child(findConn.fkID)
+              .remove();
+          }
         });
 
         instance.deleteConnection(c);
@@ -295,10 +301,34 @@ export default {
             });
 
             this.entities.forEach(entity => {
-              if (entity.isYay) {
-                console.log("yay");
-
+              if (entity.isYay && s.length > 15 && t.length > 15) {
+                let name;
+                let belongsTo;
+                if (entity.entityName == this.sourceEntity.entityName) {
+                  this.isSource = true;
+                  name = `${this.getShortName(this.targetEntity.entityName)}_${
+                    this.targetEntity.entityItems[0].itemName
+                  }`;
+                } else {
+                  this.isSource = false;
+                  name = `${this.getShortName(this.sourceEntity.entityName)}_${
+                    this.sourceEntity.entityItems[0].itemName
+                  }`;
+                }
+                this.isSource
+                  ? (belongsTo = this.targetEntity.ID)
+                  : (belongsTo = this.sourceEntity.ID);
+                this.$store.dispatch("addItem", {
+                  id: entity.id,
+                  belongsTo,
+                  itemKey: conID == 0 ? "optional" : "mandatory",
+                  name,
+                  dataType: "INTEGER"
+                });
                 ref.child(this.targetKey).update({ belongsYay: true });
+                ref.child(this.sourceKey).update({ belongsYay: true });
+                this.sourceKey = "";
+                this.targetKey = "";
               }
             });
           } else {
@@ -316,13 +346,9 @@ export default {
                 ref.child(key).update({ entityType });
               }
             });
-            this.entities.forEach(entity => {
-              if (entity.isYay) {
-                console.log("yay");
-
-                ref.child(this.sourceKey).update({ belongsYay: true });
-              }
-            });
+            if (this.targetEntity.isYay) {
+              ref.child(this.sourceKey).update({ belongsYay: true });
+            }
           }
 
           if (conID == 13 || conID == 14) {
@@ -337,26 +363,22 @@ export default {
             });
             location.reload();
           }
-          if (conID == 4 && s != t) {
+          if ((conID == 4 || conID == 5) && s != t) {
+            ref
+              .child(this.sourceKey)
+              .update({ belongsTo: this.targetEntity.ID });
+
             this.$store.dispatch("addItem", {
               id: this.targetKey,
-              itemKey: "optional",
+              itemKey: conID == 0 ? "optional" : "mandatory",
+              belongsTo: this.sourceEntity.ID,
               name: `${this.getShortName(this.sourceEntity.entityName)}_${
                 this.sourceEntity.entityItems[0].itemName
               }`,
               dataType: "INTEGER"
             });
-          }
-          // s != t means it's not itself
-          if (conID == 5 && s != t) {
-            this.$store.dispatch("addItem", {
-              id: this.targetKey,
-              itemKey: "mandatory",
-              name: `${this.getShortName(this.sourceEntity.entityName)}_${
-                this.sourceEntity.entityItems[0].itemName
-              }`,
-              dataType: "INTEGER"
-            });
+            this.targetKey = "";
+            this.sourceKey = "";
           }
           if (!(t.length < 20)) {
             refConn
@@ -369,10 +391,18 @@ export default {
                 projectID: this.projectID
               })
               .then(res => {
-                refConn.child(res.key).update({
-                  entityID: this.targetKey,
-                  fkID: this.lastItemKey
-                });
+                if (this.isSource) {
+                  refConn.child(res.key).update({
+                    entityID: this.sourceKey,
+                    fkID: this.lastItemKey
+                  });
+                  this.isSource = false;
+                } else {
+                  refConn.child(res.key).update({
+                    entityID: this.targetKey,
+                    fkID: this.lastItemKey
+                  });
+                }
               });
           }
 
@@ -410,7 +440,6 @@ export default {
               sourceId: s,
               targetId: t,
               connType: 6,
-
               dashType: this.dashType,
               overlay: this.connType,
               projectID: this.projectID
@@ -580,19 +609,25 @@ export default {
     this.currentUser = firebase.auth().currentUser;
 
     EventBus.$on("donustur", () => {
-      if (
-        this.connections.some(conn => conn.connType == 0 || conn.connType == 1)
-      ) {
-        this.connections.forEach(conn => {
-          this.entities.forEach(entity => {
-            if (entity.ID == conn.targetId) {
-              this.targetKey = entity.id;
-            } else if (entity.ID == conn.sourceId) {
-              this.sourceKey = entity.id;
-            }
+      if (!this.entities.some(entity => entity.isYay)) {
+        if (
+          this.connections.some(
+            conn => conn.connType == 0 || conn.connType == 1
+          )
+        ) {
+          this.connections.forEach(conn => {
+            this.entities.forEach(entity => {
+              if (entity.ID == conn.targetId) {
+                this.targetKey = entity.id;
+              } else if (entity.ID == conn.sourceId) {
+                this.sourceKey = entity.id;
+              }
+            });
           });
-        });
-        this.isPopupOpen = true;
+          this.isPopupOpen = true;
+        } else {
+          this.$router.push({ name: "tables" });
+        }
       } else {
         this.$router.push({ name: "tables" });
       }

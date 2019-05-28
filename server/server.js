@@ -33,16 +33,18 @@ function nullOrNotNullAndPK(columns, item, index) {
 }
 
 app.post("/tables", (req, res) => {
-  const connID = req.body.connID;
   const tables = req.body.tables;
 
   let notFK = tables.filter(table => table.multi == 0);
   let withFK = tables.filter(table => table.multi != 0);
   let notYay = tables.filter(table => !table.isYay);
   let yay = tables.find(table => table.isYay);
-  let yayItems = Object.values(yay.entityItems).filter(item => item.fk == 'fk');
+  let yayItems;
+  if (yay) {
+    yayItems = Object.values(yay.entityItems).filter(item => item.fk == 'fk');
+  }
 
-  if (withFK.some(table => table.isYay)) {
+  if (tables.some(table => table.isYay)) {
     tables.forEach(table => {
       let columns = {};
 
@@ -58,44 +60,46 @@ app.post("/tables", (req, res) => {
       });
     })
 
+
     // DEFINE RELATIONS
-
-
-    yayItems.forEach(item => {
-      tables.forEach(table => {
-
-        if (table.belongsYay) {
-          yay.entityName.belongsTo(table.entityName);
+    tables.forEach(fkTable => {
+      notFK.forEach(table => {
+        if ((fkTable.ID == table.belongsTo) && !fkTable.isYay) {
+          Object.values(fkTable.entityItems).forEach(item => {
+            if (item.belongsTo == table.ID) {
+              fkTable.entityName.belongsTo(table.entityName, {
+                foreignKey: {
+                  name: item.itemName,
+                }
+              });
+            }
+          })
         }
-
       })
     })
 
-
-    /* tables.forEach(table => {
-      if (table.isYay) {
-        Object.values(table.entityItems).forEach(item => {
-          if (item.fk == 'fk') {
-            notYay.forEach(nTable => {
-              if (item.itemName.includes(nTable.entityName)) {
-                table.entityName.belongsTo(nTable.entityName, {
-                  foreignKey: {
-                    name: item.itemName,
-                  }
-                });
-              }
-            })
-          }
-        })
-      }
-    }) */
-
-
+    // DEFINE RELATIONS FOR YAY
+    yayItems.forEach(item => {
+      tables.forEach(table => {
+        if (item.belongsTo == table.ID) {
+          yay.entityName.belongsTo(table.entityName, {
+            foreignKey: {
+              name: item.itemName,
+              allowNull: table.entityType == 'mandatory' ? false : true
+            }
+          })
+        }
+      })
+    })
 
     // CREATING TABLES
     tables.forEach(table => {
-      if (table.belongsYay) {
+      if (table.multi == 0) {
         table.entityName.sync({ force: true });
+      } else if (table.multi != 0 && !table.isYay) {
+        setTimeout(() => {
+          table.entityName.sync({ force: true });
+        }, 500)
       } else {
         setTimeout(() => {
           table.entityName.sync({ force: true });
@@ -154,7 +158,7 @@ app.post("/tables", (req, res) => {
     })
 
     // CREATING TABLES
-    table.forEach(table => {
+    tables.forEach(table => {
       if (table.multi == 0) {
         table.entityName.sync({ force: true });
       } else {

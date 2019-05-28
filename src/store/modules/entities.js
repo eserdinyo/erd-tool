@@ -82,6 +82,7 @@ const actions = {
         .push({
           itemKey: payload.itemKey,
           itemName: payload.name,
+          belongsTo: payload.belongsTo,
           dataType: "INTEGER",
           fk: "fk",
           isShow: false

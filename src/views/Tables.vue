@@ -45,11 +45,11 @@ export default {
   background: #f5f6fa;
   border: 1px solid rgba(#000, 0.2);
   width: 100%;
-  height: 100vh;
   display: grid;
   grid-template-columns: 1fr 1fr;
   justify-items: center;
   padding-bottom: 200px;
+  overflow: auto;
 }
 </style>
 
