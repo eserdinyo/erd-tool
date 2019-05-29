@@ -44,6 +44,7 @@ app.post("/tables", (req, res) => {
     yayItems = Object.values(yay.entityItems).filter(item => item.fk == 'fk');
   }
 
+  // JUST FOR YAY
   if (tables.some(table => table.isYay)) {
     tables.forEach(table => {
       let columns = {};
@@ -145,7 +146,7 @@ app.post("/tables", (req, res) => {
     })
 
     // DEFINE RELATIONS
-    notFK.forEach((table, idx) => {
+    /* notFK.forEach((table, idx) => {
       withFK.forEach(fkTable => {
         let fkNames = Object.values(fkTable.entityItems).filter(item => item.fk == 'fk').reverse();
         fkTable.entityName.belongsTo(table.entityName, {
@@ -154,6 +155,21 @@ app.post("/tables", (req, res) => {
             allowNull: fkTable.entityType == 'mandatory' ? false : true
           }
         });
+      })
+    }) */
+    tables.forEach(fkTable => {
+      notFK.forEach(table => {
+        if ((fkTable.ID == table.belongsTo) && !fkTable.isYay) {
+          Object.values(fkTable.entityItems).forEach(item => {
+            if (item.belongsTo == table.ID) {
+              fkTable.entityName.belongsTo(table.entityName, {
+                foreignKey: {
+                  name: item.itemName,
+                }
+              });
+            }
+          })
+        }
       })
     })
 

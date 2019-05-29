@@ -7,6 +7,7 @@ const state = {
   isSubType: false,
   lastItemKey: '',
   itemKey: "",
+  lastEntity: '',
   item: {
     itemKey: "",
     itemName: "",
@@ -50,6 +51,9 @@ const mutations = {
   },
   SET_LAST_ITEM_KEY(state, payload) {
     state.lastItemKey = payload;
+  },
+  SET_LAST_ENTITY(state, payload) {
+
   }
 };
 
@@ -137,21 +141,23 @@ const actions = {
           itemKey: "unique",
           itemName: "id",
           dataType: "INTEGER",
-          isShow: true
+          isShow: true,
         },
         {
           itemKey: "mandatory",
           itemName: `${entity.sourceName}`,
           dataType: "INTEGER",
           isShow: false,
-          fk: "fk1"
+          fk: "fk",
+          belongsTo: entity.sourceEntity.ID,
         },
         {
           itemKey: "mandatory",
           itemName: `${entity.targetName}`,
           dataType: "INTEGER",
           isShow: false,
-          fk: "fk2"
+          fk: "fk",
+          belongsTo: entity.targetEntity.ID,
         }
       ];
     } else {
@@ -178,7 +184,7 @@ const actions = {
       connType,
       entityItems,
       projectID
-    });
+    })
   },
   addSubEntity({ }, entityID) {
     ref

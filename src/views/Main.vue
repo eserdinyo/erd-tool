@@ -145,6 +145,8 @@ export default {
               entityType,
               dashType1,
               dashType2,
+              sourceEntity,
+              targetEntity,
               // dashType2 = "150 5 0",
               //dashType3 = "150 5 3",
               msgTargetName,
@@ -179,6 +181,7 @@ export default {
               if (entity.ID == s) {
                 sourceX = entity.posX;
                 sourceY = entity.posY;
+                sourceEntity = entity;
                 msgSourceName = entity.entityName;
                 sourceName = `${this.getShortName(entity.entityName)}_${
                   entity.entityItems[0].itemName
@@ -186,6 +189,7 @@ export default {
               }
               if (entity.ID == t) {
                 targetX = entity.posX;
+                targetEntity = entity;
                 msgTargetName = entity.entityName;
                 targetName = `${this.getShortName(entity.entityName)}_${
                   entity.entityItems[0].itemName
@@ -212,11 +216,17 @@ export default {
               entityName,
               sourceName,
               targetName,
+              targetEntity,
+              sourceEntity,
               connType: conID
             });
 
             this.entities.forEach(entity => {
-              if (entity.multi == 2) newEntityTarget = entity.ID;
+              if (entity.multi == 2) {
+                newEntityTarget = entity.ID;
+                ref.child(sourceEntity.id).update({ belongsTo: entity.ID });
+                ref.child(targetEntity.id).update({ belongsTo: entity.ID });
+              }
             });
 
             refConnType.update({ connType: 6 });
