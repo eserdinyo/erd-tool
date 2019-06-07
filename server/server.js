@@ -37,6 +37,7 @@ app.post("/tables", (req, res) => {
 
   let notFK = tables.filter(table => table.multi == 0);
   let withFK = tables.filter(table => table.multi != 0);
+
   let notYay = tables.filter(table => !table.isYay);
   let yay = tables.find(table => table.isYay);
   let yayItems;
@@ -107,7 +108,9 @@ app.post("/tables", (req, res) => {
         }, 1000)
       }
     })
-  } else {
+  }
+  else {
+
     tables.forEach(table => {
       let columns = {};
 
@@ -141,49 +144,33 @@ app.post("/tables", (req, res) => {
           });
         }
       })
-
-
     })
 
     // DEFINE RELATIONS
-    /* notFK.forEach((table, idx) => {
-      withFK.forEach(fkTable => {
-        let fkNames = Object.values(fkTable.entityItems).filter(item => item.fk == 'fk').reverse();
-        fkTable.entityName.belongsTo(table.entityName, {
-          foreignKey: {
-            name: fkNames[idx].itemName,
-            allowNull: fkTable.entityType == 'mandatory' ? false : true
-          }
-        });
-      })
-    }) */
-    tables.forEach(fkTable => {
-      notFK.forEach(table => {
-        if ((fkTable.ID == table.belongsTo) && !fkTable.isYay) {
-          Object.values(fkTable.entityItems).forEach(item => {
-            if (item.belongsTo == table.ID) {
-              fkTable.entityName.belongsTo(table.entityName, {
+    tables.forEach(tableOne => {
+
+      tables.forEach(tableTwo => {
+        if (tableOne.belongsTo == tableTwo.ID) {
+          
+          tableOne.entityName.sync({ force: true }); // country
+          tableTwo.entityName.sync({ force: true }); // city
+
+          Object.values(tableTwo.entityItems).forEach(item => {
+            if (item.belongsTo == tableOne.ID) {
+
+
+              tableTwo.entityName.belongsTo(tableOne.entityName, {
                 foreignKey: {
                   name: item.itemName,
+                  allowNull: item.itemKey == 'mandatory' ? false : true
                 }
               });
+
             }
           })
         }
       })
     })
-
-    // CREATING TABLES
-    tables.forEach(table => {
-      if (table.multi == 0) {
-        table.entityName.sync({ force: true });
-      } else {
-        setTimeout(() => {
-          table.entityName.sync({ force: true });
-        }, 1000)
-      }
-    })
-
   }
 
   res.sendStatus(200);

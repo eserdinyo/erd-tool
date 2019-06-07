@@ -95,6 +95,7 @@ export default {
         this.entities.forEach(entity => {
           if (entity.ID == c.targetId || entity.ID == c.sourceId) {
             ref.child(entity.id).update({ multi: "0" });
+            ref.child(entity.id).update({ belongsTo: "" });
           }
         });
 
@@ -337,8 +338,6 @@ export default {
                 });
                 ref.child(this.targetKey).update({ belongsYay: true });
                 ref.child(this.sourceKey).update({ belongsYay: true });
-                this.sourceKey = "";
-                this.targetKey = "";
               }
             });
           } else {
@@ -374,21 +373,22 @@ export default {
             location.reload();
           }
           if ((conID == 4 || conID == 5) && s != t) {
+            /* ref
+              .child(this.targetKey)
+              .update({ belongsTo: this.sourceEntity.ID }); */
             ref
               .child(this.sourceKey)
               .update({ belongsTo: this.targetEntity.ID });
 
             this.$store.dispatch("addItem", {
               id: this.targetKey,
-              itemKey: conID == 0 ? "optional" : "mandatory",
+              itemKey: conID == 4 ? "optional" : "mandatory",
               belongsTo: this.sourceEntity.ID,
               name: `${this.getShortName(this.sourceEntity.entityName)}_${
                 this.sourceEntity.entityItems[0].itemName
               }`,
               dataType: "INTEGER"
             });
-            this.targetKey = "";
-            this.sourceKey = "";
           }
           if (!(t.length < 20)) {
             refConn
@@ -562,36 +562,73 @@ export default {
       else return name.toLowerCase();
     },
     getEntityFk(ent) {
+      let connKey;
       this.entityID = ent.ID;
       const optionality =
         ent.entityType == "mandatory" ? "mandatory" : "optional";
+
+      this.connections.forEach(conn => {
+        if (
+          conn.entityID == this.sourceKey ||
+          conn.entityID == this.targetKey
+        ) {
+          connKey = conn.id;
+        }
+      });
+
+      if (ent.id == this.targetKey) {
+        ref.child(this.sourceKey).update({ belongsTo: ent.ID });
+      } else {
+        ref.child(this.targetKey).update({ belongsTo: ent.ID });
+      }
 
       if (ent.id == this.sourceKey) {
         ref.child(this.sourceKey).update({ multi: 1 });
         ref.child(this.targetKey).update({ multi: 0 });
         this.entities.forEach(entity => {
           if (entity.id == this.targetKey) {
+            setTimeout(() => {
+              refConn.child(connKey).update({
+                entityID: ent.id,
+                fkID: this.lastItemKey
+              });
+            }, 1000);
+
+            const name = `${this.getShortName(entity.entityName)}_${
+              entity.entityItems[0].itemName
+            }`;
+
             this.$store.dispatch("addItem", {
               id: ent.id,
               itemKey: optionality,
-              name: `${this.getShortName(entity.entityName)}_${
-                entity.entityItems[0].itemName
-              }`,
+              belongsTo: entity.ID,
+              name,
               dataType: entity.entityItems[0].dataType
             });
           }
         });
       } else {
+        setTimeout(() => {
+          refConn.child(connKey).update({
+            entityID: ent.id,
+            fkID: this.lastItemKey
+          });
+        }, 1000);
+        ref.child(this.sourceKey).update({ belongsTo: ent.ID });
+
         ref.child(this.targetKey).update({ multi: 1 });
         ref.child(this.sourceKey).update({ multi: 0 });
         this.entities.forEach(entity => {
           if (entity.id == this.sourceKey) {
+            const name = `${this.getShortName(entity.entityName)}_${
+              entity.entityItems[0].itemName
+            }`;
+
             this.$store.dispatch("addItem", {
               id: ent.id,
               itemKey: optionality,
-              name: `${this.getShortName(entity.entityName)}_${
-                entity.entityItems[0].itemName
-              }`,
+              belongsTo: entity.ID,
+              name,
               dataType: entity.entityItems[0].dataType
             });
           }

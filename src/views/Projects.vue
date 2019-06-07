@@ -95,7 +95,7 @@ export default {
   cursor: pointer;
   text-align: left;
   font-weight: bold;
-  border-radius: 5px;
+  border-radius: 100px;
   transition: all 0.1s;
   color: #ecf0f1;
 
