@@ -225,8 +225,14 @@ export default {
             this.entities.forEach(entity => {
               if (entity.multi == 2) {
                 newEntityTarget = entity.ID;
-                ref.child(sourceEntity.id).update({ belongsTo: entity.ID });
-                ref.child(targetEntity.id).update({ belongsTo: entity.ID });
+                ref
+                  .child(sourceEntity.id)
+                  .child("belongsTo")
+                  .push(entity.ID);
+                ref
+                  .child(targetEntity.id)
+                  .child("belongsTo")
+                  .push(entity.ID);
               }
             });
 
@@ -336,6 +342,7 @@ export default {
                   name,
                   dataType: "INTEGER"
                 });
+
                 ref.child(this.targetKey).update({ belongsYay: true });
                 ref.child(this.sourceKey).update({ belongsYay: true });
               }
@@ -376,9 +383,14 @@ export default {
             /* ref
               .child(this.targetKey)
               .update({ belongsTo: this.sourceEntity.ID }); */
+            /* ref
+              .child(this.sourceKey)
+              .update({ belongsTo: this.targetEntity.ID }); */
+
             ref
               .child(this.sourceKey)
-              .update({ belongsTo: this.targetEntity.ID });
+              .child("belongsTo")
+              .push(this.targetEntity.ID);
 
             this.$store.dispatch("addItem", {
               id: this.targetKey,
@@ -577,9 +589,15 @@ export default {
       });
 
       if (ent.id == this.targetKey) {
-        ref.child(this.sourceKey).update({ belongsTo: ent.ID });
+        ref
+          .child(this.sourceKey)
+          .child("belongsTo")
+          .push(ent.ID);
       } else {
-        ref.child(this.targetKey).update({ belongsTo: ent.ID });
+        ref
+          .child(this.targetKey)
+          .child("belongsTo")
+          .push(ent.ID);
       }
 
       if (ent.id == this.sourceKey) {
@@ -614,8 +632,6 @@ export default {
             fkID: this.lastItemKey
           });
         }, 1000);
-        ref.child(this.sourceKey).update({ belongsTo: ent.ID });
-
         ref.child(this.targetKey).update({ multi: 1 });
         ref.child(this.sourceKey).update({ multi: 0 });
         this.entities.forEach(entity => {

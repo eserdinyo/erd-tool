@@ -148,31 +148,42 @@ app.post("/tables", (req, res) => {
 
     // DEFINE RELATIONS
     tables.forEach(tableOne => {
+      console.log(tableOne);
+      if (tableOne.belongsTo) {
+        tables.forEach(tableTwo => {
+          if (Object.values(tableOne.belongsTo).includes(tableTwo.ID)) {
 
-      tables.forEach(tableTwo => {
-        if (tableOne.belongsTo == tableTwo.ID) {
-          
-          tableOne.entityName.sync({ force: true }); // country
-          tableTwo.entityName.sync({ force: true }); // city
+            // CREATE TABLES 
+            /* tableOne.entityName.sync({ force: true });
+            tableTwo.entityName.sync({ force: true }); */
 
-          Object.values(tableTwo.entityItems).forEach(item => {
-            if (item.belongsTo == tableOne.ID) {
+            Object.values(tableTwo.entityItems).forEach(item => {
+              if (item.belongsTo == tableOne.ID) {
+                tableTwo.entityName.belongsTo(tableOne.entityName, {
+                  foreignKey: {
+                    name: item.itemName,
+                    allowNull: item.itemKey == 'mandatory' ? false : true
+                  }
+                });
 
+              }
+            })
+          }
+        })
+      }
+    })
 
-              tableTwo.entityName.belongsTo(tableOne.entityName, {
-                foreignKey: {
-                  name: item.itemName,
-                  allowNull: item.itemKey == 'mandatory' ? false : true
-                }
-              });
+    tables.forEach(table => {
+      if (table.multi == 0) {
+        table.entityName.sync({ force: true });
 
-            }
-          })
-        }
-      })
+      } else {
+        setTimeout(() => {
+          table.entityName.sync({ force: true });
+        }, 1000)
+      }
     })
   }
-
   res.sendStatus(200);
 });
 
