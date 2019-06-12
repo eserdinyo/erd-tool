@@ -153,10 +153,6 @@ app.post("/tables", (req, res) => {
         tables.forEach(tableTwo => {
           if (Object.values(tableOne.belongsTo).includes(tableTwo.ID)) {
 
-            // CREATE TABLES 
-            /* tableOne.entityName.sync({ force: true });
-            tableTwo.entityName.sync({ force: true }); */
-
             Object.values(tableTwo.entityItems).forEach(item => {
               if (item.belongsTo == tableOne.ID) {
                 tableTwo.entityName.belongsTo(tableOne.entityName, {
@@ -173,6 +169,7 @@ app.post("/tables", (req, res) => {
       }
     })
 
+    // CREATE TABLES 
     tables.forEach(table => {
       if (table.multi == 0) {
         table.entityName.sync({ force: true });
