@@ -255,8 +255,10 @@ export default {
               dashType: dashType2,
               overlay: this.connType,
               projectID: this.projectID
-            });
-            location.reload();
+            }).then(res => { 
+              location.reload();
+            })
+            
           }
 
           if (conID == 10) {
