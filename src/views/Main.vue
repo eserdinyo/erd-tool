@@ -68,7 +68,7 @@ export default {
           stroke: "#c0392b",
           lineWidth: 10
         },
-        Anchor: ["Left", "Right", "TopCenter", "BottomCenter"],
+        Anchor: ["Left", "Right"],
         ConnectionOverlays: this.connType,
         Container: "main"
       });

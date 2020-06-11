@@ -1,80 +1,88 @@
-<template lang="pug">
- .tablo.entity(:id="entity.ID", :class="{ isYay: entity.isYay }")
-    table(@mousedown="setActiveEntity(entity)",
-    :class="{ activeEntity : activeEntity == entity.id}")
-      thead
-        th(colspan='4')
-          input#entityName(type='text',
-                          placeholder='Entity Name', 
-                          style="text-transform:uppercase",
-                          :value='entity.entityName',
-                          @keyup="sendEntityName(entity,$event.target.value)")
-      tbody
-        tr.row(v-for='(item,key) in entity.entityItems',
-              :key='item.id',
-              v-if="item.isShow")
-          td
-            .field
-              select#element(v-model="item.itemKey", 
-                              @change="changeItem(key,entity,$event.target.value)")
-                option(disabled, value='') ID
-                option(title="Unique", value='unique') #
-                option(title="Mandatory", value='mandatory') *
-                option(title="Optional", value='optional') o
-          td
-            .field
-              input(type='text',:value="item.itemName", 
-                    placeholder='Name', 
-                    @keyup="sendItemName(key,entity, $event.target.value)")
-    .subEntity(v-for="subEntity in entity.subEntities")
-      .tablo
-        table(@mousedown="setActiveEntity(subEntity)",
-        :class="{ activeEntity : activeEntity == subEntity.id}")
-          thead
-            th(colspan='4')
-              input#entityName(type='text',
-                              placeholder='Entity Name', 
-                              style="text-transform:uppercase",
-                              :value='subEntity.entityName',
-                              @keyup="sendEntityName(subEntity,$event.target.value)")
-          tbody
-            tr.row(v-for='(item,key) in subEntity.entityItems',
-              :key='item.id',
-              v-if="item.isShow")
-              td
-                .field
-                  select#element(v-model="item.itemKey", 
-                        @change="changeItem(key,subEntity,$event.target.value)")
-                    option(disabled, value='') ID
-                    option(title="Unique", value='unique') #
-                    option(title="Mandatory", value='mandatory') *
-                    option(title="Optional", value='optional') o
-              td
-                .field
-                  input(type='text',:value="item.itemName", 
-                    placeholder='Name', 
-                    @keyup="sendItemName(key,subEntity, $event.target.value)")
-      .ep1(v-if="entity.multi != 2")
-    .ep(v-if="entity.multi != 2")
-    .yay(v-if='entity.isYay')
-    .notes
-      .notes__note(v-for="note in entity.notes")
-        p {{note.id}}
-    .line1(v-if="entity.multi == 2 && entity.connType == '10'")
-    .line2(v-if="entity.multi == 2 && entity.connType == '10'")
-    .subType(@click="addSubEntity(entity.id)") Add SubType
-    
+<template>
+  <div
+    @mousedown="setActiveEntity(entity)"
+    :class="{ activeEntity: activeEntity == entity.id }"
+    class="tablo entity"
+    :id="entity.ID"
+  >
+    <div>
+      <div class="entity-input-header">
+        <input
+          id="entityName"
+          type="text"
+          class="entity-input"
+          placeholder="Enter Name"
+          style="text-transform:uppercase"
+          :value="entity.entityName"
+          @keyup="sendEntityName(entity, $event.target.value)"
+        />
+      </div>
+
+      <div
+        class="entity-row"
+        v-for="(item, key) in entity.entityItems"
+        :key="item.id"
+        v-if="item.isShow"
+      >
+        <div class="field">
+          <input
+            type="text"
+            :value="item.itemName"
+            placeholder="Name"
+            class="entity-input entity-input-child"
+            @keyup="sendItemName(key, entity, $event.target.value)"
+          />
+        </div>
+        <div class="field entity-select">
+          <multiselect
+            label="name"
+            placeholder="select"
+            v-model="value"
+            :options="types"
+            :multiple="false"
+            :close-on-select="true"
+            :hide-selected="true"
+            :preserve-search="true"
+            selected-label
+            deselect-label
+            select-label
+          ></multiselect>
+        </div>
+      </div>
+    </div>
+    <div class="ep" v-if="entity.multi != 2"></div>
+    <div
+      class="line1"
+      v-if="entity.multi == 2 &amp;&amp; entity.connType == '10'"
+    ></div>
+    <div
+      class="line2"
+      v-if="entity.multi == 2 &amp;&amp; entity.connType == '10'"
+    ></div>
+  </div>
 </template>
 
 <script>
 import { ref } from "@/firebase/";
 import { mapGetters } from "vuex";
+import Multiselect from "vue-multiselect";
 
 export default {
   props: ["entity"],
   data() {
-    return {};
+    return {
+      value: null,
+      types: [
+        { id: 1, name: "boolean" },
+        { id: 2, name: "int" },
+        { id: 3, name: "char" },
+        { id: 4, name: "date" },
+        { id: 5, name: "float" },
+        { id: 6, name: "double" }
+      ]
+    };
   },
+  components: { Multiselect },
   computed: {
     activeEntity() {
       return this.$store.getters.activeEntity;
@@ -193,8 +201,8 @@ export default {
 };
 </script>
 
-
-<style lang="scss" scoped>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
+<style lang="scss">
 .notes {
   display: flex;
   position: absolute;
@@ -234,10 +242,7 @@ table {
   z-index: 99;
   cursor: move;
 }
-th {
-  border-bottom: 1px solid rgba(#191919, 0.5);
-  padding: 0;
-}
+
 td {
   padding: 5px 10px;
   text-align: center;
@@ -245,29 +250,69 @@ td {
 tr {
   height: 20px !important;
 }
-input[type="text"] {
-  width: 100%;
-  padding: 5px 5px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  background: transparent;
-  color: #000;
-  border-radius: 4px;
-  box-sizing: border-box;
-  text-align: center;
-  &::-webkit-input-placeholder {
-    color: rgb(121, 121, 121);
-  }
-}
+
 .field input {
   margin: 0;
 }
 .entity {
-  width: 170px;
   position: absolute;
-  border: 2px solid rgba(#191919, 0.7);
   border-radius: 5px;
+  background-color: #f0f0f0;
+  border: 1px solid #e67e22;
+  box-shadow: 0 4px 8px rgba(52, 52, 52, 0.1);
+  cursor: grab;
+
+  &-select {
+    margin-left: 10px;
+  }
+
+  &-row {
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+    margin: 5px 0;
+  }
+
+  &-input {
+    width: 100%;
+    padding: 5px 5px;
+    display: inline-block;
+    background: transparent;
+    color: #000;
+    box-sizing: border-box;
+    text-align: center;
+    &::-webkit-input-placeholder {
+      color: #fff;
+    }
+
+    &-header {
+      background-color: #e74c3c;
+      border-top-left-radius: 4px;
+      border-top-right-radius: 4px;
+      padding: 3px 0;
+
+      input {
+        width: 70%;
+        border: none;
+        color: white;
+
+        &:focus {
+          outline: none !important;
+        }
+      }
+    }
+    &-child {
+      border: 1px solid #e8e8e8;
+      margin: 8px 0;
+      border-radius: 5px;
+      background-color: #fff;
+      height: 35px;
+      &::-webkit-input-placeholder {
+        color: #adadad;
+        font-size: 14px;
+      }
+    }
+  }
 
   &:hover .ep,
   &:hover .ep1,
@@ -286,20 +331,19 @@ input[type="text"] {
 }
 
 .activeEntity {
-  border: 2px solid #1abb9c;
-  box-shadow: 0 4px 8px rgba(#1abb9c, 0.7);
+  box-shadow: 0 4px 8px rgba(51, 51, 51, 0.783);
 }
 
 .ep,
 .ep1 {
   position: absolute;
-  left: 31.35%;
-  top: 60px;
+  right: -7px;
+  top: 6px;
   height: 15px;
   width: 15px;
   border-radius: 50%;
   background-color: rgba(204, 204, 204, 0.2);
-  border: 1px solid rgba(170, 170, 170, 0.8);
+  border: 1px solid #333;
   cursor: pointer;
   display: none;
 }
@@ -386,5 +430,42 @@ input[type="text"] {
 .isYay {
   height: 500px !important;
 }
-</style>
 
+.entity {
+  .multiselect {
+    min-height: 35px;
+    width: 100px;
+  }
+  .multiselect__option {
+    font-size: 14px;
+  }
+  .multiselect__tags {
+    font-size: 14px;
+    min-height: 35px;
+  }
+
+  .multiselect__select {
+    width: 25px;
+    height: 25px;
+    right: 4px;
+    top: 9px;
+
+    &::before {
+      border-color: #e67e22 transparent transparent;
+      border-width: 4px 4px 0;
+    }
+  }
+
+  .multiselect__placeholder {
+    margin-bottom: 0;
+    padding-top: 0px;
+    padding-left: 4px;
+  }
+
+  .multiselect__single {
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 0;
+  }
+}
+</style>

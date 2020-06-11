@@ -1,4 +1,5 @@
-{
+{   
+    "window.title": "ERDTool Frontend${separator}${activeEditorShort}",
     "workbench.colorCustomizations": {
         "titleBar.activeForeground": "#555",
         "titleBar.inactiveForeground": "#555",
