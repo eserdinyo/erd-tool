@@ -1,3 +1,41 @@
+<template>
+  <div class="cover">
+    <app-toolbar></app-toolbar>
+    <div class="main" id="main">
+      <app-entity
+        v-for="entity in entities"
+        :key="entity.id"
+        :entity="entity"
+      ></app-entity>
+    </div>
+    <app-sidebar></app-sidebar>
+    <div class="popup" v-if="isPopupOpen">
+      <div class="popup__title">Choose Foreign Key</div>
+      <div class="entities">
+        <div
+          class="entity"
+          v-for="(entity, idx) in entities"
+          :key="idx"
+          @click="getEntityFk(entity)"
+          :class="{ popup__choosed: entity.ID == entityID }"
+        >
+          <p>{{ getEntityName(entity.entityName) }}</p>
+        </div>
+      </div>
+      <a class="popup__btn" @click="goTables">continue</a
+      ><a class="popup__close" @click="closeModal">x</a>
+    </div>
+    <div class="popup" v-if="isNewProjectOpen">
+      <div class="popup__title">Enter Project Name</div>
+      <input v-model="projectName" placeholder="Project Name" /><a
+        class="popup__btn"
+        @click="createProject"
+        >Create</a
+      ><a class="popup__close" @click="isNewProjectOpen = false">x</a>
+    </div>
+  </div>
+</template>
+
 <script>
 import $ from "jquery";
 
@@ -248,17 +286,18 @@ export default {
               overlay: this.connType,
               projectID: this.projectID
             });
-            refConn.push({
-              sourceId: t,
-              connType: 6,
-              targetId: newEntityTarget,
-              dashType: dashType2,
-              overlay: this.connType,
-              projectID: this.projectID
-            }).then(res => { 
-              location.reload();
-            })
-            
+            refConn
+              .push({
+                sourceId: t,
+                connType: 6,
+                targetId: newEntityTarget,
+                dashType: dashType2,
+                overlay: this.connType,
+                projectID: this.projectID
+              })
+              .then(res => {
+                location.reload();
+              });
           }
 
           if (conID == 10) {
@@ -477,7 +516,7 @@ export default {
       // *************************** //
       for (let i in this.entities) {
         instance.draggable(this.entities[i].ID, {
-          grid: [10, 10],
+          grid: [1, 1],
           containment: "main",
 
           stop: e => {
@@ -540,7 +579,7 @@ export default {
       // Make Draggable
       for (let i in this.entities) {
         instance.draggable(this.entities[i].ID, {
-          grid: [10, 10],
+          grid: [1, 1],
           containment: "main",
 
           stop: e => {
@@ -673,31 +712,6 @@ export default {
     this.init();
     this.currentUser = firebase.auth().currentUser;
 
-    EventBus.$on("donustur", () => {
-      if (!this.entities.some(entity => entity.isYay)) {
-        if (
-          this.connections.some(
-            conn => conn.connType == 0 || conn.connType == 1
-          )
-        ) {
-          this.connections.forEach(conn => {
-            this.entities.forEach(entity => {
-              if (entity.ID == conn.targetId) {
-                this.targetKey = entity.id;
-              } else if (entity.ID == conn.sourceId) {
-                this.sourceKey = entity.id;
-              }
-            });
-          });
-          this.isPopupOpen = true;
-        } else {
-          this.$router.push({ name: "tables" });
-        }
-      } else {
-        this.$router.push({ name: "tables" });
-      }
-    });
-
     EventBus.$on("openProjectBox", () => {
       this.isNewProjectOpen = true;
     });
@@ -711,37 +725,11 @@ export default {
 };
 </script>
 
-<template lang="pug">
-    .cover
-      app-toolbar
-      #main.main
-        app-entity(v-for='entity in entities', 
-          :key="entity.id"
-          :entity="entity")
-      app-sidebar
-      .popup(v-if="isPopupOpen")
-        .popup__title Choose Foreign Key
-        .entities
-          .entity(v-for="entity in entities", @click="getEntityFk(entity)", :class="{popup__choosed:entity.ID == entityID}")
-            p {{getEntityName(entity.entityName)}}
-        a.popup__btn(@click="goTables") continue
-        a.popup__close(@click="closeModal") x
-      .popup(v-if="isNewProjectOpen")
-        .popup__title Enter Project Name
-        input(v-model="projectName", placeholder="Project Name")
-        a.popup__btn(@click="createProject") Create
-        a.popup__close(@click="isNewProjectOpen = false") x
-
-</template>
-
 <style lang="scss" scoped>
 .cover {
   display: flex;
 }
 .main {
-  background-image: linear-gradient(#f5f6faab, #f5f6faa1),
-    url(http://freedevelopertutorials.azurewebsites.net/wp-content/uploads/2015/06/grid.png);
-  background-repeat: repeat;
   border: 1px solid rgba(#000, 0.2);
   text-align: center;
   width: 100%;
@@ -826,4 +814,3 @@ export default {
   }
 }
 </style>
-

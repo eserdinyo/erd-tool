@@ -23,6 +23,7 @@ export default {
 
 body {
   overflow: hidden;
+  font-size: 14px;
 }
 
 #app {
@@ -30,7 +31,6 @@ body {
 }
 
 .aLabel {
-  background-color: #c0392b;
   color: #fff;
   padding: 0.1rem .5rem;
   border-radius: 3px;

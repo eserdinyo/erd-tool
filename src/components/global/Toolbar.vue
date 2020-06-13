@@ -1,36 +1,10 @@
-<template lang="pug">
-  .toolbar
-    a.link(@click='addEntity')
-      img(src="../../assets/img/table.png")
-    hr
-    a.link(@click="sendConnType(0, dashType1)")
-      img(src="../../assets/img/conn1.png")
-    a.link(@click="sendConnType(4, dashType1)")
-      img(src="../../assets/img/conn3.png")
-    a.link(@click="sendConnType(10, dashType1)")
-      img(src="../../assets/img/conn6.png")
-    hr
-    a.link(@click="sendConnType(1, dashType2)")
-      img(src="../../assets/img/conn2.png")
-    a.link(@click="sendConnType(5, dashType2)")
-      img(src="../../assets/img/conn4.png")
-    a.link(@click="sendConnType(11, dashType2)")
-      img(src="../../assets/img/conn5.png")
-    a.link(@click="sendConnType(13, dashType2)")
-      img(src="../../assets/img/conn10.png")
-    a.link(@click="sendConnType(14, dashType2)")
-      img(src="../../assets/img/conn11.png")
-    hr
-    a.link(@click="sendConnType(2, dashType3)")
-      img(src="../../assets/img/conn7.png")
-    a.link(@click="sendConnType(6, dashType3)")
-      img(src="../../assets/img/conn8.png")
-    //a.link(@click="sendConnType(16, dashType4)")
-      img(src="../../assets/img/conn16.png")
-    hr
-    a.link(@click='makeYay')
-      img(src='../../assets/img/yay.png')
-
+<template>
+  <div class="toolbar">
+    <a class="link" @click="addEntity"
+      ><img src="../../assets/img/table.png"
+    /></a>
+    <hr />
+  </div>
 </template>
 
 <script>
@@ -67,10 +41,9 @@ export default {
     makeYay() {
       ref.child(this.activeEntity).update({ isYay: true });
     }
-  },
+  }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .toolbar {

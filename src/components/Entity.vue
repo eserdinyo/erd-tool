@@ -19,10 +19,10 @@
       </div>
 
       <div
-        class="entity-row"
-        v-for="(item, key) in entity.entityItems"
+        v-for="(item, idx) in entity.entityItems"
         :key="item.id"
-        v-if="item.isShow"
+        class="entity-row"
+        :class="{ fk: idx === 0 }"
       >
         <div class="field">
           <input
@@ -50,15 +50,6 @@
         </div>
       </div>
     </div>
-    <div class="ep" v-if="entity.multi != 2"></div>
-    <div
-      class="line1"
-      v-if="entity.multi == 2 &amp;&amp; entity.connType == '10'"
-    ></div>
-    <div
-      class="line2"
-      v-if="entity.multi == 2 &amp;&amp; entity.connType == '10'"
-    ></div>
   </div>
 </template>
 
@@ -203,26 +194,6 @@ export default {
 
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style lang="scss">
-.notes {
-  display: flex;
-  position: absolute;
-  top: -14px;
-  left: 0;
-  &__note {
-    height: 13px;
-    width: 13px;
-    font-size: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-radius: 50%;
-    background-color: #e74c3c;
-    color: #fff;
-    margin-left: 5px;
-    font-weight: bold;
-  }
-}
-
 .tablo {
   select {
     background: transparent;
@@ -269,8 +240,7 @@ tr {
   &-row {
     display: flex;
     align-items: center;
-    padding: 0 10px;
-    margin: 5px 0;
+    padding: 5px 10px;
   }
 
   &-input {
@@ -318,6 +288,10 @@ tr {
   &:hover .ep1,
   &:hover .subType {
     display: unset;
+  }
+
+  &:hover .fk {
+    background-color: #74baff8e;
   }
 }
 
@@ -466,6 +440,10 @@ tr {
     font-size: 14px;
     color: #333;
     margin-bottom: 0;
+  }
+
+  .fk {
+    transition: all .1s;
   }
 }
 </style>

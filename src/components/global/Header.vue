@@ -1,34 +1,63 @@
-<template lang="pug">
-  .header   
-    .top
-        router-link.logo(to="/") Database ER Diagram
-        router-link.login(v-if="!isLoggedIn",:to="{ name: 'login'}") Login
-        router-link.register(v-if="!isLoggedIn",:to="{ name: 'register'}") Register
-        a(href="#", @click="activeProfil = !activeProfil", v-if="isLoggedIn") Muhammet ESER
-        .profil(:class="{activeProfil : activeProfil}", )
-          router-link(to="/projects") My Projects
-          a(href="#") Setting
-          a(@click="logout") Log Out
-    .bottom(v-if="isLoggedIn")
-      ul.menu__ctn
-        li(@click="isActive = !isActive") File
-          ul.menu__ctn--file(:class="{active: isActive}", @mouseleave="isActive = !isActive")
-            li 
-              a(@click="openNewProjectBox") New Project
-            li Rename
-            li Save
-            li Save As
-            hr.line
-            li Import
-            li Export
-        li Edit
-        li View
-        li Help
+<template>
+  <div class="header">
+    <div class="top">
+      <router-link class="logo" to="/">Database ER Diagram</router-link>
+      <router-link class="login" v-if="!isLoggedIn" :to="{ name: 'login' }"
+        >Login</router-link
+      >
+      <router-link
+        class="register"
+        v-if="!isLoggedIn"
+        :to="{ name: 'register' }"
+        >Register</router-link
+      ><a href="#" @click="activeProfil = !activeProfil" v-if="isLoggedIn"
+        >Muhammet ESER</a
+      >
+      <div class="profil" :class="{ activeProfil: activeProfil }">
+        <router-link to="/projects">My Projects</router-link
+        ><a href="#">Setting</a><a @click="logout">Log Out</a>
+      </div>
+    </div>
+    <div class="bottom" v-if="isLoggedIn">
+      <div class="menu__ctn">
+        <div class="active-project">
+          Project Name <i class="fa fa-chevron-down"></i>
+        </div>
+        <div class="projects">
+          <div
+            class="projects-item projects-new"
+            @click="isNewProjectOpen = true"
+          >
+            <i class="fa fa-plus icon"></i> New Project
+          </div>
+          <div
+            class="projects-item"
+            v-for="p in projects"
+            :key="p.id"
+            @click="setProjectID(p)"
+          >
+            {{ p.projectName }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="popup" v-if="isNewProjectOpen">
+      <div class="popup__title">New Project</div>
+      <input v-model="projectName" placeholder="Project Name" /><a
+        class="popup__btn"
+        @click="createProject"
+        >Create</a
+      ><a class="popup__close" @click="isNewProjectOpen = false">x</a>
+    </div>
+  </div>
 </template>
 
 <script>
 import { EventBus } from "@/main";
 import firebase, { firestore } from "firebase";
+import { refProjects } from "@/firebase/";
+import { mapGetters } from "vuex";
 
 export default {
   name: "Header",
@@ -38,17 +67,40 @@ export default {
       activeProfil: false,
       show: true,
       isLoggedIn: false,
+      currentUser: "",
+      isNewProjectOpen: false,
+      projectName: "",
       currentUser: ""
     };
   },
   computed: {
     firstItemKey() {
       return this.$store.getters.itemKey;
-    }
+    },
+    ...mapGetters(["projects", "projectID"])
   },
   methods: {
+    setProjectID(project) {
+      localStorage.setItem("project", project);
+      this.$store.commit("setProjectID", project.id);
+      setTimeout(() => {
+        this.$router.push("/");
+        EventBus.$emit("initProject", 1);
+      }, 500);
+    },
     openNewProjectBox() {
       EventBus.$emit("openProjectBox", 1);
+    },
+    createProject() {
+      refProjects.push({
+        projectName: this.projectName,
+        userID: this.currentUser.uid
+      }).then(res => {
+        console.log(res.response);
+      })
+
+      this.isNewProjectOpen = false;
+      this.projectName = "";
     },
     logout() {
       firebase
@@ -71,16 +123,16 @@ export default {
     }
   },
   created() {
+    this.currentUser = firebase.auth().currentUser;
+
     if (firebase.auth().currentUser) {
       this.isLoggedIn = true;
-      this.currentUser = firebase.auth().currentUser.email;
       this.$store.commit("setUserID", firebase.auth().currentUser.uid);
       this.$store.dispatch("getProjects");
     }
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 @import "@/style/main.scss";
@@ -91,10 +143,59 @@ export default {
     cursor: pointer;
   }
 }
+.active-project {
+  background-color: #2c3e50;
+  color: #fff;
+  padding: 3px 8px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.projects {
+  position: absolute;
+  left: 50px;
+  top: 35px;
+  background-color: #2c3e50;
+  color: white;
+  padding: 10px 0;
+  width: 100%;
+  border-radius: 5px;
+
+  display: none;
+
+  &-new {
+    text-align: center;
+
+    .icon {
+      margin-right: 5px;
+    }
+  }
+
+  &-item {
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: all 0.1s;
+
+    &:hover {
+      background-color: rgb(51, 88, 124);
+    }
+  }
+}
 
 .menu__ctn {
   z-index: 9;
-  
+  position: relative;
+
+  .fa {
+    font-size: 12px;
+    margin-left: 10px;
+  }
+
+  &:hover {
+    .projects {
+      display: block;
+    }
+  }
 }
 .buttons {
   margin-left: 20px;
@@ -164,5 +265,83 @@ export default {
 
 .register {
   margin-right: 10px;
+}
+
+.popup {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 300px;
+  width: 300px;
+  border-radius: 3px;
+  background-color: #ddd;
+  z-index: 9999999;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+  padding: 10px;
+
+  input {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    margin-top: 1rem;
+  }
+
+  &__title {
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 20px;
+  }
+  .entities {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-gap: 20px;
+    margin-top: 20px;
+  }
+  .entity {
+    height: 30px;
+    width: auto;
+    border: 1px solid #1abc9c;
+    border-radius: 3px;
+    color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #333;
+    cursor: pointer;
+
+    p {
+      font-weight: bold;
+    }
+  }
+
+  &__btn {
+    padding: 10px;
+    font-size: 14px;
+    background-color: #1abc9c;
+    color: #fff;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 3px;
+    position: absolute;
+    bottom: 5%;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+  &__close {
+    position: absolute;
+    right: 8px;
+    top: 8px;
+    cursor: pointer;
+  }
+
+  &__choosed {
+    background-color: #1abc9c;
+
+    p {
+      color: #fff;
+    }
+  }
 }
 </style>

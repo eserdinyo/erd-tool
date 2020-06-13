@@ -6,7 +6,6 @@ Vue.use(Router);
 
 
 import Main from "../views/Main";
-import Tables from "../views/Tables";
 import Projects from "../views/Projects";
 import Login from "../views/Login";
 import Register from "../views/Register";
@@ -18,12 +17,6 @@ export default new Router({
       path: "/",
       name: "home",
       component: Main,
-      meta: { requiresAuth: true }
-    },
-    {
-      path: "/tables",
-      name: "tables",
-      component: Tables,
       meta: { requiresAuth: true }
     },
     {

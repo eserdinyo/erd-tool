@@ -1,16 +1,10 @@
-<template lang="pug">
-  .sidebar
-    h4 Entity Relationship
-    button.aktarBtn(@click="createTable", v-if="!show") Veri Tabanına Aktar
-    br
-    hr(v-if="show")
-    button.aktarBtn(@click="donustur" tag="button", v-if="show") Dönüştür
-    .notes__container
-      .notes__title Notes
-      .notes
-        .notes__note(v-for="note in notes")
-          p.notes__note--number {{note.id}}. 
-          p {{note.msg}}
+<template>
+  <div class="sidebar">
+    <h4>Entity Relationship</h4>
+    <button class="aktarBtn" @click="createTable" v-if="!show">
+      Veri Tabanına Aktar</button
+    ><br />
+  </div>
 </template>
 
 <script>
@@ -31,7 +25,7 @@ export default {
       this.$store.dispatch("sendDatabase");
     },
     donustur() {
-      EventBus.$emit("donustur", 1);
+      this.$router.push({ name: "tables" });
     }
   },
   created() {
@@ -41,7 +35,6 @@ export default {
   }
 };
 </script>
-
 
 <style lang="scss" scoped>
 .sidebar {
@@ -146,4 +139,3 @@ select {
   }
 }
 </style>
-
